@@ -1,0 +1,11 @@
+docker run -d \
+  --name mysql-spring-db \
+  -p 3306:3306 \
+  -e MYSQL_ROOT_PASSWORD=new_password \
+  -e MYSQL_DATABASE=my_project_db_ingenieria \
+  -e MYSQL_USER=projecto_ing_deibi \
+  -e MYSQL_PASSWORD=deibi123 \
+  -v mysql_data:/var/lib/mysql \
+  mysql:8.0
+
+  docker exec -it mysql-spring-db mysql -u projecto_ing_deibi -p
