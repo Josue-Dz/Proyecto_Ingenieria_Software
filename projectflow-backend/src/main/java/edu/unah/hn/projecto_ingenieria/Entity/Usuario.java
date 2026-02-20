@@ -2,6 +2,7 @@ package edu.unah.hn.projecto_ingenieria.Entity;
 
 import java.time.LocalDateTime;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -11,6 +12,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -53,16 +55,17 @@ public class Usuario implements UserDetails {
     private List<Proyecto> proyectos;
 
     // Relación con proyectos (muchos a muchos a través de ProyectoUsuario)
-    @OneToMany(mappedBy = "usuario")
+    @OneToMany(mappedBy = "usuario", fetch = FetchType.EAGER)
     private List<ProyectoUsuario> proyectosUsuario;
 
 
-    @Override
-    public Collection<? extends GrantedAuthority> getAuthorities() {
-        return proyectosUsuario.stream()
-                .map(pu -> new SimpleGrantedAuthority("ROLE_" + pu.getRol().name()))
-                .collect(Collectors.toSet());
-    }
+   @Override
+public Collection<? extends GrantedAuthority> getAuthorities() {
+    if (proyectosUsuario == null) return Collections.emptyList(); // ← evita Null PointerException
+    return proyectosUsuario.stream()
+            .map(pu -> new SimpleGrantedAuthority("ROLE_" + pu.getRol().name()))
+            .collect(Collectors.toSet());
+}
 
     @Override
     public String getUsername() {
@@ -81,10 +84,12 @@ public class Usuario implements UserDetails {
     public boolean isAccountNonLocked() { return true; }
 
     @Override
-    public boolean isCredentialsNonExpired() { return true; }
+    public boolean isCredentialsNonExpired() {
+    return true;
+ }
 
     @Override
-    public boolean isEnabled() { return "ACTIVO".equalsIgnoreCase(estado); }
+    public boolean isEnabled() { return "A".equalsIgnoreCase(estado); }
 }
 
 
