@@ -3,6 +3,7 @@ package edu.unah.hn.projecto_ingenieria.Entity;
 import java.time.LocalDate;
 
 import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -28,19 +29,19 @@ public class Proyecto {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @JoinColumn(name = "id_proyecto")
+    @Column(name = "id_proyecto")
     private Long idProyecto;
 
-    @JoinColumn(name = "nombre_proyecto")
+    @Column(name = "nombre_proyecto")
     private String nombreProyecto;
 
     @Lob
     private String descripcion;
 
-    @JoinColumn(name = "fecha_inicio")
+    @Column(name = "fecha_inicio")
     private LocalDate fechaInicio;
 
-    @JoinColumn(name = "fecha_fin")
+    @Column(name = "fecha_fin")
     private LocalDate fechaFin;
 
     @ManyToOne

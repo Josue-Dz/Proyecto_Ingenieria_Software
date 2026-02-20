@@ -3,6 +3,7 @@ package edu.unah.hn.projecto_ingenieria.Entity;
 import java.util.List;
 
 import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -26,7 +27,7 @@ public class Tablero {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @JoinColumn(name = "id_tablero")
+    @Column(name = "id_tablero")
     private Long idTablero;
 
     @OneToOne

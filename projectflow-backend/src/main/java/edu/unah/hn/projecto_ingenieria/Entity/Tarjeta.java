@@ -4,6 +4,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
@@ -41,7 +42,7 @@ public class Tarjeta {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @JoinColumn(name = "id_tarjeta")
+    @Column(name = "id_tarjeta")
     private Long idTarjeta;
 
     private String titulo;
@@ -49,10 +50,10 @@ public class Tarjeta {
     @Lob
     private String descripcion;
 
-    @JoinColumn(name = "fecha_creacion")
+    @Column(name = "fecha_creacion")
     private LocalDateTime fechaCreacion;
 
-    @JoinColumn(name = "fecha_limite")
+    @Column(name = "fecha_limite")
     private LocalDate fechaLimite;
 
     @Enumerated(EnumType.STRING)

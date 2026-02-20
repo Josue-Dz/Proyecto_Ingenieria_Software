@@ -3,6 +3,7 @@ package edu.unah.hn.projecto_ingenieria.Entity;
 import java.util.List;
 
 import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -28,10 +29,10 @@ public class Columna {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @JoinColumn(name = "id_columna")
+    @Column(name = "id_columna")
     private Long idColumna;
 
-    @JoinColumn(name = "nombre_columna")
+    @Column(name = "nombre_columna")
     private String nombreColumna;
     
     private Integer posicion;
