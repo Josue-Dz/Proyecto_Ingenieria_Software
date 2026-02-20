@@ -1,17 +1,23 @@
 package edu.unah.hn.projecto_ingenieria.Entity;
 
 import java.time.LocalDateTime;
+import java.util.Collection;
 import java.util.List;
+import java.util.stream.Collectors;
+
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -22,11 +28,12 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class Usuario {
+@Builder
+public class Usuario implements UserDetails {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @JoinColumn(name = "id_usuario")
+    @Column(name = "id_usuario")
     private Long idUsuario;
 
     private String nombre;
@@ -36,7 +43,7 @@ public class Usuario {
 
     private String password;
 
-    @JoinColumn(name = "fecha_registro")
+    @Column(name = "fecha_registro")
     private LocalDateTime fechaRegistro;
 
     private String estado;
@@ -44,4 +51,40 @@ public class Usuario {
     // Relación con proyectos
     @OneToMany(mappedBy = "creador")
     private List<Proyecto> proyectos;
+
+    // Relación con proyectos (muchos a muchos a través de ProyectoUsuario)
+    @OneToMany(mappedBy = "usuario")
+    private List<ProyectoUsuario> proyectosUsuario;
+
+
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return proyectosUsuario.stream()
+                .map(pu -> new SimpleGrantedAuthority("ROLE_" + pu.getRol().name()))
+                .collect(Collectors.toSet());
+    }
+
+    @Override
+    public String getUsername() {
+        return correo;
+    }
+
+    @Override
+    public String getPassword() {
+        return password;
+    }
+
+    @Override
+    public boolean isAccountNonExpired() { return true; }
+
+    @Override
+    public boolean isAccountNonLocked() { return true; }
+
+    @Override
+    public boolean isCredentialsNonExpired() { return true; }
+
+    @Override
+    public boolean isEnabled() { return "ACTIVO".equalsIgnoreCase(estado); }
 }
+
+

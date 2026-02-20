@@ -2,6 +2,8 @@ package edu.unah.hn.projecto_ingenieria.Entity;
 
 
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.Id;
 import jakarta.persistence.IdClass;
 import jakarta.persistence.JoinColumn;
@@ -22,6 +24,10 @@ import lombok.Setter;
 @IdClass(ProyectoUsuarioId.class)
 public class ProyectoUsuario {
 
+         public enum role {
+        ADMIN, COLABORADOR, LECTOR
+}
+
     @Id
     @ManyToOne
     @JoinColumn(name = "id_usuario")
@@ -32,7 +38,8 @@ public class ProyectoUsuario {
     @JoinColumn(name = "id_proyecto")
     private Proyecto proyecto;
 
-    private String rol;
+    @Enumerated(EnumType.STRING)
+    private role rol;
 
 
 
