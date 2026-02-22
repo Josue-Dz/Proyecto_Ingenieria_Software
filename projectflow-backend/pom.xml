@@ -100,7 +100,7 @@
 				<version>0.13.0</version>
 				<scope>runtime</scope>
 			</dependency>
-
+			
 			<!-- Source: https://mvnrepository.com/artifact/io.jsonwebtoken/jjwt-jackson -->
 			<dependency>
 				<groupId>io.jsonwebtoken</groupId>

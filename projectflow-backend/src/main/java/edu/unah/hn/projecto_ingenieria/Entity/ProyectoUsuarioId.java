@@ -14,6 +14,7 @@ import lombok.Setter;
 public class ProyectoUsuarioId implements Serializable {
     
     private Long usuario;
+    
     private Long proyecto;
 
     // Constructor, getters, setters, equals y hashCode
