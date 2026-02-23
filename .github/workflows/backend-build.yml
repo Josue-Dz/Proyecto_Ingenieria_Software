@@ -28,18 +28,6 @@ jobs:
         java-version: '17'
         distribution: 'temurin'
         cache: 'maven'
-
-    # 1. Start the MySQL container using your compose.yaml
-    - name: Start MySQL Database
-      run: docker compose up -d
-
-    # 2. Give MySQL a moment to initialize before Spring Boot tries to connect
-    - name: Wait for MySQL to be ready
-      run: sleep 20 
-    
-    - name: Create database for tests
-      run: 'mysql -u root -proot -e "CREATE DATABASE IF NOT EXISTS bd_gestion_proyectos_software;"'
-
     # 3. Compile, Lint, and Test the project
     # 'verify' runs compilation, checkstyle (because it's tied to the build lifecycle), and tests
     - name: Build and Test
