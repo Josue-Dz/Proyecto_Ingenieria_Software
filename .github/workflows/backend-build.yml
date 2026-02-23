@@ -1,9 +1,8 @@
-name: Backend Java Linting
+name: Backend Build & Test
 
 on:
   push:
     branches: [ "main", "deibi" ]
-    # Only trigger if files inside the backend folder change
     paths:
       - 'projectflow-backend/**' 
   pull_request:
@@ -12,10 +11,9 @@ on:
       - 'projectflow-backend/**'
 
 jobs:
-  lint:
+  build:
     runs-on: ubuntu-latest
     
-    # This tells every 'run' step in this job to execute inside the backend directory
     defaults:
       run:
         working-directory: ./projectflow-backend
@@ -31,6 +29,15 @@ jobs:
         distribution: 'temurin'
         cache: 'maven'
 
-    # Maven will now look for the pom.xml inside the ./backend folder
-    - name: Run Checkstyle
-      run: mvn checkstyle:check
+    # 1. Start the MySQL container using your compose.yaml
+    - name: Start MySQL Database
+      run: docker compose up -d
+
+    # 2. Give MySQL a moment to initialize before Spring Boot tries to connect
+    - name: Wait for MySQL to be ready
+      run: sleep 20 
+
+    # 3. Compile, Lint, and Test the project
+    # 'verify' runs compilation, checkstyle (because it's tied to the build lifecycle), and tests
+    - name: Build and Test
+      run: mvn clean verify
