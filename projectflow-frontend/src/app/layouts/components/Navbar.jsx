@@ -104,11 +104,11 @@ const Navbar = () => {
 
                 {/**Recordar: Estos son los botones de login y registro en el menú movil*/}
                 <ul className='flex flex-col space-y-1'>
-                    <Link to='/#' onClick={() => setIsOpen(false)}
+                    <Link to='/login' onClick={() => setIsOpen(false)}
                         className='bg-[#3C1722] text-white text-center px-4 py-2 w-full rounded-full'>
                         Iniciar Sesión
                     </Link>
-                    <Link to='/#' onClick={() => setIsOpen(false)}
+                    <Link to='/signup' onClick={() => setIsOpen(false)}
                         className='bg-[#c81e3a] text-white text-center px-4 py-2 w-full rounded-full'>
                         Registrarse
                     </Link>

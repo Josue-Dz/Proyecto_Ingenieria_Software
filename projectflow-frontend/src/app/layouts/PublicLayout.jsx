@@ -19,11 +19,11 @@ const PublicLayout = () => {
                             <Navbar />
                         </header>
 
-                        <main className='px-4 sm:px-6 md:px-12 max-w-7xl mx-auto pt-22'>
+                        <main className='grow h-auto px-4 sm:px-6 md:px-12 max-w-7xl mx-auto pt-22'>
                             <Outlet /> {/* Importante aquí se renderizarán las páginas hijas */}
                         </main>
 
-                        <footer>
+                        <footer className=''>
                             <Footer />
                         </footer>
 
