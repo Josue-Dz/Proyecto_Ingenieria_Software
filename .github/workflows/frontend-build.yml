@@ -2,7 +2,7 @@ name: Frontend CI
 
 on:
   push:
-    branches: [ "main", "deibi", "daniel" ]
+    branches: [ "main", "deibi", "daniel","module-auth-frontend" ]
     paths:
       - 'projectflow-frontend/**'
   pull_request:
