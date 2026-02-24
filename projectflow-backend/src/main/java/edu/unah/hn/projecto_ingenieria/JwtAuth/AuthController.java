@@ -1,6 +1,7 @@
 package edu.unah.hn.projecto_ingenieria.JwtAuth;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -12,8 +13,9 @@ import edu.unah.hn.projecto_ingenieria.Jwt.UsuarioRegistroDTO;
 import edu.unah.hn.projecto_ingenieria.Services.AuthService;
 import lombok.RequiredArgsConstructor;
 
+@CrossOrigin(origins = "http://localhost:5173")
 @RestController
-@RequestMapping("/auth")
+@RequestMapping("/api/auth")
 @RequiredArgsConstructor
 public class AuthController {
 
