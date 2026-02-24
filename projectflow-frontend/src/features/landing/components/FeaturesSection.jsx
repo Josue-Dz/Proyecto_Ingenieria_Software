@@ -3,7 +3,7 @@
 const FeaturesSection = () => {
     return (
         <section>
-            <div className='flex flex-col py-6 px-20 justify-between gap-5 md:flex-row text-white'>
+            <div className='flex flex-col py-6 px-20 justify-between gap-3 md:flex-row text-white md:text-base text-sm'>
 
                 <div className='border border-white/25 rounded w-full md:w-1/3 p-3 min-w-32 max-w-sm mx-auto hover:scale-104 transition-transform duration-300'>
 

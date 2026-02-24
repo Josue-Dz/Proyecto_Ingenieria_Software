@@ -3,7 +3,7 @@ const SignUpForm = () => {
     return (
         <div>
             {/**Revisar el backend con Jose Daniel para validar los campos */}
-            <form className='space-y-4'>
+            <form className='space-y-3 text-sm md:text-base'>
                 <div>
                     <label htmlFor='name'>Nombre</label>
                     <input type='text' placeholder='Nombre' id='name' name='nombre' autoComplete='given-name' required className='w-full p-3 border-b-2 border-gray-300 outline-none placeholder-gray-400' />
