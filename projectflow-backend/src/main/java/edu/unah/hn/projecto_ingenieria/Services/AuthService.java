@@ -44,6 +44,7 @@ public class AuthService {
 
         Usuario usuario = Usuario.builder()
                 .nombre(dto.getNombre())
+                .apellido(dto.getApellido())
                 .correo(dto.getCorreo())
                 .password(passwordEncoder.encode(dto.getPassword()))
                 .estado("A")
