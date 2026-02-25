@@ -1,4 +1,4 @@
-import Navbar from './components/Navbar'
+import Navbar from './components/PublicNavbar'
 import { Outlet } from 'react-router-dom'
 import Footer from './components/Footer'
 
@@ -23,7 +23,7 @@ const PublicLayout = () => {
                             <Outlet /> {/* Importante aquí se renderizarán las páginas hijas */}
                         </main>
 
-                        <footer className=''>
+                        <footer>
                             <Footer />
                         </footer>
 

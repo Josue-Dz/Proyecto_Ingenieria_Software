@@ -30,4 +30,5 @@ public class AuthController {
     public ResponseEntity<AuthResponse> register(@RequestBody UsuarioRegistroDTO dto) {
         return ResponseEntity.ok(authService.register(dto));
     }
+
 }

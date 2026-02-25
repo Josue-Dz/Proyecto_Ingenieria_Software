@@ -26,7 +26,7 @@ public class SecurityConfig {
     return http
     .csrf(csrf -> csrf.disable())
     .authorizeHttpRequests(authRequest -> 
-        authRequest.requestMatchers("/auth/**").permitAll() //se especifican las rutas publicas
+        authRequest.requestMatchers("/api/auth/**").permitAll() //se especifican las rutas publicas
         .anyRequest().authenticated() //aqui las rutas privadas
     )   
     .sessionManagement(sessionManager -> 

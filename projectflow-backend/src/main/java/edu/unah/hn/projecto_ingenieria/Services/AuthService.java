@@ -29,9 +29,9 @@ public class AuthService {
     
     public AuthResponse login(LoginRequestDTO dto) {
         authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(dto.getCorreo(), dto.getPassword())
+                new UsernamePasswordAuthenticationToken(dto.getEmail(), dto.getPassword())
         );
-        UserDetails user = usuarioRepository.findByCorreo(dto.getCorreo()).orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
+        UserDetails user = usuarioRepository.findByCorreo(dto.getEmail()).orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
         String token = jwtService.getToken(user);
         return AuthResponse.builder()
                 .token(token)
