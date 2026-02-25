@@ -3,7 +3,7 @@ import AboutSection from './components/AboutSection'
 const AboutPage = () => {
     return (
         <div className='min-h-screen pt-20'>
-            {/* Hero pequeño para la página de "Sobre Nosotros" */}
+
             <div className='text-center py-12 px-6'>
                 <span className='text-[#A3FF12] text-sm font-semibold uppercase tracking-widest'>
                     PumaTask
@@ -17,7 +17,7 @@ const AboutPage = () => {
                 </p>
             </div>
 
-            {/* Sección about */}
+            
             <AboutSection />
         </div>
     )
