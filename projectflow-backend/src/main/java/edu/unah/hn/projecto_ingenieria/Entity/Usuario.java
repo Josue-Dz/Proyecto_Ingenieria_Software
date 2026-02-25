@@ -40,6 +40,9 @@ public class Usuario implements UserDetails {
 
     private String nombre;
 
+    @Column(name = "apellido", nullable = false)
+    private String apellido;
+
     @Column(unique = true)
     private String correo;
 
