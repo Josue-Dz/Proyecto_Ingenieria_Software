@@ -1,6 +1,6 @@
 import { useNavigate } from 'react-router-dom';
 import Logo from '../../../assets/Logo.png'
-import { useAuth } from '../../../features/auth/context/AuthContext';
+import { useAuth } from '../../../features/auth/hooks/useAuth';
 
 const PrivateNavbar = () => {
     const { user, logout } = useAuth();
