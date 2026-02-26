@@ -25,7 +25,7 @@ const FeaturesSection = () => {
 
     return (
         <section>
-            <div className='flex flex-col py-6 px-20 justify-between gap-3 md:flex-row text-white md:text-base text-sm'>
+            <div className='flex flex-col py-6 px-4 md:px-20 justify-between gap-3 md:flex-row text-white md:text-base text-sm'>
 
                 {features.map((feature, index) => (
                     <div

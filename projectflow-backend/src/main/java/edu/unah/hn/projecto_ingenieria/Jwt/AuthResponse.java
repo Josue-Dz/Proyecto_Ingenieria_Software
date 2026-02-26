@@ -15,6 +15,6 @@ import lombok.Setter;
 
 public class AuthResponse {
 
-    private UsuarioDTO usuario;
+    private UsuarioDTO user;
 
 }

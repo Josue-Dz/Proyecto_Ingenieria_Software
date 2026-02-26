@@ -14,7 +14,7 @@ function AppRoutes() {
             <Route element={<PublicLayout />}>
                 <Route path='/' element={<LandingPage />} />
                 <Route path='/caracteristicas' element={<FeaturesPage />} />
-                <Route path='/sobre-nosotros' element={<AboutPage />} />
+                <Route path='/sobreNosotros' element={<AboutPage />} />
                 <Route path='/login' element={<LoginPage />} />
                 <Route path='/signup' element={<SignUpPage />} />
             </Route>
