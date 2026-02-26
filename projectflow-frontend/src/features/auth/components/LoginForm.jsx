@@ -13,7 +13,7 @@ const LoginForm = () => {
 
         console.log(email, password)
         try{
-            const data = await login({ email, password });
+            await login({ email, password });
             navigate("/dashboard")
         } catch (error) {
             console.error("error", error)
