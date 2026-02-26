@@ -1,4 +1,4 @@
-/// Acerca de nosotros
+
 const team = [
     {
         name: "Ronny Posadas",
