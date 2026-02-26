@@ -20,20 +20,20 @@ import edu.unah.hn.projecto_ingenieria.Services.ProyectoService;
 import lombok.RequiredArgsConstructor;
 
 @RestController
-@RequestMapping("/proyectos")
+@RequestMapping("/api/projects")
 @RequiredArgsConstructor
 @Validated
 public class ProyectoController {
 
 	private final ProyectoService proyectoService;
 
-	@PostMapping
+	@PostMapping("/create")
 	public ResponseEntity<ProyectoResponseDTO> crearProyecto(@RequestBody ProyectoRequestDTO dto) {
 		ProyectoResponseDTO created = proyectoService.crearProyecto(dto);
-		return ResponseEntity.created(URI.create("/proyectos/" + created.getIdProyecto())).body(created);
+		return ResponseEntity.created(URI.create("/projects/" + created.getIdProyecto())).body(created);
 	}
 
-	@GetMapping("/mios")
+	@GetMapping("/mine")
 	public ResponseEntity<List<ProyectoResponseDTO>> misProyectos() {
 		return ResponseEntity.ok(proyectoService.obtenerProyectosPorUsuario());
 	}

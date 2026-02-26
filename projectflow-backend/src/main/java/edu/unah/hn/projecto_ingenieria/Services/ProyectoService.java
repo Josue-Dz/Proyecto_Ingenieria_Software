@@ -54,7 +54,7 @@ public class ProyectoService {
         return mapToDTO(savedProyecto);
     }
 
-    // --- Busca un proyecto por ID sólo si el usuario tiene acceso ---
+    
     @Transactional(Transactional.TxType.REQUIRED)
     public ProyectoResponseDTO obtenerProyectoPorId(Long id) {
         Proyecto proyecto = proyectoRepository.findById(id)
@@ -72,7 +72,7 @@ public class ProyectoService {
         return mapToDTO(proyecto);
     }
 
-    // --- Actualiza la informacion del proyecto ---
+
     @Transactional
     public ProyectoResponseDTO actualizarProyecto(Long id, ProyectoRequestDTO dto) {
         Usuario usuario = getUsuarioAutenticado();
@@ -101,7 +101,7 @@ public class ProyectoService {
         return mapToDTO(proyectoRepository.save(proyecto));
     }
 
-    // --- Borrar un proyecto usando el id del proyecto---
+
     @Transactional
     public void eliminarProyecto(Long id) {
         Usuario usuario = getUsuarioAutenticado();
@@ -132,14 +132,12 @@ public class ProyectoService {
             .collect(Collectors.toList());
     }
 
-    // --- Autenticacion de usuario usando el token ---
     private Usuario getUsuarioAutenticado() {
         Usuario usuarioPrincipal = (Usuario) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         return usuarioRepository.findByCorreo(usuarioPrincipal.getCorreo())
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Usuario no encontrado"));
     }
 
-    // --- Mapeo de entidad a DTO ---
     private ProyectoResponseDTO mapToDTO(Proyecto p) {
         return new ProyectoResponseDTO(
             p.getIdProyecto(), p.getNombreProyecto(), p.getDescripcion(), 

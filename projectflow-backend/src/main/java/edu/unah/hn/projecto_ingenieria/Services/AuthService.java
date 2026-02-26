@@ -3,13 +3,10 @@ package edu.unah.hn.projecto_ingenieria.Services;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 
-import org.apache.catalina.User;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -86,9 +83,7 @@ public class AuthService {
         }
 
         public UsuarioDTO getMyProfile(){
-                System.out.println("Estoy en getmyprofile");
                 Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-                System.out.println("Esto tiene authentication: " + authentication.getPrincipal());
                 Usuario usuario = (Usuario) authentication.getPrincipal();
 
                 UsuarioDTO usuarioDTO = new UsuarioDTO(
