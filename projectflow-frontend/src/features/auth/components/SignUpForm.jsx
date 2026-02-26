@@ -24,7 +24,7 @@ const SignUpForm = () => {
 
     return (
         <div>
-            {/**Revisar el backend con Jose Daniel para validar los campos */}
+        
             <form className='space-y-3 text-sm md:text-base' onSubmit={ handleSubmit }>
                 <div>
                     <label htmlFor='name'>Nombre</label>

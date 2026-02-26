@@ -1,5 +1,5 @@
 
-const Sidebar = ({ isOpen, onToggle }) => { // 👈 recibe props
+const Sidebar = ({ isOpen, onToggle }) => {
     return (
         <aside className={`${isOpen ? "w-64" : "w-20"} h-screen bg-black/80 backdrop-blur-sm border-r border-white/10 fixed left-0 top-16 transition-all duration-300`}>
 
