@@ -1,6 +1,12 @@
+
 package edu.unah.hn.projecto_ingenieria.Services;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import java.util.List;
+import java.util.stream.Collectors;
+
+import org.springframework.http.HttpStatus;
+import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 import org.springframework.security.core.context.SecurityContextHolder;
 
 import edu.unah.hn.projecto_ingenieria.DTO.ProyectoRequestDTO;
@@ -11,34 +17,34 @@ import edu.unah.hn.projecto_ingenieria.Entity.Usuario;
 import edu.unah.hn.projecto_ingenieria.Repository.ProyectoRepository;
 import edu.unah.hn.projecto_ingenieria.Repository.ProyectoUsuarioRepository;
 import edu.unah.hn.projecto_ingenieria.Repository.UsuarioRepository;
+
 import jakarta.transaction.Transactional;
+import lombok.RequiredArgsConstructor;
 
+@Service
+@RequiredArgsConstructor
 public class ProyectoService {
-    
-    @Autowired
-    private ProyectoRepository proyectoRepository;
-
-    @Autowired
-    private UsuarioRepository usuarioRepository;
-
-    @Autowired
-    private ProyectoUsuarioRepository proyectoUsuarioRepository;
+    private final ProyectoRepository proyectoRepository;
+    private final UsuarioRepository usuarioRepository;
+    private final ProyectoUsuarioRepository proyectoUsuarioRepository;
 
     @Transactional
     public ProyectoResponseDTO crearProyecto(ProyectoRequestDTO dto) {
         Usuario creador = getUsuarioAutenticado();
 
-        // 1. Creacion de proyecto y asignacion del creador
+        if (dto.getFechaInicio() != null && dto.getFechaFin() != null && dto.getFechaInicio().isAfter(dto.getFechaFin())) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "La fecha de inicio debe ser anterior a la fecha de fin");
+        }
+
         Proyecto proyecto = new Proyecto();
         proyecto.setNombreProyecto(dto.getNombreProyecto());
         proyecto.setDescripcion(dto.getDescripcion());
         proyecto.setFechaInicio(dto.getFechaInicio());
         proyecto.setFechaFin(dto.getFechaFin());
-        proyecto.setCreador(creador); // Usamos el usuario autenticado como creador del proyecto
-        
+        proyecto.setCreador(creador);
+
         Proyecto savedProyecto = proyectoRepository.save(proyecto);
 
-        // 2. Usuario creador se asigna automaticamente como ADMIN del proyecto
         ProyectoUsuario nuevoUsuarioProyecto = new ProyectoUsuario();
         nuevoUsuarioProyecto.setUsuario(creador);
         nuevoUsuarioProyecto.setProyecto(savedProyecto);
@@ -48,29 +54,50 @@ public class ProyectoService {
         return mapToDTO(savedProyecto);
     }
 
-    // --- Busca un proyecto por ID ---
+    // --- Busca un proyecto por ID sólo si el usuario tiene acceso ---
+    @Transactional(Transactional.TxType.REQUIRED)
     public ProyectoResponseDTO obtenerProyectoPorId(Long id) {
         Proyecto proyecto = proyectoRepository.findById(id)
-            .orElseThrow(() -> new RuntimeException("Proyecto no encontrado"));
-        return mapToDTO(proyecto); // Simplified for example
+            .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Proyecto no encontrado"));
+
+        Usuario usuario = getUsuarioAutenticado();
+
+        boolean esCreador = proyecto.getCreador() != null && proyecto.getCreador().getIdUsuario().equals(usuario.getIdUsuario());
+        boolean miembro = proyectoUsuarioRepository.findByProyecto_IdProyectoAndUsuario_IdUsuario(id, usuario.getIdUsuario()).isPresent();
+
+        if (!esCreador && !miembro) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "No tienes acceso a este proyecto");
+        }
+
+        return mapToDTO(proyecto);
     }
 
     // --- Actualiza la informacion del proyecto ---
     @Transactional
     public ProyectoResponseDTO actualizarProyecto(Long id, ProyectoRequestDTO dto) {
         Usuario usuario = getUsuarioAutenticado();
-        Proyecto proyecto = proyectoRepository.findById(id).orElseThrow();
+        Proyecto proyecto = proyectoRepository.findById(id)
+            .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Proyecto no encontrado"));
 
-        // Verficacion: Solo el creador del proyecto puede actualizarlo
-        if (!proyecto.getCreador().getIdUsuario().equals(usuario.getIdUsuario())) {
-            throw new RuntimeException("No tienes permiso para actualizar este proyecto");
+        boolean esCreador = proyecto.getCreador() != null && proyecto.getCreador().getIdUsuario().equals(usuario.getIdUsuario());
+        boolean esAdmin = proyectoUsuarioRepository
+                .findByProyecto_IdProyectoAndUsuario_IdUsuario(id, usuario.getIdUsuario())
+                .map(pu -> pu.getRol() == ProyectoUsuario.role.ADMIN)
+                .orElse(false);
+
+        if (!esCreador && !esAdmin) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "No tienes permiso para actualizar este proyecto");
+        }
+
+        if (dto.getFechaInicio() != null && dto.getFechaFin() != null && dto.getFechaInicio().isAfter(dto.getFechaFin())) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "La fecha de inicio debe ser anterior a la fecha de fin");
         }
 
         proyecto.setNombreProyecto(dto.getNombreProyecto());
         proyecto.setDescripcion(dto.getDescripcion());
         proyecto.setFechaInicio(dto.getFechaInicio());
         proyecto.setFechaFin(dto.getFechaFin());
-        
+
         return mapToDTO(proyectoRepository.save(proyecto));
     }
 
@@ -78,26 +105,40 @@ public class ProyectoService {
     @Transactional
     public void eliminarProyecto(Long id) {
         Usuario usuario = getUsuarioAutenticado();
-        Proyecto proyecto = proyectoRepository.findById(id).orElseThrow();
+        Proyecto proyecto = proyectoRepository.findById(id)
+            .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Proyecto no encontrado"));
 
-        // Verificacion de usurio: Solo el creador del proyecto puede eliminarlo
-        if (!proyecto.getCreador().getIdUsuario().equals(usuario.getIdUsuario())) {
-            throw new RuntimeException("Solo el creador puede eliminar este proyecto");
+        boolean esCreador = proyecto.getCreador() != null && proyecto.getCreador().getIdUsuario().equals(usuario.getIdUsuario());
+        boolean esAdmin = proyectoUsuarioRepository
+                .findByProyecto_IdProyectoAndUsuario_IdUsuario(id, usuario.getIdUsuario())
+                .map(pu -> pu.getRol() == ProyectoUsuario.role.ADMIN)
+                .orElse(false);
+
+        if (!esCreador && !esAdmin) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Solo el creador o un admin del proyecto puede eliminarlo");
         }
 
-        // Borramos tambien las relaciones en la tabla intermedia para evitar problemas de integridad referencial
         proyectoUsuarioRepository.deleteByProyecto_IdProyecto(id);
-        
-        // Finalmente borramos el proyecto
         proyectoRepository.delete(proyecto);
+    }
+
+    @Transactional(Transactional.TxType.REQUIRED)
+    public List<ProyectoResponseDTO> obtenerProyectosPorUsuario() {
+        Usuario usuario = getUsuarioAutenticado();
+        List<ProyectoUsuario> proyectosUsuario = proyectoUsuarioRepository.findByUsuario_IdUsuario(usuario.getIdUsuario());
+
+        return proyectosUsuario.stream()
+            .map(pu -> mapToDTO(pu.getProyecto()))
+            .collect(Collectors.toList());
     }
 
     // --- Autenticacion de usuario usando el token ---
     private Usuario getUsuarioAutenticado() {
-        String correo = SecurityContextHolder.getContext().getAuthentication().getName();
-        return usuarioRepository.findByCorreo(correo)
-                .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
+        Usuario usuarioPrincipal = (Usuario) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        return usuarioRepository.findByCorreo(usuarioPrincipal.getCorreo())
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Usuario no encontrado"));
     }
+
     // --- Mapeo de entidad a DTO ---
     private ProyectoResponseDTO mapToDTO(Proyecto p) {
         return new ProyectoResponseDTO(
