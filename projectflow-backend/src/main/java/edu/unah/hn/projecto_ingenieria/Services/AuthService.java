@@ -98,7 +98,7 @@ public class AuthService {
         }
 
         public void logout(HttpServletResponse response){
-                Cookie cookie = new Cookie("toke", null);
+                Cookie cookie = new Cookie("token", null);
                 cookie.setHttpOnly(false);
                 cookie.setPath("/");
                 cookie.setMaxAge(0);
@@ -106,7 +106,7 @@ public class AuthService {
         }
 
         private Cookie crearCookie(String token){
-                Cookie cookie = new Cookie("toke", token);
+                Cookie cookie = new Cookie("token", token);
                 cookie.setHttpOnly(true);
                 cookie.setSecure(false);
                 cookie.setPath("/");
