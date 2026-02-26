@@ -54,7 +54,7 @@ public class Usuario implements UserDetails {
     private String estado;
 
     // Relación con proyectos
-    @OneToMany(mappedBy = "creador")
+    @OneToMany(mappedBy = "creador", fetch = FetchType.EAGER)
     private List<Proyecto> proyectos;
 
     // Relación con proyectos (muchos a muchos a través de ProyectoUsuario)
@@ -64,7 +64,7 @@ public class Usuario implements UserDetails {
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         if (proyectosUsuario == null)
-            return Collections.emptyList(); // ← evita Null PointerException
+            return Collections.emptyList(); //evita Null PointerException
         return proyectosUsuario.stream()
                 .map(pu -> new SimpleGrantedAuthority("ROLE_" + pu.getRol().name()))
                 .collect(Collectors.toSet());
