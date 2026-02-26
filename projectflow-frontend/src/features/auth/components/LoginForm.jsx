@@ -1,9 +1,30 @@
+import { useNavigate } from "react-router-dom"
+import { loginRequest } from "../services/authService"
+
 const LoginForm = () => {
+
+    const navigate = useNavigate();
+
+    const handleSubmit = async (e) => {
+        e.preventDefault()
+        const email = e.target.email.value;
+        const password = e.target.password.value;
+
+        console.log(email, password)
+        try{
+            const data = await loginRequest({ email, password });
+            console.log("Usuario logueado", data); {/**Ojo: Console.log favor borrar para la entrega final por si yo no lo hago*/}
+            navigate("/dashboard")
+        } catch (error) {
+            console.error("error", error)
+        }
+    }
+
     return (
         <div>
 
             {/**Revisar el backend con Jose Daniel para validar los campos */}
-            <form className='space-y-3 text-sm md:text-base'>
+            <form onSubmit={ handleSubmit } className='space-y-3 text-sm md:text-base'>
                 <div>
                     <label htmlFor="email">Correo Electrónico</label>
                     <input type='email' placeholder='Correo Electrónico' id='email' name='email' autoComplete='email' required className='w-full p-3 border-b-2 border-gray-300 outline-none placeholder-gray-400' />

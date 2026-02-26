@@ -1,5 +1,6 @@
 package edu.unah.hn.projecto_ingenieria.Jwt;
 
+import edu.unah.hn.projecto_ingenieria.DTO.UsuarioDTO;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -14,5 +15,6 @@ import lombok.Setter;
 
 public class AuthResponse {
 
-    private String token;
+    private UsuarioDTO usuario;
+
 }

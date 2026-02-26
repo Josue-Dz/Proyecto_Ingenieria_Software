@@ -1,17 +1,40 @@
+import { useNavigate } from "react-router-dom";
+import { registerRequest } from "../services/authService";
 
 const SignUpForm = () => {
+
+    const navigate = useNavigate();
+
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+
+        const name = e.target.name.value;
+        const lastname = e.target.lastname.value;
+        const nombre = name + lastname;  //Unicamente para prueba de conexion con el backend luego lo remuevo
+        const correo = e.target.email.value; //Recordar cambiar a ingles, tambien en la bd
+        const password = e.target.password.value;
+
+        try{
+            // const data = await registerRequest({ nombre, lastname, email, password });
+            const data = await registerRequest({ nombre, correo, password })
+            console.log("Usuario Registrado Correctamente:", data); {/**Ojo: Console.log favor borrar para la entrega final por si yo no lo hago*/}
+        }catch(error){
+            console.error(error);
+        }
+    }
+
     return (
         <div>
             {/**Revisar el backend con Jose Daniel para validar los campos */}
-            <form className='space-y-3 text-sm md:text-base'>
+            <form className='space-y-3 text-sm md:text-base' onSubmit={ handleSubmit }>
                 <div>
                     <label htmlFor='name'>Nombre</label>
-                    <input type='text' placeholder='Nombre' id='name' name='nombre' autoComplete='given-name' required className='w-full p-3 border-b-2 border-gray-300 outline-none placeholder-gray-400' />
+                    <input type='text' placeholder='Nombre' id='name' name='name' autoComplete='given-name' required className='w-full p-3 border-b-2 border-gray-300 outline-none placeholder-gray-400' />
                 </div>
 
                 <div>
                     <label htmlFor='lastname'>Apellido</label>
-                    <input type='text' placeholder='Apellido' id='lastname' name='apellido' autoComplete='family-name' required className='w-full p-3 border-b-2 border-gray-300 outline-none placeholder-gray-400' />
+                    <input type='text' placeholder='Apellido' id='lastname' name='lastname' autoComplete='family-name' required className='w-full p-3 border-b-2 border-gray-300 outline-none placeholder-gray-400' />
                 </div>
 
                 <div>

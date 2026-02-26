@@ -45,7 +45,7 @@ const AboutSection = () => {
                         herramienta de gestión accesible y pensada para el contexto
                         universitario. Somos estudiantes de la carrera de Ingeniería de Sistemas de la
                         Universidad Nacional Autónoma de Honduras, cursando la clase Ingenieria del Software,
-                         comprometidos con aplicar metodologías ágiles para nuestros proyectos de Software.
+                        comprometidos con aplicar metodologías ágiles para nuestros proyectos de Software.
                     </p>
                     <p className="text-white/60 text-sm leading-relaxed">
                         Nuestra misión es facilitar la organización y colaboración de
