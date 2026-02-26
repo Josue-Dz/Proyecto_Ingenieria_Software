@@ -2,7 +2,7 @@
 const team = [
     {
         name: "Ronny Posadas",
-        role: "Frontend Developer",
+        role: "Full Stack Developer",
         initials: "RP",
         github: "https://github.com/Josue-Dz",
     },
