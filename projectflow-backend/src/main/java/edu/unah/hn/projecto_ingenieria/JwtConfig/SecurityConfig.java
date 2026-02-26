@@ -28,7 +28,7 @@ public class SecurityConfig {
     .cors(Customizer.withDefaults())
     .csrf(csrf -> csrf.disable())
     .authorizeHttpRequests(authRequest -> 
-        authRequest.requestMatchers("/api/auth/**").permitAll() //se especifican las rutas publicas
+        authRequest.requestMatchers("/api/auth/login", "/api/auth/register").permitAll() //se especifican las rutas publicas
         .anyRequest().authenticated() //aqui las rutas privadas
     )   
     .sessionManagement(sessionManager -> 

@@ -97,6 +97,14 @@ public class AuthService {
                 return usuarioDTO;
         }
 
+        public void logout(HttpServletResponse response){
+                Cookie cookie = new Cookie("toke", null);
+                cookie.setHttpOnly(false);
+                cookie.setPath("/");
+                cookie.setMaxAge(0);
+                response.addCookie(cookie);
+        }
+
         private Cookie crearCookie(String token){
                 Cookie cookie = new Cookie("toke", token);
                 cookie.setHttpOnly(true);

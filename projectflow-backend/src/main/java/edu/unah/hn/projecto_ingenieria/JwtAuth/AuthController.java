@@ -14,7 +14,6 @@ import edu.unah.hn.projecto_ingenieria.Services.AuthService;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 
 
 @RestController
@@ -39,6 +38,13 @@ public class AuthController {
         UsuarioDTO usuarioDTO = authService.getMyProfile();
         return ResponseEntity.ok(usuarioDTO);
     }
+    
+    @PostMapping("/logout")
+    public ResponseEntity<Void> logout(HttpServletResponse response) {
+        authService.logout(response);
+        return ResponseEntity.noContent().build();
+    }
+    
     
 
 }
