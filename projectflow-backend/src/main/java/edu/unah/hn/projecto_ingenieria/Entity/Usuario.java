@@ -26,7 +26,7 @@ import lombok.Setter;
 
 @Entity
 @Table(name = "tbl_usuarios")
-@Getter 
+@Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
@@ -39,6 +39,9 @@ public class Usuario implements UserDetails {
     private Long idUsuario;
 
     private String nombre;
+
+    @Column(name = "apellido", nullable = false)
+    private String apellido;
 
     @Column(unique = true)
     private String correo;
@@ -58,14 +61,14 @@ public class Usuario implements UserDetails {
     @OneToMany(mappedBy = "usuario", fetch = FetchType.EAGER)
     private List<ProyectoUsuario> proyectosUsuario;
 
-
-   @Override
-public Collection<? extends GrantedAuthority> getAuthorities() {
-    if (proyectosUsuario == null) return Collections.emptyList(); // ← evita Null PointerException
-    return proyectosUsuario.stream()
-            .map(pu -> new SimpleGrantedAuthority("ROLE_" + pu.getRol().name()))
-            .collect(Collectors.toSet());
-}
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        if (proyectosUsuario == null)
+            return Collections.emptyList(); // ← evita Null PointerException
+        return proyectosUsuario.stream()
+                .map(pu -> new SimpleGrantedAuthority("ROLE_" + pu.getRol().name()))
+                .collect(Collectors.toSet());
+    }
 
     @Override
     public String getUsername() {
@@ -78,18 +81,28 @@ public Collection<? extends GrantedAuthority> getAuthorities() {
     }
 
     @Override
-    public boolean isAccountNonExpired() { return true; }
+    public boolean isAccountNonExpired() {
+        return true;
+    }
 
     @Override
-    public boolean isAccountNonLocked() { return true; }
+    public boolean isAccountNonLocked() {
+        return true;
+    }
 
     @Override
     public boolean isCredentialsNonExpired() {
-    return true;
- }
+        return true;
+    }
 
     @Override
-    public boolean isEnabled() { return "A".equalsIgnoreCase(estado); }
+    public boolean isEnabled() {
+        return "A".equalsIgnoreCase(estado);
+    }
+
+    public String obtenerInicialesDeNombre(String nombre, String apellido){
+        char inicialNombre = nombre.toUpperCase().charAt(0);
+        char inicialApellido = apellido.toUpperCase().charAt(0);
+        return "" + inicialNombre + inicialApellido;
+    }
 }
-
-

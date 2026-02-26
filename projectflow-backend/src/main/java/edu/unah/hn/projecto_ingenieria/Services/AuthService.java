@@ -5,57 +5,113 @@ import java.util.ArrayList;
 
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import edu.unah.hn.projecto_ingenieria.DTO.UsuarioDTO;
 import edu.unah.hn.projecto_ingenieria.Entity.Usuario;
 import edu.unah.hn.projecto_ingenieria.Jwt.AuthResponse;
 import edu.unah.hn.projecto_ingenieria.Jwt.JwtService;
 import edu.unah.hn.projecto_ingenieria.Jwt.LoginRequestDTO;
 import edu.unah.hn.projecto_ingenieria.Jwt.UsuarioRegistroDTO;
 import edu.unah.hn.projecto_ingenieria.Repository.UsuarioRepository;
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor
 public class AuthService {
 
-    private final UsuarioRepository usuarioRepository;
-    private final PasswordEncoder passwordEncoder;
-    private final JwtService jwtService;
-    private final AuthenticationManager authenticationManager;
+        private final UsuarioRepository usuarioRepository;
+        private final PasswordEncoder passwordEncoder;
+        private final JwtService jwtService;
+        private final AuthenticationManager authenticationManager;
 
-    
-    public AuthResponse login(LoginRequestDTO dto) {
-        authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(dto.getCorreo(), dto.getPassword())
-        );
-        UserDetails user = usuarioRepository.findByCorreo(dto.getCorreo()).orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
-        String token = jwtService.getToken(user);
-        return AuthResponse.builder()
-                .token(token)
-                .build();
-    }
+        public AuthResponse login(LoginRequestDTO dto, HttpServletResponse response) {
 
-    
+                authenticationManager.authenticate(
+                                new UsernamePasswordAuthenticationToken(dto.getEmail(), dto.getPassword()));
+                Usuario user = usuarioRepository.findByCorreo(dto.getEmail())
+                                .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
 
-    public AuthResponse register(UsuarioRegistroDTO dto) {
+                String token = jwtService.getToken(user);
 
-        Usuario usuario = Usuario.builder()
-                .nombre(dto.getNombre())
-                .correo(dto.getCorreo())
-                .password(passwordEncoder.encode(dto.getPassword()))
-                .estado("A")
-                .fechaRegistro(LocalDateTime.now())
-                .proyectosUsuario(new ArrayList<>()) // ← inicializa la lista vacía
-                .build();
-        
-        usuarioRepository.save(usuario);
+                // Crear la cookie
+                Cookie cookie = crearCookie(token);
+                response.addCookie(cookie);
 
-        return AuthResponse.builder()
-        .token(jwtService.getToken(usuario))
-        .build();
-    }
+                // Creo el dto con la data que tiene user
+                UsuarioDTO usuarioDTO = new UsuarioDTO(
+                        user.getNombre(),
+                        user.getApellido(),
+                        user.getNombre() + " " + user.getApellido(),
+                        user.getCorreo(),
+                        user.obtenerInicialesDeNombre(user.getNombre(), user.getApellido())
+                );
+
+                return AuthResponse.builder()
+                                .usuario(usuarioDTO)
+                                .build();
+
+        }
+
+        public AuthResponse register(UsuarioRegistroDTO dto, HttpServletResponse response) {
+
+                Usuario usuario = Usuario.builder()
+                                .nombre(dto.getNombre())
+                                .apellido(dto.getApellido())
+                                .correo(dto.getCorreo())
+                                .password(passwordEncoder.encode(dto.getPassword()))
+                                .estado("A")
+                                .fechaRegistro(LocalDateTime.now())
+                                .proyectosUsuario(new ArrayList<>())
+                                .build();
+
+                usuarioRepository.save(usuario);
+
+                String token = jwtService.getToken(usuario);
+
+                //Crear la cookie
+                Cookie cookie = crearCookie(token);
+                response.addCookie(cookie);
+
+                return AuthResponse.builder()
+                                .build();
+        }
+
+        public UsuarioDTO getMyProfile(){
+                Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+                Usuario usuario = (Usuario) authentication.getPrincipal();
+
+                UsuarioDTO usuarioDTO = new UsuarioDTO(
+                        usuario.getNombre(),
+                        usuario.getApellido(),
+                        usuario.getNombre() + " " + usuario.getApellido(),
+                        usuario.getCorreo(),
+                        usuario.obtenerInicialesDeNombre(usuario.getNombre(), usuario.getApellido())
+                );
+
+                return usuarioDTO;
+        }
+
+        public void logout(HttpServletResponse response){
+                Cookie cookie = new Cookie("toke", null);
+                cookie.setHttpOnly(false);
+                cookie.setPath("/");
+                cookie.setMaxAge(0);
+                response.addCookie(cookie);
+        }
+
+        private Cookie crearCookie(String token){
+                Cookie cookie = new Cookie("toke", token);
+                cookie.setHttpOnly(true);
+                cookie.setSecure(false);
+                cookie.setPath("/");
+                cookie.setMaxAge(3600);
+                return cookie;
+        }
 
 }

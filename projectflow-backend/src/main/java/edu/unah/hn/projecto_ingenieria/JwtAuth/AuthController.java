@@ -6,26 +6,45 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import edu.unah.hn.projecto_ingenieria.DTO.UsuarioDTO;
 import edu.unah.hn.projecto_ingenieria.Jwt.AuthResponse;
 import edu.unah.hn.projecto_ingenieria.Jwt.LoginRequestDTO;
 import edu.unah.hn.projecto_ingenieria.Jwt.UsuarioRegistroDTO;
 import edu.unah.hn.projecto_ingenieria.Services.AuthService;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.web.bind.annotation.GetMapping;
+
 
 @RestController
-@RequestMapping("/auth")
+@RequestMapping("/api/auth")
 @RequiredArgsConstructor
 public class AuthController {
 
     private final AuthService authService;
 
     @PostMapping("/login")
-    public ResponseEntity<AuthResponse> login(@RequestBody LoginRequestDTO dto) {
-        return ResponseEntity.ok(authService.login(dto));
+    public ResponseEntity<AuthResponse> login(@RequestBody LoginRequestDTO dto, HttpServletResponse response) {
+        return ResponseEntity.ok(authService.login(dto, response));
     }
 
     @PostMapping("/register")
-    public ResponseEntity<AuthResponse> register(@RequestBody UsuarioRegistroDTO dto) {
-        return ResponseEntity.ok(authService.register(dto));
+    public ResponseEntity<AuthResponse> register(@RequestBody UsuarioRegistroDTO dto, HttpServletResponse response) {
+        return ResponseEntity.ok(authService.register(dto, response));
     }
+
+    @GetMapping("/me")
+    public ResponseEntity<UsuarioDTO> getMyProfile() {
+        UsuarioDTO usuarioDTO = authService.getMyProfile();
+        return ResponseEntity.ok(usuarioDTO);
+    }
+    
+    @PostMapping("/logout")
+    public ResponseEntity<Void> logout(HttpServletResponse response) {
+        authService.logout(response);
+        return ResponseEntity.noContent().build();
+    }
+    
+    
+
 }
