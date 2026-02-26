@@ -2,6 +2,7 @@ package edu.unah.hn.projecto_ingenieria.DTO;
 
 import java.time.LocalDate;
 
+import edu.unah.hn.projecto_ingenieria.Entity.ProyectoUsuario;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;

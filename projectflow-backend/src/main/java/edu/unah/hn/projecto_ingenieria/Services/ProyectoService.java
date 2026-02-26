@@ -28,40 +28,40 @@ public class ProyectoService {
     public ProyectoResponseDTO crearProyecto(ProyectoRequestDTO dto) {
         Usuario creador = getUsuarioAutenticado();
 
-        // 1. Create and save the project
+        // 1. Creacion de proyecto y asignacion del creador
         Proyecto proyecto = new Proyecto();
         proyecto.setNombreProyecto(dto.getNombreProyecto());
         proyecto.setDescripcion(dto.getDescripcion());
         proyecto.setFechaInicio(dto.getFechaInicio());
         proyecto.setFechaFin(dto.getFechaFin());
-        proyecto.setCreador(creador); // Auto-assign creator
+        proyecto.setCreador(creador); // Usamos el usuario autenticado como creador del proyecto
         
         Proyecto savedProyecto = proyectoRepository.save(proyecto);
 
-        // 2. Link the user to the project as an ADMIN (Owner)
-        ProyectoUsuario pu = new ProyectoUsuario();
-        pu.setUsuario(creador);
-        pu.setProyecto(savedProyecto);
-        pu.setRol(ProyectoUsuario.role.ADMIN);
-        proyectoUsuarioRepository.save(pu);
+        // 2. Usuario creador se asigna automaticamente como ADMIN del proyecto
+        ProyectoUsuario nuevoUsuarioProyecto = new ProyectoUsuario();
+        nuevoUsuarioProyecto.setUsuario(creador);
+        nuevoUsuarioProyecto.setProyecto(savedProyecto);
+        nuevoUsuarioProyecto.setRol(ProyectoUsuario.role.ADMIN);
+        proyectoUsuarioRepository.save(nuevoUsuarioProyecto);
 
         return mapToDTO(savedProyecto);
     }
 
-    // --- READ (Get One) ---
+    // --- Busca un proyecto por ID ---
     public ProyectoResponseDTO obtenerProyectoPorId(Long id) {
         Proyecto proyecto = proyectoRepository.findById(id)
             .orElseThrow(() -> new RuntimeException("Proyecto no encontrado"));
         return mapToDTO(proyecto); // Simplified for example
     }
 
-    // --- UPDATE ---
+    // --- Actualiza la informacion del proyecto ---
     @Transactional
     public ProyectoResponseDTO actualizarProyecto(Long id, ProyectoRequestDTO dto) {
         Usuario usuario = getUsuarioAutenticado();
         Proyecto proyecto = proyectoRepository.findById(id).orElseThrow();
 
-        // Optional: Verify if the user is the creator before allowing update
+        // Verficacion: Solo el creador del proyecto puede actualizarlo
         if (!proyecto.getCreador().getIdUsuario().equals(usuario.getIdUsuario())) {
             throw new RuntimeException("No tienes permiso para actualizar este proyecto");
         }
@@ -74,31 +74,31 @@ public class ProyectoService {
         return mapToDTO(proyectoRepository.save(proyecto));
     }
 
-    // --- DELETE ---
+    // --- Borrar un proyecto usando el id del proyecto---
     @Transactional
     public void eliminarProyecto(Long id) {
         Usuario usuario = getUsuarioAutenticado();
         Proyecto proyecto = proyectoRepository.findById(id).orElseThrow();
 
-        // Verify if the user is the creator before deleting
+        // Verificacion de usurio: Solo el creador del proyecto puede eliminarlo
         if (!proyecto.getCreador().getIdUsuario().equals(usuario.getIdUsuario())) {
             throw new RuntimeException("Solo el creador puede eliminar este proyecto");
         }
 
-        // Delete all bridging records in tbl_proyecto_x_usuarios first to avoid foreign key errors
-        proyectoUsuarioRepository.deleteByProyecto_IdProyecto(id); // Ensure this method exists in your repository!
+        // Borramos tambien las relaciones en la tabla intermedia para evitar problemas de integridad referencial
+        proyectoUsuarioRepository.deleteByProyecto_IdProyecto(id);
         
-        // Delete the project
+        // Finalmente borramos el proyecto
         proyectoRepository.delete(proyecto);
     }
 
-    // --- Helpers ---
+    // --- Autenticacion de usuario usando el token ---
     private Usuario getUsuarioAutenticado() {
         String correo = SecurityContextHolder.getContext().getAuthentication().getName();
         return usuarioRepository.findByCorreo(correo)
                 .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
     }
-
+    // --- Mapeo de entidad a DTO ---
     private ProyectoResponseDTO mapToDTO(Proyecto p) {
         return new ProyectoResponseDTO(
             p.getIdProyecto(), p.getNombreProyecto(), p.getDescripcion(), 
