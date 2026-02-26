@@ -22,15 +22,11 @@ const team = [
 
 const AboutSection = () => {
     return (
-        <section id="acerca-de" className="w-full py-16 px-6 md:px-20">
-
-            {/* Línea divisoria sutil */}
+        <section id="acerca-de" className="w-full px-6 md:px-20">
             <div className="border-t border-white/10 mb-16" />
 
-            {/* Misión */}
             <div className="max-w-4xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-10 items-center mb-20">
 
-                {/* Texto misión */}
                 <div className="space-y-4">
                     <span className="text-[#A3FF12] text-sm font-semibold uppercase tracking-widest">
                         Acerca de nosotros

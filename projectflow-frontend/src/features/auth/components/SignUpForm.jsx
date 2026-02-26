@@ -1,9 +1,10 @@
 import { useNavigate } from "react-router-dom";
-import { registerRequest } from "../services/authService";
+import { useAuth } from "../context/AuthContext";
 
 const SignUpForm = () => {
 
     const navigate = useNavigate();
+    const { register } = useAuth();
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -14,7 +15,7 @@ const SignUpForm = () => {
         const password = e.target.password.value;
 
         try{
-            await registerRequest({ nombre, apellido, correo, password })
+            await register({ nombre, apellido, correo, password });
             navigate("/dashboard");
         }catch(error){
             console.error(error);

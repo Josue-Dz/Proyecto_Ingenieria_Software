@@ -1,5 +1,5 @@
 import { createContext, useState, useContext, useEffect } from "react";
-import { loginRequest, logoutRequest, verifySessionRequest } from "../services/authService";
+import { loginRequest, logoutRequest, verifySessionRequest, registerRequest } from "../services/authService";
 
 const AuthContext = createContext(null);
 

@@ -4,7 +4,7 @@ import { useAuth } from "../context/AuthContext";
 
 const LoginForm = () => {
 
-    const { login, error } = useAuth();
+    const { login } = useAuth();
     const navigate = useNavigate();
 
     const handleSubmit = async (e) => {
