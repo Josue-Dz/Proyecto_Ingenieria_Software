@@ -83,9 +83,7 @@ public class AuthService {
         }
 
         public UsuarioDTO getMyProfile(){
-                System.out.println("Estoy en getmyprofile");
                 Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-                System.out.println("Esto tiene authentication: " + authentication.getPrincipal());
                 Usuario usuario = (Usuario) authentication.getPrincipal();
 
                 UsuarioDTO usuarioDTO = new UsuarioDTO(
