@@ -1,5 +1,3 @@
-import { useState } from "react"
-
 
 const Sidebar = ({ isOpen, onToggle }) => { // 👈 recibe props
     return (
