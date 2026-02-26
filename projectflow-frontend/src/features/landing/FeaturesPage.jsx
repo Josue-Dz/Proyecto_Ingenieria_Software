@@ -3,8 +3,8 @@ import CharacteristicsSection from './components/CharacteristicsSection'
 const FeaturesPage = () => {
     return (
         <div className='min-h-screen pt-20'>
-            {/* Hero pequeño de la página */}
-            <div className='text-center py-12 px-6'>
+            
+            <div className='text-center px-6'>
                 <span className='text-[#A3FF12] text-sm font-semibold uppercase tracking-widest'>
                     PumaTask
                 </span>
@@ -17,7 +17,7 @@ const FeaturesPage = () => {
                 </p>
             </div>
 
-            {/* Sección de features */}
+            {/*Sección de features */}
             <CharacteristicsSection />
         </div>
     )

@@ -18,5 +18,5 @@ public class UsuarioDTO {
 
     private String correo;
 
-    private String inciales;
+    private String iniciales;
 }

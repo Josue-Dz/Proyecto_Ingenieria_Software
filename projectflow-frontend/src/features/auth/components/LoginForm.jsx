@@ -1,8 +1,10 @@
 import { useNavigate } from "react-router-dom"
 import { loginRequest } from "../services/authService"
+import { useAuth } from "../context/AuthContext";
 
 const LoginForm = () => {
 
+    const { login, error } = useAuth();
     const navigate = useNavigate();
 
     const handleSubmit = async (e) => {
@@ -12,7 +14,7 @@ const LoginForm = () => {
 
         console.log(email, password)
         try{
-            const data = await loginRequest({ email, password });
+            const data = await login({ email, password });
             console.log("Usuario logueado", data); {/**Ojo: Console.log favor borrar para la entrega final por si yo no lo hago*/}
             navigate("/dashboard")
         } catch (error) {

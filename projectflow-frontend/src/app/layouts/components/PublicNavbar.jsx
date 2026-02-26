@@ -16,7 +16,7 @@ const navbarlinks = [
     {
         id: 3,
         name: "Sobre Nosotros",
-        link: "/sobre-nosotros"
+        link: "/sobreNosotros"
     }
 ]
 
@@ -29,7 +29,7 @@ const Navbar = () => {
     }
 
     return (
-        <nav className='fixed top-0 left-0 w-full z-30 bg-black/70 backdrop-blur-sm'>
+        <nav className='fixed top-0 left-0 w-full z-30 bg-black/70 backdrop-blur-sm border-b border-white/10'>
             <div className='flex justify-between items-center px-4 md:px-12 py-3'>
 
                 <div>

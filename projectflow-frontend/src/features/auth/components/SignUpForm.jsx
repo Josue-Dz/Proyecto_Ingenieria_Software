@@ -8,16 +8,14 @@ const SignUpForm = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
 
-        const name = e.target.name.value;
-        const lastname = e.target.lastname.value;
-        const nombre = name + lastname;  //Unicamente para prueba de conexion con el backend luego lo remuevo
-        const correo = e.target.email.value; //Recordar cambiar a ingles, tambien en la bd
+        const nombre = e.target.name.value;
+        const apellido = e.target.lastname.value;
+        const correo = e.target.email.value;
         const password = e.target.password.value;
 
         try{
-            // const data = await registerRequest({ nombre, lastname, email, password });
-            const data = await registerRequest({ nombre, correo, password })
-            console.log("Usuario Registrado Correctamente:", data); {/**Ojo: Console.log favor borrar para la entrega final por si yo no lo hago*/}
+            await registerRequest({ nombre, apellido, correo, password })
+            navigate("/dashboard");
         }catch(error){
             console.error(error);
         }

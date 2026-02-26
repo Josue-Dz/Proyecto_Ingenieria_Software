@@ -3,10 +3,13 @@ package edu.unah.hn.projecto_ingenieria.Services;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 
+import org.apache.catalina.User;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -44,16 +47,10 @@ public class AuthService {
                 response.addCookie(cookie);
 
                 // Creo el dto con la data que tiene user
-                UsuarioDTO usuarioDTO = new UsuarioDTO(
-                        user.getNombre(),
-                        user.getApellido(),
-                        user.getNombre() + " " + user.getApellido(),
-                        user.getCorreo(),
-                        user.obtenerInicialesDeNombre(user.getNombre(), user.getApellido())
-                );
+                UsuarioDTO usuarioDTO = crearUsuarioDTO(user);
 
                 return AuthResponse.builder()
-                                .usuario(usuarioDTO)
+                                .user(usuarioDTO)
                                 .build();
 
         }
@@ -78,12 +75,20 @@ public class AuthService {
                 Cookie cookie = crearCookie(token);
                 response.addCookie(cookie);
 
+                Usuario user = usuarioRepository.findByCorreo(usuario.getCorreo())
+                                .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
+
+               UsuarioDTO usuarioDTO = crearUsuarioDTO(user);
+
                 return AuthResponse.builder()
+                                .user(usuarioDTO)
                                 .build();
         }
 
         public UsuarioDTO getMyProfile(){
+                System.out.println("Estoy en getmyprofile");
                 Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+                System.out.println("Esto tiene authentication: " + authentication.getPrincipal());
                 Usuario usuario = (Usuario) authentication.getPrincipal();
 
                 UsuarioDTO usuarioDTO = new UsuarioDTO(
@@ -105,8 +110,18 @@ public class AuthService {
                 response.addCookie(cookie);
         }
 
+        private UsuarioDTO crearUsuarioDTO(Usuario usuario){
+                return new UsuarioDTO(
+                        usuario.getNombre(),
+                        usuario.getApellido(),
+                        usuario.getNombre() + " " + usuario.getApellido(),
+                        usuario.getCorreo(),
+                        usuario.obtenerInicialesDeNombre(usuario.getNombre(), usuario.getApellido())
+                );
+        }
+
         private Cookie crearCookie(String token){
-                Cookie cookie = new Cookie("toke", token);
+                Cookie cookie = new Cookie("token", token);
                 cookie.setHttpOnly(true);
                 cookie.setSecure(false);
                 cookie.setPath("/");

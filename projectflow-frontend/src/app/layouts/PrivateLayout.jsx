@@ -1,5 +1,6 @@
 import Navbar from "../layouts/components/PrivateNavbar"
 import { Outlet } from "react-router-dom"
+import Sidebar from "./components/Sidebar"
 
 
 const PrivateLayout = () => {
@@ -14,14 +15,17 @@ const PrivateLayout = () => {
                 />
 
                 <div className='relative z-10 flex flex-col min-h-screen overflow-x-hidden'>
+                    <Sidebar />
 
-                    <header>
-                        <Navbar/>
-                    </header>
+                    <div className='flex flex-col flex-1'>
+                        <header>
+                            <Navbar />
+                        </header>
 
-                    <main className='grow h-auto px-4 sm:px-6 md:px-12 max-w-7xl mx-auto pt-22'>
-                        <Outlet />
-                    </main>
+                        <main className='grow h-auto px-4 sm:px-6 md:px-12 max-w-7xl mx-auto pt-22'>
+                            <Outlet />
+                        </main>
+                    </div>
 
                 </div>
             </div>

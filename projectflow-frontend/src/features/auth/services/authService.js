@@ -10,7 +10,12 @@ export const registerRequest = async (userData) => {
     return response.data;
 }
 
-export const getMyProfile = async () => {
+export const logoutRequest = async () => {
+    const response = await apiClient.post("/auth/logout")
+    return response.data;
+}
+
+export const verifySessionRequest = async () => {
     const response = await apiClient.get("/auth/me");
     return response.data;
 }
