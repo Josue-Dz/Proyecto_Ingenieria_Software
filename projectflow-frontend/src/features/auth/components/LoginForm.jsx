@@ -14,7 +14,6 @@ const LoginForm = () => {
         console.log(email, password)
         try{
             const data = await login({ email, password });
-            console.log("Usuario logueado", data); {/**Ojo: Console.log favor borrar para la entrega final por si yo no lo hago*/}
             navigate("/dashboard")
         } catch (error) {
             console.error("error", error)
