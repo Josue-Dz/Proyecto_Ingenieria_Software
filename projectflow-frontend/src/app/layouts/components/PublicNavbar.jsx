@@ -62,10 +62,9 @@ const Navbar = () => {
                     <ul className='flex sm:space-x-6 space-x-4'>
                         {navbarlinks.map((link) => (
                             <li key={link.id}>
-                                <a
-                                    className='text-white sm:text-lg text-sm hover:text-[#c81e3a] transition-transform hover:scale-105 transform inline-block duration-300'
-                                    href={link.link}>{link.name}
-                                </a>
+                                <Link to={link.link} className='text-white sm:text-lg text-sm hover:text-[#c81e3a] transition-transform hover:scale-105 transform inline-block duration-300'>
+                                    {link.name}
+                                </Link>
                             </li>
                         )
                         )}
