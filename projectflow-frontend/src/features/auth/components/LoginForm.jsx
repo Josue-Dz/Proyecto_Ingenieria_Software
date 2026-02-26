@@ -1,10 +1,9 @@
 import { useNavigate } from "react-router-dom"
-import { loginRequest } from "../services/authService"
-import { useAuth } from "../context/AuthContext";
+import { useAuth } from "../hooks/useAuth";
 
 const LoginForm = () => {
 
-    const { login, error } = useAuth();
+    const { login } = useAuth();
     const navigate = useNavigate();
 
     const handleSubmit = async (e) => {

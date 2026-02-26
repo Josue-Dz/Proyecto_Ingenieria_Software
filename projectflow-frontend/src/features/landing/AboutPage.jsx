@@ -4,7 +4,7 @@ const AboutPage = () => {
     return (
         <div className='min-h-screen pt-20'>
 
-            <div className='text-center py-12 px-6'>
+            <div className='text-center pb-7 px-6'>
                 <span className='text-[#A3FF12] text-sm font-semibold uppercase tracking-widest'>
                     PumaTask
                 </span>

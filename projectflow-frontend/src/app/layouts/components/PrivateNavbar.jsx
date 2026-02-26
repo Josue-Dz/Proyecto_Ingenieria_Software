@@ -1,6 +1,6 @@
 import { useNavigate } from 'react-router-dom';
 import Logo from '../../../assets/Logo.png'
-import { useAuth } from '../../../features/auth/context/AuthContext';
+import { useAuth } from '../../../features/auth/hooks/useAuth';
 
 const PrivateNavbar = () => {
     const { user, logout } = useAuth();
@@ -33,7 +33,7 @@ const PrivateNavbar = () => {
                         </div>
                     </div>
 
-                    {/* Logout */}
+                    {/**Logout */}
                     <button onClick={handleLogout} className="flex items-center gap-2 px-3 py-2 rounded-md hover:bg-white/10 transition-colors duration-300">
                         <span className="material-symbols-rounded">logout</span>
                         <p className="text-sm">Cerrar Sesión</p>
