@@ -2,7 +2,6 @@ import apiClient from "../../../shared/api/apiCliente"
 
 export const loginRequest = async (credentials) => {
     const response = await apiClient.post("/auth/login", credentials);
-    const token = response.data.token;
     return response.data;
 }
 
