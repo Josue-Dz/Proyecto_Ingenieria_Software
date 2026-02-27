@@ -8,6 +8,7 @@ import DashboardPage from '../features/boards/pages/DashboardPage';
 import FeaturesPage from '../features/landing/FeaturesPage';
 import AboutPage from '../features/landing/AboutPage';
 import Dashboard from '../features/boards/components/DashBoard';
+import PublicRoute from './layouts/components/PublicRoute';
 
 function AppRoutes() {
     return (
@@ -16,8 +17,8 @@ function AppRoutes() {
                 <Route path='/' element={<LandingPage />} />
                 <Route path='/caracteristicas' element={<FeaturesPage />} />
                 <Route path='/sobreNosotros' element={<AboutPage />} />
-                <Route path='/login' element={<LoginPage />} />
-                <Route path='/signup' element={<SignUpPage />} />
+                <Route path='/login' element={<PublicRoute><LoginPage /></PublicRoute>} />
+                <Route path='/signup' element={<PublicRoute><SignUpPage /></PublicRoute>} />
             </Route>
             <Route element={ <PrivateLayout />}>
                 <Route path='/dashboard' element={<Dashboard />} />
