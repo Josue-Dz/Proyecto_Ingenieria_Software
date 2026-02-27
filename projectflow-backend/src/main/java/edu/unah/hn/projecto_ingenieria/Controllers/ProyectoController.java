@@ -29,6 +29,7 @@ public class ProyectoController {
 
 	@PostMapping("/create")
 	public ResponseEntity<ProyectoResponseDTO> crearProyecto(@RequestBody ProyectoRequestDTO dto) {
+		System.out.println("Esto llego al backend" + dto);
 		ProyectoResponseDTO created = proyectoService.crearProyecto(dto);
 		return ResponseEntity.created(URI.create("/projects/" + created.getIdProyecto())).body(created);
 	}

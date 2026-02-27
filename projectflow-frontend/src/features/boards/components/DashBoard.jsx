@@ -11,7 +11,7 @@ const Dashboard = () => {
         const fetchProjects = async () => {
             try {
                 const data = await getProjectsRequest();
-                console.log("Esta es la lista de proyectos:", data)
+                console.log("Esta es la lista de proyectos:", data); //borrar luego para no tener ese monton de objetos en consola
                 setProjects(data);
             } catch (err) {
                 setError("No se pudieron cargar los proyectos.");
@@ -26,6 +26,14 @@ const Dashboard = () => {
     return (
         <div className="pt-6">
             <h1 className="text-2xl font-bold text-white mb-6">Mis Proyectos</h1>
+
+            <div className="mb-4 flex justify-end">
+                <button disabled={loading} className="flex items-center justify-center gap-2 px-6 py-3 rounded-xl bg-[#a3ff12]/15 border border-[#a3ff12]/30 text-[#a3ff12] text-base font-semibold hover:bg-[#a3ff12]/25 transition-colors" >
+                    <span className="material-symbols-rounded text-lg">add</span>
+                    Crear proyecto
+                </button>
+
+            </div>
 
             {loading && (
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
