@@ -1,11 +1,13 @@
 
 import { useEffect, useState } from "react";
 import { getProjectsRequest } from "../services/projectService";
+import CreateProjectModal from "./CreateProjectModal";
 
 const Dashboard = () => {
     const [projects, setProjects] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
+    const [isModalOpen, setIsModalOpen] = useState(false);
 
     useEffect(() => {
         const fetchProjects = async () => {
@@ -23,14 +25,24 @@ const Dashboard = () => {
         fetchProjects();
     }, []);
 
+         // Cuando se cree un proyecto exitosamente, lo agrega al estado sin recargar
+            const handleProjectCreated = (newProject) => {
+                setProjects((prev) => [newProject, ...prev]);
+            };
+
     return (
         <div className="pt-6">
             <h1 className="text-2xl font-bold text-white mb-6">Mis Proyectos</h1>
 
+
             <div className="mb-4 flex justify-end">
-                <button disabled={loading} className="flex items-center justify-center gap-2 px-6 py-3 rounded-xl bg-[#a3ff12]/15 border border-[#a3ff12]/30 text-[#a3ff12] text-base font-semibold hover:bg-[#a3ff12]/25 transition-colors" >
+                <button disabled={loading} 
+                onClick={() => setIsModalOpen(true)} // Abre el modal para crear un nuevo proyecto
+                className="flex items-center justify-center gap-2 px-6 py-3 rounded-xl
+                 bg-[#a3ff12]/15 border border-[#a3ff12]/30 text-[#a3ff12] text-base font-semibold
+                  hover:bg-[#a3ff12]/25 transition-colors" >
                     <span className="material-symbols-rounded text-lg">add</span>
-                    Crear proyecto
+                    Nuevo proyecto
                 </button>
 
             </div>
@@ -84,7 +96,14 @@ const Dashboard = () => {
                     ))}
                 </div>
             )}
-        </div>
+
+                {/* Modal de crear proyecto */}
+                    <CreateProjectModal
+                        isOpen={isModalOpen}
+                        onClose={() => setIsModalOpen(false)}
+                        onProjectCreated={handleProjectCreated}
+                    />
+                </div>
     );
 };
 
