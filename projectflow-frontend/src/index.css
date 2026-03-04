@@ -19,3 +19,16 @@ body {
   white-space: nowrap;
   direction: ltr;
 }
+
+input:-webkit-autofill {
+  box-shadow: 0 0 0px 1000px #0d0d0d inset !important;
+  -webkit-text-fill-color: white !important;
+}
+
+:root {
+  --bg-gradient: radial-gradient(125% 125% at 50% 10%, #f0f2f0 40%, #d6e8b0 100%);
+}
+
+.dark {
+  --bg-gradient: radial-gradient(125% 125% at 50% 10%, #000000 40%, #2b0707 100%);
+}

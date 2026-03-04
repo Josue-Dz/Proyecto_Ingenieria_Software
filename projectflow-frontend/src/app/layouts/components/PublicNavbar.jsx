@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom'
 import Logo from '../../../assets/Logo.png'
 import { useState } from 'react'
+import { useDarkMode } from '../hooks/useDarkMode'
 
 const navbarlinks = [
     {
@@ -23,6 +24,7 @@ const navbarlinks = [
 const Navbar = () => {
 
     const [isOpen, setIsOpen] = useState(false);
+    const { isDark, toggle } = useDarkMode();
 
     const toggleMenu = () => {
         setIsOpen(!isOpen);
@@ -69,6 +71,14 @@ const Navbar = () => {
                         )
                         )}
                     </ul>
+                </div>
+
+                <div className='p-2'>
+                    <button onClick={toggle}>
+                        <span className="material-symbols-rounded text-white">
+                            {isDark ? "dark_mode" : "light_mode"}
+                        </span>
+                    </button>
                 </div>
 
                 <div className='hidden md:block'>
