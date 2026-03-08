@@ -3,6 +3,7 @@ package edu.unah.hn.projecto_ingenieria.Entity;
 import java.io.Serializable;
 
 import lombok.AllArgsConstructor;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -11,6 +12,7 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
+@EqualsAndHashCode
 public class ProyectoUsuarioId implements Serializable {
     
     private Long usuario;
