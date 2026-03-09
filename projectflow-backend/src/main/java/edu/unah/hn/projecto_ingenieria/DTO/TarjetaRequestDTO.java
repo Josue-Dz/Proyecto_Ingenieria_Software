@@ -1,6 +1,7 @@
 package edu.unah.hn.projecto_ingenieria.DTO;
 
 import java.time.LocalDate;
+import java.util.List;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -17,5 +18,5 @@ public class TarjetaRequestDTO {
 
     private String prioridad;
     
-    private Long idColumna;
+    private List<Long> usuariosAsignados;
 }
