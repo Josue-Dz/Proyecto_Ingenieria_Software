@@ -38,7 +38,7 @@ public class TableroService {
 
     private final TableroRepository tableroRepository;
 
-    public TableroDTO obtenerTablero(Long idProyecto) {
+    public TableroDTO obtenerTablero(Long idTablero) {
 
         // Obtener usuario autenticado
         Authentication auth = SecurityContextHolder
@@ -51,6 +51,16 @@ public class TableroService {
                 .findByCorreo(correo)
                 .orElseThrow();
 
+                //obtener tablero
+
+                Tablero tablero = tableroRepository.findByIdTablero(idTablero)
+                .orElseThrow(() -> new ResponseStatusException(
+                        HttpStatus.NOT_FOUND,
+                        "Tablero no encontrado"
+                ));
+
+        Long idProyecto = tablero.getProyecto().getIdProyecto();
+                
         // Validar que el usuario pertenece al proyecto
         boolean pertenece = proyectoUsuarioRepository
                 .existsByUsuarioIdUsuarioAndProyectoIdProyecto(
@@ -64,14 +74,6 @@ public class TableroService {
             "El usuario " + correo + " no pertenece al proyecto con id " + idProyecto
             );
         }
-
-        // Obtener tablero del proyecto
-        Tablero tablero = tableroRepository
-                .findByProyectoIdProyecto(idProyecto)
-                .orElseThrow(() -> new ResponseStatusException(
-                        HttpStatus.NOT_FOUND,
-                        "Tablero no encontrado para el proyecto"
-                ));
 
         // Obtener columnas del tablero
         List<Columna> columnas =
@@ -130,6 +132,7 @@ public class TableroService {
         // Crear DTO de tablero
         TableroDTO tableroKanban = new TableroDTO();
 
+        tableroKanban.setIdTablero(idTablero);
         tableroKanban.setIdProyecto(idProyecto);
         tableroKanban.setColumnas(columnasDTO);
 
@@ -137,5 +140,58 @@ public class TableroService {
     }
 
 
-    
+    public List<TableroDTO> listarTablerosPorProyecto(Long idProyecto) {
+
+    // Obtener usuario autenticado
+    Authentication auth = SecurityContextHolder
+            .getContext()
+            .getAuthentication();
+
+    String correo = auth.getName();
+
+    Usuario usuario = usuarioRepository
+            .findByCorreo(correo)
+            .orElseThrow();
+
+    // Validar que el usuario pertenece al proyecto
+    boolean pertenece = proyectoUsuarioRepository
+            .existsByUsuarioIdUsuarioAndProyectoIdProyecto(
+                    usuario.getIdUsuario(),
+                    idProyecto
+            );
+
+    if (!pertenece) {
+        throw new ResponseStatusException(
+                HttpStatus.FORBIDDEN,
+                "El usuario " + correo + " no pertenece al proyecto con id " + idProyecto
+        );
+    }
+
+    // Obtener tableros del proyecto
+    List<Tablero> tableros =
+            tableroRepository.findByProyectoIdProyecto(idProyecto);
+
+    if (tableros.isEmpty()) {
+        throw new ResponseStatusException(
+                HttpStatus.NOT_FOUND,
+                "No hay tableros para este proyecto"
+        );
+    }
+
+    // Mapear a DTO
+    List<TableroDTO> tablerosDTO = new ArrayList<>();
+
+    for (Tablero tablero : tableros) {
+
+        TableroDTO dto = new TableroDTO();
+
+        dto.setIdTablero(tablero.getIdTablero());
+        dto.setIdProyecto(idProyecto);
+
+        tablerosDTO.add(dto);
+    }
+
+    return tablerosDTO;
 }
+
+    }

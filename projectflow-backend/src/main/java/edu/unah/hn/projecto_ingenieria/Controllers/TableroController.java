@@ -1,5 +1,7 @@
 package edu.unah.hn.projecto_ingenieria.Controllers;
 
+import java.util.List;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -19,8 +21,13 @@ public class TableroController {
     
     private final TableroService tableroService;
 
-    @GetMapping("/{idProyecto}")
-    public ResponseEntity<TableroDTO> obtenerTablero(@PathVariable Long idProyecto) {
-        return ResponseEntity.ok(tableroService.obtenerTablero(idProyecto));
+    @GetMapping("/{idTablero}")
+    public ResponseEntity<TableroDTO> obtenerTablero(@PathVariable Long idTablero) {
+        return ResponseEntity.ok(tableroService.obtenerTablero(idTablero));
     } 
+
+    @GetMapping("/proyecto/{idProyecto}")
+    public ResponseEntity<List<TableroDTO>> listarTablerosPorProyecto(@PathVariable Long idProyecto) {
+        return ResponseEntity.ok(tableroService.listarTablerosPorProyecto(idProyecto));
+    }
 }
