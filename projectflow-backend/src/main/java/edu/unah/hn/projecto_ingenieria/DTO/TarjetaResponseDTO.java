@@ -2,12 +2,19 @@ package edu.unah.hn.projecto_ingenieria.DTO;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.List;
 
+import edu.unah.hn.projecto_ingenieria.Entity.Tarjeta.EstadoTarjeta;
+import edu.unah.hn.projecto_ingenieria.Entity.Tarjeta.Prioridad;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Getter
 @AllArgsConstructor
+@Setter
+@NoArgsConstructor
 public class TarjetaResponseDTO {
 
     private Long idTarjeta;
@@ -20,8 +27,10 @@ public class TarjetaResponseDTO {
 
     private LocalDate fechaLimite;
 
-    private String prioridad;
+    private Prioridad prioridad;
 
-    private String estado;
+    private EstadoTarjeta estado;
+
+    private List<String> asignados;
 }
 

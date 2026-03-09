@@ -5,6 +5,8 @@ import java.util.List;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -26,6 +28,11 @@ import lombok.Setter;
 @NoArgsConstructor
 public class Columna {
     
+    public enum NombreColumna {
+        PENDIENTE,
+        EN_PROGRESO,
+        FINALIZADA
+    }
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -33,7 +40,8 @@ public class Columna {
     private Long idColumna;
 
     @Column(name = "nombre_columna")
-    private String nombreColumna;
+    @Enumerated(EnumType.STRING)
+    private NombreColumna nombreColumna;
     
     private Integer posicion;
 

@@ -28,4 +28,6 @@ public interface ProyectoUsuarioRepository extends JpaRepository<ProyectoUsuario
     @Query("delete from ProyectoUsuario p where p.proyecto.idProyecto = :idProyecto")
     void deleteByProyecto_IdProyecto(Long idProyecto); // return type void or int if you need count
 
+    boolean existsByUsuarioIdUsuarioAndProyectoIdProyecto(Long idUsuario, Long idProyecto);
+
 }
