@@ -10,5 +10,5 @@ import edu.unah.hn.projecto_ingenieria.Entity.Proyecto;
 @Repository
 public interface ProyectoRepository extends JpaRepository<Proyecto, Long> {
     
-    Optional<Proyecto> findByTableroId(Long idTablero);
+    Optional<Proyecto> findByTablero_IdTablero(Long idTablero);
 }

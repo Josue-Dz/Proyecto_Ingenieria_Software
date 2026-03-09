@@ -34,7 +34,7 @@ public class TarjetaService {
    public TarjetaRequestDTO crearTarjeta(Long idTablero, TarjetaRequestDTO request, Long idUsuario) {
 
     // 1. Validar que sea líder
-    Proyecto proyecto = proyectoRepository.findByTableroId(idTablero)
+    Proyecto proyecto = proyectoRepository.findByTablero_IdTablero(idTablero)
         .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Proyecto no encontrado"));
 
     if (!proyecto.getCreador().getIdUsuario().equals(idUsuario)) {
@@ -80,6 +80,6 @@ public class TarjetaService {
     return dto;
     }
 
-    
+
  }
 
