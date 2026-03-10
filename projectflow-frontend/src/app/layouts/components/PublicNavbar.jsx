@@ -1,6 +1,8 @@
 import { Link } from 'react-router-dom'
-import Logo from '../../../assets/Logo.png'
+import LogoLight from '../../../assets/LogoLight.png'
+import LogoDark from '../../../assets/LogoDark.png'
 import { useState } from 'react'
+import { useDarkMode } from '../hooks/useDarkMode'
 
 const navbarlinks = [
     {
@@ -23,21 +25,22 @@ const navbarlinks = [
 const Navbar = () => {
 
     const [isOpen, setIsOpen] = useState(false);
+    const { isDark, toggle } = useDarkMode();
 
     const toggleMenu = () => {
         setIsOpen(!isOpen);
     }
 
     return (
-        <nav className='fixed top-0 left-0 w-full z-30 bg-black/70 backdrop-blur-sm border-b border-white/10'>
+        <nav className='fixed top-0 left-0 w-full z-30 bg-indigo-50/70 border-indigo-600/15 dark:bg-black/70 backdrop-blur-sm border-b dark:border-white/10'>
             <div className='flex justify-between items-center px-4 md:px-12 py-3'>
 
                 <div>
-                    <img src={Logo} alt='Logo de la aplicación'
+                    <img src={isDark ? LogoDark : LogoLight} alt='Logo de la aplicación'
                         className='w-16' />
                 </div>
 
-                <button onClick={toggleMenu} className='md:hidden text-white'>
+                <button onClick={toggleMenu} className='md:hidden dark:text-white'>
                     <svg className='w-6 h-6'
                         fill='none'
                         stroke='currentColor'
@@ -62,7 +65,7 @@ const Navbar = () => {
                     <ul className='flex sm:space-x-6 space-x-4'>
                         {navbarlinks.map((link) => (
                             <li key={link.id}>
-                                <Link to={link.link} className='text-white sm:text-lg text-sm hover:text-[#c81e3a] transition-transform hover:scale-105 transform inline-block duration-300'>
+                                <Link to={link.link} className='dark:text-white sm:text-lg text-sm hover:text-[#c81e3a] transition-transform hover:scale-105 transform inline-block duration-300'>
                                     {link.name}
                                 </Link>
                             </li>
@@ -71,14 +74,22 @@ const Navbar = () => {
                     </ul>
                 </div>
 
+                <div className='p-2'>
+                    <button onClick={toggle}>
+                        <span className="material-symbols-rounded dark:text-white">
+                            {isDark ? "light_mode" : "dark_mode"}
+                        </span>
+                    </button>
+                </div>
+
                 <div className='hidden md:block'>
                     <ul className='flex space-x-4'>
                         <Link to='/login'
-                            className='bg-[#3C1722] hover:bg-[#591828] text-white text-center px-4 py-2 rounded-full w-full sm:w-auto transition duration-300 font-semibold'>
+                            className='bg-indigo-600 dark:bg-[#3C1722] dark:hover:bg-[#591828] text-white text-center px-4 py-2 rounded-xl w-full sm:w-auto transition duration-300 font-semibold'>
                             Iniciar Sesión
                         </Link>
                         <Link to='/signup'
-                            className='ml-2 bg-[#c81e3a] hover:bg-[#a51d35] text-white text-center px-4 py-2 font-semibold rounded-full w-full sm:w-auto transition duration-300'>
+                            className='ml-2 bg-indigo-100 text-indigo-700 dark:bg-[#c81e3a] dark:hover:bg-[#a51d35] dark:text-white text-center px-4 py-2 font-semibold rounded-xl w-full sm:w-auto transition duration-300'>
                             Registrarse
                         </Link>
                     </ul>
@@ -92,7 +103,7 @@ const Navbar = () => {
                     {navbarlinks.map((link) => (
                         <li key={link.id} className='py-2 text-center'>
                             <a
-                                className='text-white hover:text-sky-200'
+                                className='dark:text-white hover:text-sky-200'
                                 href={link.link} onClick={() => setIsOpen(false)}>
                                 {link.name}
                             </a>
@@ -104,11 +115,11 @@ const Navbar = () => {
                 {/**Recordar: Estos son los botones de login y registro en el menú movil*/}
                 <ul className='flex flex-col space-y-1'>
                     <Link to='/login' onClick={() => setIsOpen(false)}
-                        className='bg-[#3C1722] text-white text-center px-4 py-2 w-full rounded-full'>
+                        className='bg-[#3C1722] text-white text-center px-4 py-2 w-full rounded-xl'>
                         Iniciar Sesión
                     </Link>
                     <Link to='/signup' onClick={() => setIsOpen(false)}
-                        className='bg-[#c81e3a] text-white text-center px-4 py-2 w-full rounded-full'>
+                        className='bg-[#c81e3a] text-white text-center px-4 py-2 w-full rounded-xl'>
                         Registrarse
                     </Link>
                 </ul>

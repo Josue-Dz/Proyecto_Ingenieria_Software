@@ -25,22 +25,22 @@ const FeaturesSection = () => {
 
     return (
         <section>
-            <div className='flex flex-col py-6 px-4 md:px-20 justify-between gap-3 md:flex-row text-white md:text-base text-sm'>
+            <div className="flex flex-col py-6 px-4 md:px-20 justify-between gap-3 md:flex-row dark:text-white md:text-base text-sm">
 
                 {features.map((feature, index) => (
                     <div
                         key={index}
-                        className="border border-white/15 rounded-xl p-5 bg-white/3 hover:border-[#A3FF12]/50 hover:bg-white/6 hover:scale-[1.03] transition-all duration-300 group"
+                        className="border border-gray-500/10 rounded-xl p-5 bg-white/25 shadow-md dark:shadow-none hover:border-indigo-400 dark:bg-white/3 dark:hover:border-[#A3FF12]/50 dark:hover:bg-white/6 hover:scale-[1.03] transition-all duration-300 group"
                     >
-                        <div className="mb-3 w-11 h-11 rounded-lg bg-[#A3FF12]/10 flex items-center justify-center group-hover:bg-[#A3FF12]/20 transition-colors duration-300">
-                            <span className="material-symbols-rounded text-[#A3FF12] text-2xl">
+                        <div className="mb-3 w-11 h-11 rounded-lg bg-indigo-200/10 dark:bg-[#A3FF12]/10 flex items-center justify-center dark:group-hover:bg-[#A3FF12]/20 transition-colors duration-300">
+                            <span className="material-symbols-rounded text-indigo-600 dark:text-[#A3FF12] text-2xl">
                                 {feature.icon}
                             </span>
                         </div>
-                        <h3 className="text-white font-semibold text-base mb-1">
+                        <h3 className="dark:text-white font-semibold text-base mb-1">
                             {feature.title}
                         </h3>
-                        <p className="text-white/60 text-sm leading-relaxed">
+                        <p className="text-gray-600 dark:text-white/60 text-sm leading-relaxed">
                             {feature.description}
                         </p>
                     </div>

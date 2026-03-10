@@ -43,14 +43,14 @@ const CharacteristicsSection = () => {
 
             {/**Encabezado */}
             <div className="text-center mb-12">
-                <span className="text-[#A3FF12] text-sm font-semibold uppercase tracking-widest">
+                <span className="text-indigo-600 dark:text-[#A3FF12] text-sm font-semibold uppercase tracking-widest">
                     ¿Qué puedes hacer?
                 </span>
-                <h2 className="text-white text-3xl md:text-4xl font-extrabold mt-2">
+                <h2 className="dark:text-white text-3xl md:text-4xl font-extrabold mt-2">
                     Todo lo que necesitas,{" "}
-                    <span className="text-[#A3FF12]">en un solo lugar</span>
+                    <span className="text-indigo-600 dark:text-[#A3FF12]">en un solo lugar</span>
                 </h2>
-                <p className="text-white/60 text-sm mt-3 max-w-xl mx-auto">
+                <p className="text-black dark:text-white/60 text-sm mt-3 max-w-xl mx-auto">
                     Diseñado especialmente para estudiantes y equipos de la UNAH que
                     quieren gestionar sus proyectos de software con metodologías ágiles.
                 </p>
@@ -62,17 +62,17 @@ const CharacteristicsSection = () => {
                 {features.map((feature, index) => (
                     <div
                         key={index}
-                        className="border border-white/15 rounded-xl p-5 bg-white/3 hover:border-[#A3FF12]/50 hover:bg-white/6 hover:scale-[1.03] transition-all duration-300 group"
+                        className="border border-gray-500/10 shadow-md rounded-xl p-5 bg-white/25 dark:bg-white/3 hover:border-indigo-400 dark:hover:border-[#A3FF12]/50 dark:hover:bg-white/6 hover:scale-[1.03] transition-all duration-300 group"
                     >
-                        <div className="mb-3 w-11 h-11 rounded-lg bg-[#A3FF12]/10 flex items-center justify-center group-hover:bg-[#A3FF12]/20 transition-colors duration-300">
-                            <span className="material-symbols-rounded text-[#A3FF12] text-2xl">
+                        <div className="mb-3 w-11 h-11 rounded-lg bg-indigo-200/10 dark:bg-[#A3FF12]/10 flex items-center justify-center dark:group-hover:bg-[#A3FF12]/20 transition-colors duration-300">
+                            <span className="text-indigo-600 material-symbols-rounded dark:text-[#A3FF12] text-2xl">
                                 {feature.icon}
                             </span>
                         </div>
-                        <h3 className="text-white font-semibold text-base mb-1">
+                        <h3 className=" dark:text-white font-semibold text-base mb-1">
                             {feature.title}
                         </h3>
-                        <p className="text-white/60 text-sm leading-relaxed">
+                        <p className="text-gray-700 dark:text-white/60 text-sm leading-relaxed">
                             {feature.description}
                         </p>
                     </div>

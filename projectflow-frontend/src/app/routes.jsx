@@ -7,7 +7,6 @@ import PrivateLayout from './layouts/PrivateLayout';
 import DashboardPage from '../features/boards/pages/DashboardPage';
 import FeaturesPage from '../features/landing/FeaturesPage';
 import AboutPage from '../features/landing/AboutPage';
-import Dashboard from '../features/boards/components/DashBoard';
 import PublicRoute from './layouts/components/PublicRoute';
 
 function AppRoutes() {
@@ -21,7 +20,7 @@ function AppRoutes() {
                 <Route path='/signup' element={<PublicRoute><SignUpPage /></PublicRoute>} />
             </Route>
             <Route element={ <PrivateLayout />}>
-                <Route path='/dashboard' element={<Dashboard />} />
+                <Route path='/dashboard' element={<DashboardPage />} />
                 <Route />
             </Route>
         </Routes>
