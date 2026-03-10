@@ -35,7 +35,7 @@ public class AuthService {
                 authenticationManager.authenticate(
                                 new UsernamePasswordAuthenticationToken(dto.getEmail(), dto.getPassword()));
                 Usuario user = usuarioRepository.findByCorreo(dto.getEmail())
-                                .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
+                                .orElseThrow(() -> new RuntimeException("Credenciales incorrectas"));
 
                 String token = jwtService.getToken(user);
 

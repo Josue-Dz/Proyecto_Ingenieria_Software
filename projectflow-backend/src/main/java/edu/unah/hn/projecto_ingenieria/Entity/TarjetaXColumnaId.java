@@ -13,11 +13,12 @@ import lombok.Setter;
 @AllArgsConstructor
 @NoArgsConstructor
 @EqualsAndHashCode
-public class ProyectoUsuarioId implements Serializable {
-    
-    private Long usuario;
-    
-    private Long proyecto;
+public class TarjetaXColumnaId implements Serializable {
 
-    // Constructor, getters, setters, equals y hashCode
+    private Long idTarjeta;
+
+    private Long idColumna;
+
+    // Getters, setters, equals, and hashCode methods
+    
 }
