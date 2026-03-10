@@ -37,7 +37,7 @@ const LoginForm = () => {
                         <input type={showPasword ? "text" : "password"} placeholder="Contraseña" id="password" name="password" autoComplete="current-password" required className="w-full p-3 border-b-2 border-gray-300 outline-none placeholder-gray-400 pr-10 autofill:bg-transparent" />
                         <span className="material-symbols-rounded absolute right-3 top-1/2 transform -translate-y-1/2 cursor-pointer text-gray-500"
                             onClick={() => setShowPassword(!showPasword)}>
-                            {showPasword ? "visibility" : "visibility_off"}
+                            {showPasword ? "visibility_off" : "visibility"}
                         </span>
                     </div>
                 </div>
@@ -48,7 +48,7 @@ const LoginForm = () => {
                     </a>
                 </div>
 
-                <button type="submit" className="w-full p-3 bg-[#c81e3a] rounded-full text-base md:text-lg font-medium hover:opacity-90 transition">Iniciar Sesión</button>
+                <button type="submit" className="w-full p-3 text-white bg-indigo-600 dark:bg-[#c81e3a] rounded-xl text-base md:text-lg font-medium hover:opacity-90 transition">Iniciar Sesión</button>
 
                 <div className="flex items-center gap-2 mt-4">
                     <p>¿No tienes cuenta?

@@ -1,13 +1,13 @@
 
 const Sidebar = ({ isOpen, onToggle }) => {
     return (
-        <aside className={`${isOpen ? "w-64" : "w-20"} h-screen bg-black/80 backdrop-blur-sm border-r border-white/10 fixed left-0 top-16 transition-all duration-300`}>
+        <aside className={`${isOpen ? "w-64" : "w-20"} h-screen bg-white/25 dark:bg-black/80 backdrop-blur-sm border-r border-indigo-600/20 dark:border-white/10 fixed left-0 top-16 transition-all duration-300`}>
 
-            <div className="flex items-center justify-between px-4 py-3 text-white">
+            <div className="flex items-center justify-between px-4 py-3 dark:text-white">
                 <h2 className="text-sm md:text-lg font-bold tracking-wide">
                     {isOpen ? "Gestión Proyectos" : "GP"}
                 </h2>
-                <button onClick={onToggle} // 👈 usa onToggle en lugar de toggleMenu
+                <button onClick={onToggle}
                     className="p-1 rounded-md hover:bg-white/10 transition-colors"
                 >
                     <span className="material-symbols-rounded">
@@ -16,10 +16,10 @@ const Sidebar = ({ isOpen, onToggle }) => {
                 </button>
             </div>
 
-            <nav className="mt-6 text-white">
+            <nav className="mt-6 dark:text-white">
                 <ul className="flex flex-col gap-2">
-                    <li className="flex items-center gap-3 px-4 py-2 hover:bg-[#A3FF12]/20 rounded-md cursor-pointer transition-colors">
-                        <span className="material-symbols-rounded text-[#A3FF12]">view_kanban</span>
+                    <li className="flex items-center gap-3 px-4 py-2 hover:bg-indigo-600/15 dark:hover:bg-[#A3FF12]/20 rounded-md cursor-pointer transition-colors">
+                        <span className="material-symbols-rounded text-indigo-600 dark:text-[#A3FF12]">view_kanban</span>
                         {isOpen && <span>Proyectos</span>}
                     </li>
                 </ul>

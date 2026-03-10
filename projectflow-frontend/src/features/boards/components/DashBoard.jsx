@@ -25,22 +25,20 @@ const Dashboard = () => {
         fetchProjects();
     }, []);
 
-         // Cuando se cree un proyecto exitosamente, lo agrega al estado sin recargar
-            const handleProjectCreated = (newProject) => {
-                setProjects((prev) => [newProject, ...prev]);
-            };
+    // Cuando se cree un proyecto exitosamente, lo agrega al estado sin recargar
+    const handleProjectCreated = (newProject) => {
+        setProjects((prev) => [newProject, ...prev]);
+    };
 
     return (
-        <div className="pt-6">
-            <h1 className="text-2xl font-bold text-white mb-6">Mis Proyectos</h1>
+        <div className="pt-6 pb-14">
+            <h1 className="text-2xl font-bold dark:text-white mb-6">Mis Proyectos</h1>
 
 
             <div className="mb-4 flex justify-end">
-                <button disabled={loading} 
-                onClick={() => setIsModalOpen(true)} // Abre el modal para crear un nuevo proyecto
-                className="flex items-center justify-center gap-2 px-6 py-3 rounded-xl
-                 bg-[#a3ff12]/15 border border-[#a3ff12]/30 text-[#a3ff12] text-base font-semibold
-                  hover:bg-[#a3ff12]/25 transition-colors" >
+                <button disabled={loading}
+                    onClick={() => setIsModalOpen(true)} // Abre el modal para crear un nuevo proyecto
+                    className="flex items-center justify-center gap-2 px-6 py-3 rounded-xl bg-indigo-600 text-white hover:bg-indigo-700 dark:bg-[#a3ff12]/15 border dark:border-[#a3ff12]/30 dark:text-[#a3ff12] text-base font-semibold dark:hover:bg-[#a3ff12]/25 transition-colors">
                     <span className="material-symbols-rounded text-lg">add</span>
                     Nuevo proyecto
                 </button>
@@ -69,23 +67,23 @@ const Dashboard = () => {
             )}
 
             {!loading && !error && projects.length > 0 && (
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 ">
                     {projects.map((project) => (
                         <div
                             key={project.idProyecto}
-                            className="bg-black/60 border border-white/10 rounded-lg p-5 hover:border-[#A3FF12]/40 transition-colors"
+                            className="flex flex-col bg-indigo-50/50 backdrop-blur-md dark:bg-black/60 border border-gray-500/20 shadow-md dark:border-white/10 rounded-lg p-5 hover:border-indigo-400 duration-300 transition-all dark:hover:border-[#A3FF12]/40"
                         >
-                            <h2 className="text-lg font-semibold text-[#A3FF12] mb-2">
+                            <h2 className="text-lg font-semibold text-slate-900 dark:text-[#A3FF12] mb-2">
                                 {project.nombreProyecto}
                             </h2>
-                            <p className="text-gray-300 text-sm mb-4">
+                            <p className="text-slate-600 dark:text-gray-300 text-sm line-clamp-3 grow mb-4">
                                 {project?.descripcion}
                             </p>
-                            <p className="text-xs text-gray-500 mb-4">
+                            <p className="text-xs text-slate-500 dark:text-gray-500 mb-4">
                                 Fecha: {new Date(project?.fechaInicio).toLocaleDateString()}
                             </p>
                             <button
-                                className="w-full bg-[#A3FF12]/20 border border-[#A3FF12]/40 text-white py-2 rounded-md hover:bg-[#A3FF12]/30 transition-colors"
+                                className=" w-1/3 border border-indigo-200 bg-indigo-50 text-indigo-600 hover:bg-indigo-100 hover:border-indigo-300 dark:bg-[#A3FF12]/20 dark:border-[#A3FF12]/40 dark:text-white py-2 rounded-lg dark:hover:bg-[#A3FF12]/30 transition-all duration-200 ease-in-out"
                                 onClick={() => {
                                     window.location.href = `/projects/${project.idProyecto}`;
                                 }}
@@ -97,13 +95,13 @@ const Dashboard = () => {
                 </div>
             )}
 
-                {/* Modal de crear proyecto */}
-                    <CreateProjectModal
-                        isOpen={isModalOpen}
-                        onClose={() => setIsModalOpen(false)}
-                        onProjectCreated={handleProjectCreated}
-                    />
-                </div>
+            {/* Modal de crear proyecto */}
+            <CreateProjectModal
+                isOpen={isModalOpen}
+                onClose={() => setIsModalOpen(false)}
+                onProjectCreated={handleProjectCreated}
+            />
+        </div>
     );
 };
 

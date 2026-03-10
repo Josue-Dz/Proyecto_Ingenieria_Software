@@ -46,10 +46,10 @@ const SignUpForm = () => {
                 <div className="relative">
                     <label htmlFor="password">Contraseña</label>
                     <div className="relative">
-                        <input type="password" placeholder="Contraseña" id="password" name="password" autoComplete="new-password" required className="w-full p-3 border-b-2 border-gray-300 outline-none placeholder-gray-400 pr-10" />
+                        <input type={showPassword ? "text" : "password"} placeholder="Contraseña" id="password" name="password" autoComplete="new-password" required className="w-full p-3 border-b-2 border-gray-300 outline-none placeholder-gray-400 pr-10" />
                         <span className="material-symbols-rounded absolute right-3 top-1/2 transform -translate-y-1/2 cursor-pointer text-gray-700"
                         onClick={() => setShowPassword(!showPassword)}>
-                            {showPassword ? "visibility" : "visibility_off"}
+                            {showPassword ? "visibility_off" : "visibility"}
                         </span>
                     </div>
                 </div>
@@ -57,15 +57,11 @@ const SignUpForm = () => {
                 <div className="relative">
                     <label htmlFor="confirmPassword">Confirmar Contraseña</label>
                     <div className="relative">
-                        <input type="password" placeholder="Confirmar Contraseña" id="confirmPassword" name="confirmPassword" autoComplete="new-password" required className="w-full p-3 border-b-2 border-gray-300 outline-none placeholder-gray-400" />
-                        <span className="material-symbols-rounded absolute right-3 top-1/2 transform -translate-y-1/2 cursor-pointer text-gray-700" 
-                        onClick={() => setShowPassword(!showPassword)}>
-                            {showPassword ? "visibility" : "visibility_off"}
-                        </span>
+                        <input type={showPassword ? "text" : "password"} placeholder="Confirmar Contraseña" id="confirmPassword" name="confirmPassword" autoComplete="new-password" required className="w-full p-3 border-b-2 border-gray-300 outline-none placeholder-gray-400" />
                     </div>
                 </div>
 
-                <button type="submit" className="w-full p-3 bg-[#c81e3a] rounded-full text-lg font-medium hover:opacity-90 transition">Registrarse</button>
+                <button type="submit" className="w-full p-3 bg-indigo-600 text-white dark:bg-[#c81e3a] rounded-xl text-lg font-medium hover:opacity-90 transition">Registrarse</button>
 
             </form>
         </div>

@@ -10,11 +10,8 @@ const PrivateLayout = () => {
     return (
         <>
             <div className='min-h-screen w-full relative'>
-                <div
-                    className='absolute inset-0 z-0'
-                    style={{
-                        background: 'radial-gradient(125% 125% at 50% 10%, #000000 40%, #2b0707 100%)',
-                    }}
+                 <div className="absolute inset-0 z-0"
+                    style={{ background: "var(--bg-gradient)" }}
                 />
 
                 <div className='relative z-10 flex flex-col min-h-screen overflow-x-hidden'>

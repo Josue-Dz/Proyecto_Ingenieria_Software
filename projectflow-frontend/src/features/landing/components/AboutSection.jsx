@@ -28,22 +28,22 @@ const AboutSection = () => {
             <div className="max-w-4xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-10 items-center mb-20">
 
                 <div className="space-y-4">
-                    <span className="text-[#A3FF12] text-sm font-semibold uppercase tracking-widest">
+                    <span className="text-indigo-600 dark:text-[#A3FF12] text-sm font-semibold uppercase tracking-widest">
                         Acerca de nosotros
                     </span>
-                    <h2 className="text-white text-3xl md:text-4xl font-extrabold leading-tight">
+                    <h2 className="dark:text-white text-3xl md:text-4xl font-extrabold leading-tight">
                         Construido por{" "}
-                        <span className="text-[#A3FF12]">Estudiantes UNAH</span>,<br />
+                        <span className="text-indigo-600 dark:text-[#A3FF12]">Estudiantes UNAH</span>,<br />
                         para estudiantes UNAH
                     </h2>
-                    <p className="text-white/60 text-sm leading-relaxed">
+                    <p className="text-gray-700 dark:text-white/60 text-sm leading-relaxed">
                         Este proyecto nació como respuesta a la necesidad de contar con una
                         herramienta de gestión accesible y pensada para el contexto
                         universitario. Somos estudiantes de la carrera de Ingeniería de Sistemas de la
                         Universidad Nacional Autónoma de Honduras, cursando la clase Ingenieria del Software,
                         comprometidos con aplicar metodologías ágiles para nuestros proyectos de Software.
                     </p>
-                    <p className="text-white/60 text-sm leading-relaxed">
+                    <p className="text-gray-700 dark:text-white/60 text-sm leading-relaxed">
                         Nuestra misión es facilitar la organización y colaboración de
                         equipos de trabajo académicos, ayudando a convertir ideas en
                         proyectos bien ejecutados.
@@ -60,12 +60,12 @@ const AboutSection = () => {
                     ].map((item, i) => (
                         <div
                             key={i}
-                            className="border border-white/15 rounded-xl p-4 bg-white/3 text-center"
+                            className="border border-gray-500/10 shadow-md dark:border-white/15 rounded-xl p-4 bg-white/25 dark:bg-white/3 text-center"
                         >
-                            <p className="text-[#A3FF12] text-2xl font-extrabold">
+                            <p className="text-indigo-600 dark:text-[#A3FF12] text-2xl font-extrabold">
                                 {item.value}
                             </p>
-                            <p className="text-white/50 text-xs mt-1">{item.label}</p>
+                            <p className="text-gray-600 dark:text-white/50 text-xs mt-1">{item.label}</p>
                         </div>
                     ))}
                 </div>
@@ -74,10 +74,10 @@ const AboutSection = () => {
             {/* Equipo */}
             <div className="max-w-4xl mx-auto">
                 <div className="text-center mb-8">
-                    <h3 className="text-white text-2xl font-bold">
-                        Nuestro <span className="text-[#A3FF12]">equipo</span>
+                    <h3 className="dark:text-white text-2xl font-bold">
+                        Nuestro <span className="text-indigo-600 dark:text-[#A3FF12]">equipo</span>
                     </h3>
-                    <p className="text-white/50 text-sm mt-1">
+                    <p className="text-gray-700 dark:text-white/50 text-sm mt-1">
                         Las personas que hicieron que este proyecto fuera posible
                     </p>
                 </div>
@@ -86,23 +86,23 @@ const AboutSection = () => {
                     {team.map((member, index) => (
                         <div
                             key={index}
-                            className="border border-white/15 rounded-xl p-5 bg-white/3 hover:border-[#A3FF12]/50 hover:scale-[1.03] transition-all duration-300 w-full sm:w-56 text-center group"
+                            className="border border-gray-500/10 dark:border-white/25 bg-white/25 shadow-md rounded-xl p-5 dark:bg-white/3 hover:border-indigo-400 dark:hover:border-[#A3FF12]/50 hover:scale-[1.03] transition-all duration-300 w-full sm:w-56 text-center group"
                         >
                             {/* Avatar con iniciales */}
-                            <div className="w-14 h-14 rounded-full bg-[#A3FF12]/15 border border-[#A3FF12]/30 flex items-center justify-center mx-auto mb-3 group-hover:bg-[#A3FF12]/25 transition-colors duration-300">
-                                <span className="text-[#A3FF12] font-bold text-lg">
+                            <div className="w-14 h-14 rounded-full dark:bg-[#A3FF12]/15 border dark:border-[#A3FF12]/30 flex items-center justify-center mx-auto mb-3 dark:group-hover:bg-[#A3FF12]/25 transition-colors duration-300">
+                                <span className="text-indigo-600 dark:text-[#A3FF12] font-bold text-lg">
                                     {member.initials}
                                 </span>
                             </div>
-                            <h4 className="text-white font-semibold text-sm">{member.name}</h4>
-                            <p className="text-white/50 text-xs mt-0.5">{member.role}</p>
+                            <h4 className="dark:text-white font-semibold text-sm">{member.name}</h4>
+                            <p className="text-gray-600 dark:text-white/50 text-xs mt-0.5">{member.role}</p>
 
                             {/* GitHub link */}
                             <a
                                 href={member.github}
                                 target="_blank"
                                 rel="noopener noreferrer"
-                                className="inline-flex items-center gap-1 mt-3 text-[#A3FF12]/70 hover:text-[#A3FF12] text-xs transition-colors duration-200"
+                                className="inline-flex items-center gap-1 mt-3 text-indigo-600 dark:text-[#A3FF12]/70 dark:hover:text-[#A3FF12] text-xs transition-colors duration-200"
                             >
                                 <span className="material-symbols-rounded text-base">code</span>
                                 GitHub
