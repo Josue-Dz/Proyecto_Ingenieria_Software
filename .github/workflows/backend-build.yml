@@ -40,3 +40,21 @@ jobs:
     # 'verify' runs compilation, checkstyle (because it's tied to the build lifecycle), and tests
     - name: Build and Test
       run: mvn clean verify
+
+    # 4. Publish Test Results
+    - name: Publish Test Results
+      if: always()
+      uses: dorny/test-reporter@v1
+      with:
+        name: Backend Test Results
+        path: 'projectflow-backend/target/surefire-reports/TEST-*.xml'
+        reporter: 'java-junit'
+        fail-on-error: false
+
+    # 5. Upload Test Report Artifacts
+    - name: Upload Test Reports
+      if: always()
+      uses: actions/upload-artifact@v4
+      with:
+        name: Test Reports - Backend
+        path: projectflow-backend/target/surefire-reports/

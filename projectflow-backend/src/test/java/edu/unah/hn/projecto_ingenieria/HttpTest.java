@@ -36,7 +36,7 @@ public class HttpTest {
     // Rutas Publicas, login y registro en AuthController /api/auth/login y /api/auth/register
     @Test
     void testRegister() throws Exception {
-        // Test register
+        // Test register, nota un nuevo usuario en verdad se va crear en la BD si no usamos la anotacion @Transactional, se probo exitosamente pero fue quitada para poder hacer reporte de github
         mockMvc.perform(MockMvcRequestBuilders.post("/api/auth/register")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content("{\"nombre\":\"Test\",\"apellido\":\"User\",\"correo\":\"newtest@example.com\",\"password\":\"password123\"}"))
@@ -46,14 +46,14 @@ public class HttpTest {
 
     @Test
     void testLogin() throws Exception {
-        // Test login
+        // Test login, USAR usuario que ya existe en la BD
         mockMvc.perform(MockMvcRequestBuilders.post("/api/auth/login")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content("{\"email\":\"newtest@example.com\",\"password\":\"password123\"}"))
+                .content("{\"email\":\"rparada@test.co\",\"password\":\"test123\"}"))
             .andExpect(MockMvcResultMatchers.status().isOk())
             .andExpect(MockMvcResultMatchers.header().exists("Set-Cookie"));
     }
-    
+
     // Rutas Privadas, requieren la cookie de autenticación
     // Test que ruta privada en verdad bloquea sin autenticación, usaremos api/projects/mine como ejemplo
     @Test
@@ -67,7 +67,6 @@ public class HttpTest {
     @Test
     void testAuthorizedProjectsMine() throws Exception {
         // Conseguimos los detalles de un usuario en la BD MySQL para generar un token JWT válido, recordar que este usuario existe en la BD
-        // El usuario tiene los atributos descriptos en Entity.Usuario. 
         UserDetails userDetails = UserDetailsService.loadUserByUsername("dparad@test.com");
 
         String token = jwtService.getToken(userDetails);
