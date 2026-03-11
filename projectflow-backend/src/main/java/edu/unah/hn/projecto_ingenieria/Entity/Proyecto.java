@@ -1,6 +1,10 @@
 package edu.unah.hn.projecto_ingenieria.Entity;
 
 import java.time.LocalDate;
+import java.util.List;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -11,7 +15,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.Lob;
 import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToOne;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -48,6 +52,8 @@ public class Proyecto {
     @JoinColumn(name = "id_creador")
     private Usuario creador;
 
-    @OneToOne(mappedBy = "proyecto", cascade = CascadeType.ALL)
-    private Tablero tablero;
+    @OneToMany(mappedBy = "proyecto", cascade = CascadeType.ALL)
+    @JsonManagedReference
+    @JsonIgnore
+    private List<Tablero> tablero;
 }
