@@ -12,6 +12,9 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.springframework.http.MediaType;
+import org.junit.jupiter.api.Order;
+import org.junit.jupiter.api.TestMethodOrder;
+import org.junit.jupiter.api.MethodOrderer.OrderAnnotation;
 
 import edu.unah.hn.projecto_ingenieria.Jwt.JwtService;
 import jakarta.servlet.http.Cookie;
@@ -22,6 +25,7 @@ import jakarta.servlet.http.Cookie;
  */
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @AutoConfigureMockMvc
+@TestMethodOrder(OrderAnnotation.class)
 public class HttpTest {
     
     @Autowired
@@ -35,6 +39,7 @@ public class HttpTest {
 
     // Rutas Publicas, login y registro en AuthController /api/auth/login y /api/auth/register
     @Test
+    @Order(1)
     void testRegister() throws Exception {
         // Test register, nota un nuevo usuario en verdad se va crear en la BD si no usamos la anotacion @Transactional, se probo exitosamente pero fue quitada para poder hacer reporte de github
         mockMvc.perform(MockMvcRequestBuilders.post("/api/auth/register")
@@ -45,6 +50,7 @@ public class HttpTest {
     }
 
     @Test
+    @Order(2)
     void testLogin() throws Exception {
         // Test login, USAR usuario que ya existe en la BD
         mockMvc.perform(MockMvcRequestBuilders.post("/api/auth/login")
@@ -57,6 +63,7 @@ public class HttpTest {
     // Rutas Privadas, requieren la cookie de autenticación
     // Test que ruta privada en verdad bloquea sin autenticación, usaremos api/projects/mine como ejemplo
     @Test
+    @Order(3)
     void testPrivateRoute() throws Exception {
         // Test private route
         mockMvc.perform(MockMvcRequestBuilders.get("/api/projects/mine"))
@@ -65,6 +72,7 @@ public class HttpTest {
 
     // Test que ruta privada funciona con autenticación, usaremos api/projects/mine como ejemplo
     @Test
+    @Order(4)
     void testAuthorizedProjectsMine() throws Exception {
         // Conseguimos los detalles de un usuario en la BD MySQL para generar un token JWT válido, recordar que este usuario existe en la BD
         UserDetails userDetails = UserDetailsService.loadUserByUsername("newtest@example.com");
