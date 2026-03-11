@@ -40,104 +40,101 @@ public class TableroService {
 
     public TableroDTO obtenerTablero(Long idTablero) {
 
-        // Obtener usuario autenticado
-        Authentication auth = SecurityContextHolder
-                .getContext()
-                .getAuthentication();
+    Authentication auth = SecurityContextHolder
+            .getContext()
+            .getAuthentication();
 
-        String correo = auth.getName();
+    String correo = auth.getName();
 
-        Usuario usuario = usuarioRepository
-                .findByCorreo(correo)
-                .orElseThrow();
+    Usuario usuario = usuarioRepository
+            .findByCorreo(correo)
+            .orElseThrow();
 
-                //obtener tablero
+    // obtener tablero
+    Tablero tablero = tableroRepository
+            .findByIdTablero(idTablero)
+            .orElseThrow(() -> new ResponseStatusException(
+                    HttpStatus.NOT_FOUND,
+                    "Tablero no encontrado"
+            ));
 
-                Tablero tablero = tableroRepository.findByIdTablero(idTablero)
-                .orElseThrow(() -> new ResponseStatusException(
-                        HttpStatus.NOT_FOUND,
-                        "Tablero no encontrado"
-                ));
+    Long idProyecto = tablero.getProyecto().getIdProyecto();
 
-        Long idProyecto = tablero.getProyecto().getIdProyecto();
-                
-        // Validar que el usuario pertenece al proyecto
-        boolean pertenece = proyectoUsuarioRepository
-                .existsByUsuarioIdUsuarioAndProyectoIdProyecto(
-                        usuario.getIdUsuario(),
-                        idProyecto
-                );
-
-        if (!pertenece) {
-            throw new ResponseStatusException(
-          HttpStatus.FORBIDDEN,
-            "El usuario " + correo + " no pertenece al proyecto con id " + idProyecto
+    // validar pertenencia al proyecto
+    boolean pertenece = proyectoUsuarioRepository
+            .existsByUsuarioIdUsuarioAndProyectoIdProyecto(
+                    usuario.getIdUsuario(),
+                    idProyecto
             );
-        }
 
-        // Obtener columnas del tablero
-        List<Columna> columnas =
-                columnaRepository.findByTableroIdTablero(tablero.getIdTablero());
-
-        List<ColumnaDTO> columnasDTO = new ArrayList<>();
-
-        // Por cada columna, obtener tarjetas ordenadas por posición
-        for (Columna columna : columnas) {
-
-            List<TarjetaXColumna> relaciones =
-                    tarjetaXColumnaRepository
-                            .findByIdColumnaOrderByPosicionAsc(
-                                    columna.getIdColumna()
-                            );
-
-                            // Mapear tarjetas a DTOs
-            List<TarjetaResponseDTO> tarjetasDTO = new ArrayList<>();
-
-            for (TarjetaXColumna txc : relaciones) {
-
-                Tarjeta tarjeta = txc.getTarjeta();
-
-                TarjetaResponseDTO tarjetaDTO = new TarjetaResponseDTO();
-
-                tarjetaDTO.setIdTarjeta(tarjeta.getIdTarjeta());
-                tarjetaDTO.setTitulo(tarjeta.getTitulo());
-                tarjetaDTO.setDescripcion(tarjeta.getDescripcion());
-                tarjetaDTO.setFechaCreacion(tarjeta.getFechaCreacion());
-                tarjetaDTO.setFechaLimite(tarjeta.getFechaLimite());
-                tarjetaDTO.setPrioridad(tarjeta.getPrioridad());
-
-                
-                tarjetaDTO.setEstado(tarjeta.getEstado());
-                tarjetaDTO.setAsignados(
-                        tarjeta.getAsignados()
-                                .stream()
-                                .map(u -> u.getNombre() + " " + u.getApellido())
-                                .toList()
-                );
-
-                tarjetasDTO.add(tarjetaDTO);
-            }
-
-            // Crear DTO de columna
-            ColumnaDTO columnaDTO = new ColumnaDTO();
-
-            columnaDTO.setNombreColumna(columna.getNombreColumna());
-            columnaDTO.setPosicion(columna.getPosicion());
-            columnaDTO.setIdTablero(columna.getTablero().getIdTablero());
-            columnaDTO.setTarjetas(tarjetasDTO);
-
-            columnasDTO.add(columnaDTO);
-        }
-
-        // Crear DTO de tablero
-        TableroDTO tableroKanban = new TableroDTO();
-
-        tableroKanban.setIdTablero(idTablero);
-        tableroKanban.setIdProyecto(idProyecto);
-        tableroKanban.setColumnas(columnasDTO);
-
-        return tableroKanban;
+    if (!pertenece) {
+        throw new ResponseStatusException(
+                HttpStatus.FORBIDDEN,
+                "El usuario " + correo +
+                " no pertenece al proyecto con id " + idProyecto
+        );
     }
+
+    // columnas ordenadas
+    List<Columna> columnas =
+            columnaRepository
+            .findByTableroIdTableroOrderByPosicionAsc(idTablero);
+
+    List<ColumnaDTO> columnasDTO = new ArrayList<>();
+
+    for (Columna columna : columnas) {
+
+        List<TarjetaXColumna> relaciones =
+                tarjetaXColumnaRepository
+                        .findByIdColumnaOrderByPosicionAsc(
+                                columna.getIdColumna()
+                        );
+
+        List<TarjetaResponseDTO> tarjetasDTO = new ArrayList<>();
+
+        for (TarjetaXColumna txc : relaciones) {
+
+            Tarjeta tarjeta = txc.getTarjeta();
+
+            TarjetaResponseDTO tarjetaDTO = new TarjetaResponseDTO();
+
+            tarjetaDTO.setIdTarjeta(tarjeta.getIdTarjeta());
+            tarjetaDTO.setTitulo(tarjeta.getTitulo());
+            tarjetaDTO.setDescripcion(tarjeta.getDescripcion());
+            tarjetaDTO.setFechaCreacion(tarjeta.getFechaCreacion());
+            tarjetaDTO.setFechaLimite(tarjeta.getFechaLimite());
+            tarjetaDTO.setPrioridad(tarjeta.getPrioridad());
+            tarjetaDTO.setEstado(tarjeta.getEstado());
+
+            tarjetaDTO.setAsignados(
+                    tarjeta.getAsignados() == null ? List.of() :
+                    tarjeta.getAsignados()
+                            .stream()
+                            .map(u -> u.getNombre() + " " + u.getApellido())
+                            .toList()
+            );
+
+            tarjetasDTO.add(tarjetaDTO);
+        }
+
+        ColumnaDTO columnaDTO = new ColumnaDTO();
+
+        columnaDTO.setNombreColumna(columna.getNombreColumna());
+        columnaDTO.setPosicion(columna.getPosicion());
+        columnaDTO.setIdTablero(idTablero);
+        columnaDTO.setTarjetas(tarjetasDTO);
+
+        columnasDTO.add(columnaDTO);
+    }
+
+    TableroDTO tableroKanban = new TableroDTO();
+
+    tableroKanban.setIdTablero(idTablero);
+    tableroKanban.setIdProyecto(idProyecto);
+    tableroKanban.setColumnas(columnasDTO);
+
+    return tableroKanban;
+}
 
 
     public List<TableroDTO> listarTablerosPorProyecto(Long idProyecto) {
@@ -163,32 +160,29 @@ public class TableroService {
     if (!pertenece) {
         throw new ResponseStatusException(
                 HttpStatus.FORBIDDEN,
-                "El usuario " + correo + " no pertenece al proyecto con id " + idProyecto
+                "El usuario " + correo +
+                " no pertenece al proyecto con id " + idProyecto
         );
     }
 
-    // Obtener tableros del proyecto
+    // Obtener tableros ordenados
     List<Tablero> tableros =
-            tableroRepository.findByProyectoIdProyecto(idProyecto);
-
-    if (tableros.isEmpty()) {
-        throw new ResponseStatusException(
-                HttpStatus.NOT_FOUND,
-                "No hay tableros para este proyecto"
-        );
-    }
+            tableroRepository
+            .findByProyectoIdProyectoOrderByIdTableroAsc(idProyecto);
 
     // Mapear a DTO
     List<TableroDTO> tablerosDTO = new ArrayList<>();
 
     for (Tablero tablero : tableros) {
 
-        TableroDTO dto = new TableroDTO();
+        TableroDTO tableroDTO = new TableroDTO();
 
-        dto.setIdTablero(tablero.getIdTablero());
-        dto.setIdProyecto(idProyecto);
+        tableroDTO.setIdTablero(tablero.getIdTablero());
+        tableroDTO.setIdProyecto(idProyecto);
+        tableroDTO.setNombreProyecto(tablero.getProyecto().getNombreProyecto());
+        tableroDTO.setDescripcion(tablero.getProyecto().getDescripcion());
 
-        tablerosDTO.add(dto);
+        tablerosDTO.add(tableroDTO);
     }
 
     return tablerosDTO;

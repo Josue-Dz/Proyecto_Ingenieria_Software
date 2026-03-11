@@ -12,7 +12,7 @@ import edu.unah.hn.projecto_ingenieria.Entity.Columna;
 @Repository
 public interface ColumnaRepository extends JpaRepository<Columna, Long> {
 
-    List<Columna> findByTableroIdTablero(Long idTablero);
+    List<Columna> findByTableroIdTableroOrderByPosicionAsc(Long idTablero);
     
     Optional<Columna> findByTableroIdTableroAndNombreColumna(Long idTablero, String nombreColumna);
     
