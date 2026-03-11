@@ -37,7 +37,7 @@ public class HttpTest {
     @Autowired
     private JwtService jwtService;
 
-    // Rutas Publicas, login y registro en AuthController /api/auth/login y /api/auth/register
+    // Rutas Publicas, login y registro en  el AuthController /api/auth/login y /api/auth/register
     @Test
     @Order(1)
     void testRegister() throws Exception {
