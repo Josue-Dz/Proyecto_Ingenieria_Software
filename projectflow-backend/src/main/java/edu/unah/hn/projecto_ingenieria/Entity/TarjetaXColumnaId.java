@@ -18,7 +18,5 @@ public class TarjetaXColumnaId implements Serializable {
     private Long idTarjeta;
 
     private Long idColumna;
-
-    // Getters, setters, equals, and hashCode methods
     
 }
