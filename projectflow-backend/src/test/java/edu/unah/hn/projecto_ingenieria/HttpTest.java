@@ -49,7 +49,7 @@ public class HttpTest {
         // Test login, USAR usuario que ya existe en la BD
         mockMvc.perform(MockMvcRequestBuilders.post("/api/auth/login")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content("{\"email\":\"rparada@test.co\",\"password\":\"test123\"}"))
+                .content("{\"email\":\"newtest@example.com\",\"password\":\"password123\"}"))
             .andExpect(MockMvcResultMatchers.status().isOk())
             .andExpect(MockMvcResultMatchers.header().exists("Set-Cookie"));
     }
@@ -67,7 +67,7 @@ public class HttpTest {
     @Test
     void testAuthorizedProjectsMine() throws Exception {
         // Conseguimos los detalles de un usuario en la BD MySQL para generar un token JWT válido, recordar que este usuario existe en la BD
-        UserDetails userDetails = UserDetailsService.loadUserByUsername("dparad@test.com");
+        UserDetails userDetails = UserDetailsService.loadUserByUsername("newtest@example.com");
 
         String token = jwtService.getToken(userDetails);
 
