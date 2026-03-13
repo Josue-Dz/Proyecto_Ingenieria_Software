@@ -98,14 +98,7 @@ public class TableroService {
         for (TarjetaXColumna txc : relaciones) {
             tarjetasDTO.add(mapper.toTarjetaDTO(txc.getTarjeta()));
         }
-
-        ColumnaDTO columnaDTO = new ColumnaDTO();
-
-        columnaDTO.setNombreColumna(columna.getNombreColumna());
-        columnaDTO.setPosicion(columna.getPosicion());
-        columnaDTO.setIdTablero(idTablero);
-        columnaDTO.setTarjetas(tarjetasDTO);
-
+        ColumnaDTO columnaDTO = mapper.toColumnaDTO(columna, idTablero, tarjetasDTO);
         columnasDTO.add(columnaDTO);
     }
 

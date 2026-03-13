@@ -3,6 +3,7 @@ package edu.unah.hn.projecto_ingenieria.DTO;
 import java.util.List;
 import org.springframework.stereotype.Component;
 
+import edu.unah.hn.projecto_ingenieria.Entity.Columna;
 import edu.unah.hn.projecto_ingenieria.Entity.Proyecto;
 import edu.unah.hn.projecto_ingenieria.Entity.Tablero;
 import edu.unah.hn.projecto_ingenieria.Entity.Tarjeta;
@@ -70,6 +71,18 @@ public class DTOMapper {
         dto.setDescripcion(tarjeta.getDescripcion());
         dto.setFechaLimite(tarjeta.getFechaLimite());
         dto.setPrioridad(tarjeta.getPrioridad().name());
+        return dto;
+    }
+
+    public ColumnaDTO toColumnaDTO(Columna columna, Long idTablero, List<TarjetaResponseDTO> tarjetas) {
+        if (columna == null) {
+            return null;
+        }
+        ColumnaDTO dto = new ColumnaDTO();
+        dto.setNombreColumna(columna.getNombreColumna());
+        dto.setPosicion(columna.getPosicion());
+        dto.setIdTablero(idTablero);
+        dto.setTarjetas(tarjetas);
         return dto;
     }
     // future mappers can be added here in the same centralized location
