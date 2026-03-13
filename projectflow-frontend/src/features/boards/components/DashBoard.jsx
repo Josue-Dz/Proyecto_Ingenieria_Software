@@ -2,12 +2,17 @@
 import { useEffect, useState } from "react";
 import { getProjectsRequest } from "../services/projectService";
 import CreateProjectModal from "./CreateProjectModal";
+import DeleteProjectModal from "./DeleteProjectModal";
+import EditProjectModal from "./EditProjectModal";
+import ProjectCardMenu from "./ProjectCardMenu";
 
 const Dashboard = () => {
     const [projects, setProjects] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const [isModalOpen, setIsModalOpen] = useState(false);
+    const [projectToDelete, setProjectToDelete] = useState(null);
+    const [projectToEdit, setProjectToEdit] = useState(null);
 
     useEffect(() => {
         const fetchProjects = async () => {
@@ -28,6 +33,16 @@ const Dashboard = () => {
     // Cuando se cree un proyecto exitosamente, lo agrega al estado sin recargar
     const handleProjectCreated = (newProject) => {
         setProjects((prev) => [newProject, ...prev]);
+    };
+
+    const handleProjectDeleted = (deletedId) => {
+        setProjects((prev) => prev.filter((p) => p.idProyecto !== deletedId));
+    };
+
+    const handleProjectUpdated = (updatedProject) => {
+        setProjects((prev) =>
+            prev.map((p) => p.idProyecto === updatedProject.idProyecto ? updatedProject : p)
+        );
     };
 
     return (
@@ -71,11 +86,24 @@ const Dashboard = () => {
                     {projects.map((project) => (
                         <div
                             key={project.idProyecto}
-                            className="flex flex-col bg-indigo-50/50 backdrop-blur-md dark:bg-black/60 border border-gray-500/20 shadow-md dark:border-white/10 rounded-lg p-5 hover:border-indigo-400 duration-300 transition-all dark:hover:border-[#A3FF12]/40"
+                            className="flex flex-col bg-indigo-50/50 backdrop-blur-md dark:bg-black/60 border
+                             border-gray-500/20 shadow-md dark:border-white/10 rounded-lg p-5
+                              hover:border-indigo-400 duration-300 transition-all
+                               dark:hover:border-[#A3FF12]/40"
+
                         >
-                            <h2 className="text-lg font-semibold text-slate-900 dark:text-[#A3FF12] mb-2">
-                                {project.nombreProyecto}
-                            </h2>
+                            {/* Header de la card con título y menú */}
+                            <div className="flex items-start justify-between mb-2">
+                                <h2 className="text-lg font-semibold text-slate-900 dark:text-[#A3FF12] 
+                                leading-tight pr-2">
+                                    {project.nombreProyecto}
+                                </h2>
+                                <ProjectCardMenu
+                                    onEdit={() => setProjectToEdit(project)}
+                                    onDelete={() => setProjectToDelete(project)}
+                                />
+                            </div>
+
                             <p className="text-slate-600 dark:text-gray-300 text-sm line-clamp-3 grow mb-4">
                                 {project?.descripcion}
                             </p>
@@ -83,13 +111,18 @@ const Dashboard = () => {
                                 Fecha: {new Date(project?.fechaInicio).toLocaleDateString()}
                             </p>
                             <button
-                                className=" w-1/3 border border-indigo-200 bg-indigo-50 text-indigo-600 hover:bg-indigo-100 hover:border-indigo-300 dark:bg-[#A3FF12]/20 dark:border-[#A3FF12]/40 dark:text-white py-2 rounded-lg dark:hover:bg-[#A3FF12]/30 transition-all duration-200 ease-in-out"
+                                className=" w-1/3 border border-indigo-200 bg-indigo-50
+                                 text-indigo-600 hover:bg-indigo-100 hover:border-indigo-300
+                                  dark:bg-[#A3FF12]/20 dark:border-[#A3FF12]/40 dark:text-white py-2 rounded-lg
+                                   dark:hover:bg-[#A3FF12]/30 transition-all duration-200 ease-in-out"
                                 onClick={() => {
                                     window.location.href = `/projects/${project.idProyecto}`;
                                 }}
                             >
                                 Ver Panel
                             </button>
+
+                            
                         </div>
                     ))}
                 </div>
@@ -100,6 +133,22 @@ const Dashboard = () => {
                 isOpen={isModalOpen}
                 onClose={() => setIsModalOpen(false)}
                 onProjectCreated={handleProjectCreated}
+            />
+
+            {/* Modal de eliminar proyecto */}
+            <DeleteProjectModal
+                isOpen={!!projectToDelete}
+                onClose={() => setProjectToDelete(null)}
+                project={projectToDelete}
+                onProjectDeleted={handleProjectDeleted}
+            />
+
+                {/* Modal de editar proyecto */}
+            <EditProjectModal
+                isOpen={!!projectToEdit}
+                onClose={() => setProjectToEdit(null)}
+                project={projectToEdit}
+                onProjectUpdated={handleProjectUpdated}
             />
         </div>
     );
