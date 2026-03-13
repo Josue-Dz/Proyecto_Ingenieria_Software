@@ -2,9 +2,12 @@ package edu.unah.hn.projecto_ingenieria.JwtAuth;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+
 
 import edu.unah.hn.projecto_ingenieria.DTO.UsuarioDTO;
 import edu.unah.hn.projecto_ingenieria.Jwt.AuthResponse;
@@ -13,7 +16,11 @@ import edu.unah.hn.projecto_ingenieria.Jwt.UsuarioRegistroDTO;
 import edu.unah.hn.projecto_ingenieria.Services.AuthService;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+
 import org.springframework.web.bind.annotation.GetMapping;
+
+import edu.unah.hn.projecto_ingenieria.DTO.ActualizarPerfilDTO;
+import edu.unah.hn.projecto_ingenieria.DTO.CambioContraseniaDTO;
 
 
 @RestController
@@ -46,5 +53,16 @@ public class AuthController {
     }
     
     
+    @PutMapping("/me")
+    public ResponseEntity<UsuarioDTO> updateMyProfile(@RequestBody ActualizarPerfilDTO actualizarPerfilDTO) {
+        return ResponseEntity.ok(authService.updateMyProfile(actualizarPerfilDTO));
+    } 
 
+
+    @PutMapping("/me/password")
+    public ResponseEntity<Void> cambiarContrasenia(@RequestBody CambioContraseniaDTO cambioContrasenia) {
+        authService.changeMyPassword(cambioContrasenia);
+        return ResponseEntity.noContent().build();
+    }
+    
 }

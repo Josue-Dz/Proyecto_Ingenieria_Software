@@ -8,6 +8,7 @@ import DashboardPage from '../features/boards/pages/DashboardPage';
 import FeaturesPage from '../features/landing/FeaturesPage';
 import AboutPage from '../features/landing/AboutPage';
 import PublicRoute from './layouts/components/PublicRoute';
+import ProfilePage from '../features/boards/pages/ProfilePage';
 
 function AppRoutes() {
     return (
@@ -21,6 +22,7 @@ function AppRoutes() {
             </Route>
             <Route element={ <PrivateLayout />}>
                 <Route path='/dashboard' element={<DashboardPage />} />
+                <Route path = '/perfil' element ={<ProfilePage />}/>
                 <Route />
             </Route>
         </Routes>

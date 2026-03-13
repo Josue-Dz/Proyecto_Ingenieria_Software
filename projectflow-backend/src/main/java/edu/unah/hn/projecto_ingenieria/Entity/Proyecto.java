@@ -3,9 +3,6 @@ package edu.unah.hn.projecto_ingenieria.Entity;
 import java.time.LocalDate;
 import java.util.List;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
-
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -53,7 +50,5 @@ public class Proyecto {
     private Usuario creador;
 
     @OneToMany(mappedBy = "proyecto", cascade = CascadeType.ALL)
-    @JsonManagedReference
-    @JsonIgnore
     private List<Tablero> tablero;
 }
