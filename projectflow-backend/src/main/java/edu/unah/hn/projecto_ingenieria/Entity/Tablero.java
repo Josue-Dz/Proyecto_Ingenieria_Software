@@ -5,6 +5,7 @@ import java.util.List;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -30,7 +31,13 @@ public class Tablero {
     @Column(name = "id_tablero")
     private Long idTablero;
 
-    @ManyToOne
+    @Column(name = "nombre_tablero")
+    private String nombreTablero;
+
+    @Column(name = "descripcion_tablero")
+    private String descripcionTablero;
+
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_proyecto")
     private Proyecto proyecto;
 

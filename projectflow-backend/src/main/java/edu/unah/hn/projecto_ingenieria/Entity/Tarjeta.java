@@ -78,7 +78,6 @@ public class Tarjeta {
         joinColumns = @JoinColumn(name = "id_tarjeta"),
         inverseJoinColumns = @JoinColumn(name = "id_usuario")
     )
-    
     private List<Usuario> asignados;
 }
 

@@ -17,9 +17,9 @@ public class TableroDTO {
 
     private Long idProyecto;
 
-    private String nombreProyecto;
+    private String nombreTablero;
 
-    private String descripcion;
+    private String descripcionTablero;
 
     private List<ColumnaDTO> columnas;
 }

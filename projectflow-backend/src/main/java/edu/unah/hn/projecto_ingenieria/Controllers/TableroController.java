@@ -30,4 +30,6 @@ public class TableroController {
     public ResponseEntity<List<TableroDTO>> listarTablerosPorProyecto(@PathVariable Long idProyecto) {
         return ResponseEntity.ok(tableroService.listarTablerosPorProyecto(idProyecto));
     }
+
+
 }
