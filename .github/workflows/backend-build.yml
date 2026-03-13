@@ -2,7 +2,7 @@ name: Backend Build & Test
 
 on:
   push:
-    branches: [ "main", "deibi" ]
+    branches: [ "main"]
     paths:
       - 'projectflow-backend/**' 
   pull_request:

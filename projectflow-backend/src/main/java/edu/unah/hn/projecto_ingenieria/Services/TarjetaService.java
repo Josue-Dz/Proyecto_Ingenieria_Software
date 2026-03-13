@@ -7,6 +7,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
+import edu.unah.hn.projecto_ingenieria.DTO.DTOMapper;
 import edu.unah.hn.projecto_ingenieria.DTO.TarjetaRequestDTO;
 import edu.unah.hn.projecto_ingenieria.Entity.Columna;
 import edu.unah.hn.projecto_ingenieria.Entity.Columna.NombreColumna;
@@ -31,6 +32,8 @@ public class TarjetaService {
     private final ProyectoRepository proyectoRepository;
     
     private final TarjetaRepository tarjetaRepository;
+
+    private final DTOMapper mapper;
    public TarjetaRequestDTO crearTarjeta(Long idTablero, TarjetaRequestDTO request, Long idUsuario) {
 
     // 1. Validar que sea líder
@@ -71,11 +74,7 @@ public class TarjetaService {
     tarjetaXColumnaRepository.save(relacion);
 
     // 5. Devolver DTO
-    TarjetaRequestDTO dto = new TarjetaRequestDTO();
-    dto.setTitulo(tarjeta.getTitulo());
-    dto.setDescripcion(tarjeta.getDescripcion());
-    dto.setFechaLimite(tarjeta.getFechaLimite());
-    dto.setPrioridad(tarjeta.getPrioridad().name());
+    TarjetaRequestDTO dto = mapper.toTarjetaRequestDTO(tarjeta);
 
     return dto;
     }
