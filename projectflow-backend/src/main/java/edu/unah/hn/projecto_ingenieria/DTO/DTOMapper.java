@@ -36,8 +36,8 @@ public class DTOMapper {
         TableroDTO dto = new TableroDTO();
         dto.setIdTablero(tablero.getIdTablero());
         dto.setIdProyecto(tablero.getProyecto().getIdProyecto());
-        dto.setNombreProyecto(tablero.getProyecto().getNombreProyecto());
-        dto.setDescripcion(tablero.getProyecto().getDescripcion());
+        dto.setNombreTablero(tablero.getProyecto().getNombreProyecto());
+        dto.setDescripcionTablero(tablero.getProyecto().getDescripcion());
         return dto;
     }
 
