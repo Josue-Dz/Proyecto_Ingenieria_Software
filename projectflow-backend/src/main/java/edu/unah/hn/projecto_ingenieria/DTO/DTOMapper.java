@@ -61,6 +61,16 @@ public class DTOMapper {
         );
         return dto;
     }
-
+    public TarjetaRequestDTO toTarjetaRequestDTO(Tarjeta tarjeta) {
+        if (tarjeta == null) {
+            return null;
+        }
+        TarjetaRequestDTO dto = new TarjetaRequestDTO();
+        dto.setTitulo(tarjeta.getTitulo());
+        dto.setDescripcion(tarjeta.getDescripcion());
+        dto.setFechaLimite(tarjeta.getFechaLimite());
+        dto.setPrioridad(tarjeta.getPrioridad().name());
+        return dto;
+    }
     // future mappers can be added here in the same centralized location
 }
