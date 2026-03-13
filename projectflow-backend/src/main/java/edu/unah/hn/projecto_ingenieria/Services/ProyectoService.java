@@ -11,6 +11,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 
 import edu.unah.hn.projecto_ingenieria.DTO.ProyectoRequestDTO;
 import edu.unah.hn.projecto_ingenieria.DTO.ProyectoResponseDTO;
+import edu.unah.hn.projecto_ingenieria.DTO.DTOMapper;
 import edu.unah.hn.projecto_ingenieria.Entity.Proyecto;
 import edu.unah.hn.projecto_ingenieria.Entity.ProyectoUsuario;
 import edu.unah.hn.projecto_ingenieria.Entity.Usuario;
@@ -27,6 +28,8 @@ public class ProyectoService {
     private final ProyectoRepository proyectoRepository;
     private final UsuarioRepository usuarioRepository;
     private final ProyectoUsuarioRepository proyectoUsuarioRepository;
+
+    private final DTOMapper mapper;
 
     @Transactional
     public ProyectoResponseDTO crearProyecto(ProyectoRequestDTO dto) {
@@ -51,7 +54,7 @@ public class ProyectoService {
         nuevoUsuarioProyecto.setRol(ProyectoUsuario.role.ADMIN);
         proyectoUsuarioRepository.save(nuevoUsuarioProyecto);
 
-        return mapToDTO(savedProyecto);
+        return mapper.toProyectoDTO(savedProyecto);
     }
 
     
@@ -69,7 +72,7 @@ public class ProyectoService {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "No tienes acceso a este proyecto");
         }
 
-        return mapToDTO(proyecto);
+        return mapper.toProyectoDTO(proyecto);
     }
 
 
@@ -98,7 +101,7 @@ public class ProyectoService {
         proyecto.setFechaInicio(dto.getFechaInicio());
         proyecto.setFechaFin(dto.getFechaFin());
 
-        return mapToDTO(proyectoRepository.save(proyecto));
+        return mapper.toProyectoDTO(proyectoRepository.save(proyecto));
     }
 
 
@@ -128,7 +131,7 @@ public class ProyectoService {
         List<ProyectoUsuario> proyectosUsuario = proyectoUsuarioRepository.findByUsuario_IdUsuario(usuario.getIdUsuario());
 
         return proyectosUsuario.stream()
-            .map(pu -> mapToDTO(pu.getProyecto()))
+            .map(pu -> mapper.toProyectoDTO(pu.getProyecto()))
             .collect(Collectors.toList());
     }
 
@@ -138,10 +141,4 @@ public class ProyectoService {
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Usuario no encontrado"));
     }
 
-    private ProyectoResponseDTO mapToDTO(Proyecto p) {
-        return new ProyectoResponseDTO(
-            p.getIdProyecto(), p.getNombreProyecto(), p.getDescripcion(), 
-            p.getFechaInicio(), p.getFechaFin()
-        );
-    }
 }

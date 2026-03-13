@@ -12,9 +12,10 @@ import org.springframework.web.server.ResponseStatusException;
 import edu.unah.hn.projecto_ingenieria.DTO.ColumnaDTO;
 import edu.unah.hn.projecto_ingenieria.DTO.TableroDTO;
 import edu.unah.hn.projecto_ingenieria.DTO.TarjetaResponseDTO;
+import edu.unah.hn.projecto_ingenieria.DTO.DTOMapper;
 import edu.unah.hn.projecto_ingenieria.Entity.Columna;
 import edu.unah.hn.projecto_ingenieria.Entity.Tablero;
-import edu.unah.hn.projecto_ingenieria.Entity.Tarjeta;
+//import edu.unah.hn.projecto_ingenieria.Entity.Tarjeta;
 import edu.unah.hn.projecto_ingenieria.Entity.TarjetaXColumna;
 import edu.unah.hn.projecto_ingenieria.Entity.Usuario;
 import edu.unah.hn.projecto_ingenieria.Repository.ColumnaRepository;
@@ -37,6 +38,8 @@ public class TableroService {
     private final UsuarioRepository usuarioRepository;
 
     private final TableroRepository tableroRepository;
+
+    private final DTOMapper mapper;
 
     public TableroDTO obtenerTablero(Long idTablero) {
 
@@ -93,28 +96,7 @@ public class TableroService {
         List<TarjetaResponseDTO> tarjetasDTO = new ArrayList<>();
 
         for (TarjetaXColumna txc : relaciones) {
-
-            Tarjeta tarjeta = txc.getTarjeta();
-
-            TarjetaResponseDTO tarjetaDTO = new TarjetaResponseDTO();
-
-            tarjetaDTO.setIdTarjeta(tarjeta.getIdTarjeta());
-            tarjetaDTO.setTitulo(tarjeta.getTitulo());
-            tarjetaDTO.setDescripcion(tarjeta.getDescripcion());
-            tarjetaDTO.setFechaCreacion(tarjeta.getFechaCreacion());
-            tarjetaDTO.setFechaLimite(tarjeta.getFechaLimite());
-            tarjetaDTO.setPrioridad(tarjeta.getPrioridad());
-            tarjetaDTO.setEstado(tarjeta.getEstado());
-
-            tarjetaDTO.setAsignados(
-                    tarjeta.getAsignados() == null ? List.of() :
-                    tarjeta.getAsignados()
-                            .stream()
-                            .map(u -> u.getNombre() + " " + u.getApellido())
-                            .toList()
-            );
-
-            tarjetasDTO.add(tarjetaDTO);
+            tarjetasDTO.add(mapper.toTarjetaDTO(txc.getTarjeta()));
         }
 
         ColumnaDTO columnaDTO = new ColumnaDTO();
@@ -174,18 +156,9 @@ public class TableroService {
     List<TableroDTO> tablerosDTO = new ArrayList<>();
 
     for (Tablero tablero : tableros) {
-
-        TableroDTO tableroDTO = new TableroDTO();
-
-        tableroDTO.setIdTablero(tablero.getIdTablero());
-        tableroDTO.setIdProyecto(idProyecto);
-        tableroDTO.setNombreProyecto(tablero.getProyecto().getNombreProyecto());
-        tableroDTO.setDescripcion(tablero.getProyecto().getDescripcion());
-
-        tablerosDTO.add(tableroDTO);
+        tablerosDTO.add(mapper.toTableroDTO(tablero));
     }
 
     return tablerosDTO;
 }
-
-    }
+}
