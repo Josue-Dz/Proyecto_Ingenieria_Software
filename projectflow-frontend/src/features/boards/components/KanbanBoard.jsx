@@ -15,7 +15,6 @@ const KanbanBoard = () => {
     const [newColumnName, setNewColumnName] = useState("");
     const [addingColumn, setAddingColumn] = useState(false);
     const [selectedTask, setSelectedTask] = useState(null);
-    const [dragOverColumnId, setDragOverColumnId] = useState(null);
 
     const columnsToMap = (cols) =>
         Object.fromEntries(cols.map(col => [String(col.idColumna), col.tarjetas ?? []]));
@@ -23,13 +22,15 @@ const KanbanBoard = () => {
     const mapToColumns = (cols, map) =>
         cols.map(col => ({ ...col, tarjetas: map[String(col.idColumna)] ?? [] }));
 
-    const handleDragOver = (event) => {
-        const { source, target } = event;
+    const handleDragOver = (e) => {
+        const { source, target } = e;
+        console.log("===DRAG OVER==")
+        console.log("source: ", source.type)
         if (!source || !target) return;
 
         setColumns(prev => {
             const map = columnsToMap(prev);
-            const updated = move(map, event);
+            const updated = move(map, e);
             return mapToColumns(prev, updated);
         });
     };

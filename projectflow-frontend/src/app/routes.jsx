@@ -25,7 +25,7 @@ function AppRoutes() {
             </Route>
             <Route element={ <PrivateLayout />}>
                 <Route path='/dashboard' element={<DashboardPage />} />
-                <Route path='/projects/:id/boards' element={<BoardsPage />}/>
+                <Route path='/boards/projects/:id' element={<BoardsPage />}/>
                 <Route path='/projects/:id/boards/:boardId' element={<KanbanBoard />} />
                 <Route path='/boards/:id' element={<BoardPage />}/>
                 <Route path = '/perfil' element ={<ProfilePage />}/>

@@ -10,7 +10,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import edu.unah.hn.projecto_ingenieria.DTO.TarjetaRequestDTO;
-import edu.unah.hn.projecto_ingenieria.Entity.TarjetaXColumna;
 import edu.unah.hn.projecto_ingenieria.Services.TarjetaService;
 import lombok.RequiredArgsConstructor;
 

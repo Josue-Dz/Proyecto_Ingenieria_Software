@@ -29,8 +29,8 @@ public class ColumnaService {
 
     private final DTOMapper mapper;
 
-    public List<ColumnaDTO> mapToListDTO(List<Columna> columnas) {
-        List<ColumnaDTO> columnasDTO = new ArrayList<>();
+    public List<ColumnaDTO> mapToListDTO (List<Columna> columnas){
+         List<ColumnaDTO> columnasDTO = new ArrayList<>();
 
         // Por cada columna, obtener tarjetas ordenadas por posición
         for (Columna columna : columnas) {
@@ -40,6 +40,7 @@ public class ColumnaService {
             // Crear DTO de columna
             ColumnaDTO columnaDTO = new ColumnaDTO();
 
+            columnaDTO.setIdColumna(columna.getIdColumna());
             columnaDTO.setNombreColumna(columna.getNombreColumna());
             columnaDTO.setPosicion(columna.getPosicion());
             columnaDTO.setIdTablero(columna.getTablero().getIdTablero());
@@ -64,8 +65,11 @@ public class ColumnaService {
         int posicion = tablero.getColumnas() != null ? tablero.getColumnas().size() : 0;
         columna.setPosicion(posicion);
 
+        //Lista Vacia
+        List<TarjetaResponseDTO> tarjetas = new ArrayList<>();
+
         columnaRepository.save(columna);
-        return (columna);
+        return mapper.toColumnaDTO(columna, tableroId, tarjetas);
     }
 
 }

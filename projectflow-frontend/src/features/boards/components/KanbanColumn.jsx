@@ -1,8 +1,8 @@
-import React, { useState } from 'react'
+import { useState } from 'react'
 import KanbanCard from './KanbanCard';
 import CreateTaskPopover from './CreateTaskPopover';
-import { useDroppable } from "@dnd-kit/react";
 import { CollisionPriority } from "@dnd-kit/abstract";
+import { useDroppable } from '@dnd-kit/react';
 
 const KanbanColumn = ({ column, onAddTask, onTaskClick }) => {
 

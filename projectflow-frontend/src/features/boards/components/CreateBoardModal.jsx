@@ -3,21 +3,19 @@ import { createBoardRequest } from "../services/boardService";
 
 const CreateBoardModal = ({ projectId, isOpen, onClose, onBoardCreated }) => {
     console.log("PROYECTID: ", projectId)
-    const [nombre, setNombre]       = useState("");
-    const [descripcion, setDesc]    = useState("");
-    const [fechaInicio, setInicio]  = useState("");
-    const [fechaFin, setFin]        = useState("");
-    const [loading, setLoading]     = useState(false);
-    const [error, setError]         = useState(null);
+    const [nombre, setNombre] = useState("");
+    const [descripcion, setDesc] = useState("");
+    const [fechaInicio, setInicio] = useState("");
+    const [fechaFin, setFin] = useState("");
+    const [loading, setLoading] = useState(false);
+    const [error, setError] = useState(null);
 
-    // Cerrar con Escape
     useEffect(() => {
         const handleKey = (e) => { if (e.key === "Escape") onClose(); };
         window.addEventListener("keydown", handleKey);
         return () => window.removeEventListener("keydown", handleKey);
     }, [onClose]);
 
-    // Limpiar al cerrar
     useEffect(() => {
         if (!isOpen) {
             setNombre(""); setDesc(""); setInicio(""); setFin(""); setError(null);

@@ -8,11 +8,13 @@ export const createBoardRequest = async (projectId, boardData) => {
 
 export const getBoardsRequest = async (projectId) => {
     const response = await apiClient.get(`/boards/projects/${projectId}`)
+    console.log("Este es el tablero: ", response.data)
     return response.data;
 };
 
 export const getColumnsRequest = async (boardId) => {
     const response = await apiClient.get(`/boards/${boardId}`);
+    console.log("Columnas: ", response.data)
     return response.data.columnas;
 };
 
