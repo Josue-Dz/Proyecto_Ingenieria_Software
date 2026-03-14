@@ -10,6 +10,8 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -55,6 +57,7 @@ public class Usuario implements UserDetails {
 
     // Relación con proyectos
     @OneToMany(mappedBy = "creador", fetch = FetchType.EAGER)
+    @JsonManagedReference
     private List<Proyecto> proyectos;
 
     // Relación con proyectos (muchos a muchos a través de ProyectoUsuario)

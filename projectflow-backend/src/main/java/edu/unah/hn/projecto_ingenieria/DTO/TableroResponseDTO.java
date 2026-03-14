@@ -11,11 +11,15 @@ import lombok.Setter;
 @AllArgsConstructor
 @NoArgsConstructor
 @Setter
-public class TableroDTO {
+public class TableroResponseDTO {
     
     private Long idTablero;
 
     private Long idProyecto;
+
+    private String nombre;
+
+    private String descripcion;
 
     private List<ColumnaDTO> columnas;
 }

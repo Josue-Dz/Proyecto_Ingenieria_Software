@@ -10,6 +10,12 @@ import lombok.Setter;
 @Setter
 public class TarjetaRequestDTO {
 
+    private Long columnaOrigenId;
+
+    private Long columnaDestinoId;
+
+    private int nuevaPosicion;
+
     private String titulo;
 
     private String descripcion;
@@ -17,6 +23,8 @@ public class TarjetaRequestDTO {
     private LocalDate fechaLimite;
 
     private String prioridad;
+
+    private String estado;
     
     private List<Long> usuariosAsignados;
 }

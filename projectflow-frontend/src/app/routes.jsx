@@ -8,6 +8,9 @@ import DashboardPage from '../features/boards/pages/DashboardPage';
 import FeaturesPage from '../features/landing/FeaturesPage';
 import AboutPage from '../features/landing/AboutPage';
 import PublicRoute from './layouts/components/PublicRoute';
+import BoardsPage from '../features/boards/pages/BoardsPage';
+import BoardPage from '../features/boards/pages/BoardPage';
+import KanbanBoard from '../features/boards/components/KanbanBoard';
 
 function AppRoutes() {
     return (
@@ -21,7 +24,9 @@ function AppRoutes() {
             </Route>
             <Route element={ <PrivateLayout />}>
                 <Route path='/dashboard' element={<DashboardPage />} />
-                <Route />
+                <Route path='/projects/:id/boards' element={<BoardsPage />}/>
+                <Route path='/projects/:id/boards/:boardId' element={<KanbanBoard />} />
+                <Route path='/boards/:id' element={<BoardPage />}/>
             </Route>
         </Routes>
     )
