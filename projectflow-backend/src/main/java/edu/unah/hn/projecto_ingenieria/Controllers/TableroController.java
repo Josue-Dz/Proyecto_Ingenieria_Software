@@ -41,4 +41,6 @@ public class TableroController {
     public ResponseEntity<List<TableroResponseDTO>> listarTablerosPorProyecto(@PathVariable Long projectId) {
         return ResponseEntity.ok(tableroService.listarTablerosPorProyecto(projectId));
     }
+
+
 }

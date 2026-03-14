@@ -2,12 +2,14 @@ package edu.unah.hn.projecto_ingenieria.Services;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
 import edu.unah.hn.projecto_ingenieria.DTO.ColumnaDTO;
+import edu.unah.hn.projecto_ingenieria.DTO.DTOMapper;
 import edu.unah.hn.projecto_ingenieria.DTO.TarjetaResponseDTO;
 import edu.unah.hn.projecto_ingenieria.Entity.Columna;
 import edu.unah.hn.projecto_ingenieria.Entity.Tablero;
@@ -25,15 +27,17 @@ public class ColumnaService {
 
     private final ColumnaRepository columnaRepository;
 
-    public List<ColumnaDTO> mapToListDTO (List<Columna> columnas){
-         List<ColumnaDTO> columnasDTO = new ArrayList<>();
+    private final DTOMapper mapper;
 
-        //Por cada columna, obtener tarjetas ordenadas por posición
+    public List<ColumnaDTO> mapToListDTO(List<Columna> columnas) {
+        List<ColumnaDTO> columnasDTO = new ArrayList<>();
+
+        // Por cada columna, obtener tarjetas ordenadas por posición
         for (Columna columna : columnas) {
 
             List<TarjetaResponseDTO> tarjetasDTO = tarjetaService.mapToDTO(columna);
 
-            //Crear DTO de columna
+            // Crear DTO de columna
             ColumnaDTO columnaDTO = new ColumnaDTO();
 
             columnaDTO.setNombreColumna(columna.getNombreColumna());
@@ -45,23 +49,23 @@ public class ColumnaService {
         }
 
         return columnasDTO;
-  
+
     }
 
     public ColumnaDTO crearColumna(Long tableroId, ColumnaDTO dto) {
-    Tablero tablero = tableroRepository.findById(tableroId)
-            .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Tablero no encontrado"));
+        Tablero tablero = tableroRepository.findById(tableroId)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Tablero no encontrado"));
 
-    Columna columna = new Columna();
-    columna.setNombreColumna(dto.getNombreColumna());
-    columna.setTablero(tablero);
+        Columna columna = new Columna();
+        columna.setNombreColumna(dto.getNombreColumna());
+        columna.setTablero(tablero);
 
-    // Posición al final de las columnas existentes
-    int posicion = tablero.getColumnas() != null ? tablero.getColumnas().size() : 0;
-    columna.setPosicion(posicion);
+        // Posición al final de las columnas existentes
+        int posicion = tablero.getColumnas() != null ? tablero.getColumnas().size() : 0;
+        columna.setPosicion(posicion);
 
-    columnaRepository.save(columna);
-    return mapToDTO(columna);
-}
+        columnaRepository.save(columna);
+        return (columna);
+    }
 
 }

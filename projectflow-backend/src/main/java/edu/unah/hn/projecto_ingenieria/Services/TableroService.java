@@ -14,18 +14,28 @@ import edu.unah.hn.projecto_ingenieria.DTO.ColumnaDTO;
 import edu.unah.hn.projecto_ingenieria.DTO.TableroRequestDTO;
 import edu.unah.hn.projecto_ingenieria.DTO.TableroResponseDTO;
 import edu.unah.hn.projecto_ingenieria.DTO.TarjetaResponseDTO;
+import edu.unah.hn.projecto_ingenieria.DTO.DTOMapper;
 import edu.unah.hn.projecto_ingenieria.Entity.Columna;
+<<<<<<< HEAD
 import edu.unah.hn.projecto_ingenieria.Entity.Proyecto;
+=======
+
+>>>>>>> main
 import edu.unah.hn.projecto_ingenieria.Entity.Tablero;
-import edu.unah.hn.projecto_ingenieria.Entity.Tarjeta;
+//import edu.unah.hn.projecto_ingenieria.Entity.Tarjeta;
 import edu.unah.hn.projecto_ingenieria.Entity.TarjetaXColumna;
 import edu.unah.hn.projecto_ingenieria.Entity.Usuario;
 import edu.unah.hn.projecto_ingenieria.Repository.ColumnaRepository;
+<<<<<<< HEAD
 import edu.unah.hn.projecto_ingenieria.Repository.ProyectoRepository;
+=======
+
+>>>>>>> main
 import edu.unah.hn.projecto_ingenieria.Repository.ProyectoUsuarioRepository;
 import edu.unah.hn.projecto_ingenieria.Repository.TableroRepository;
 import edu.unah.hn.projecto_ingenieria.Repository.TarjetaXColumnaRepository;
 import edu.unah.hn.projecto_ingenieria.Repository.UsuarioRepository;
+
 import lombok.RequiredArgsConstructor;
 
 @Service
@@ -42,6 +52,7 @@ public class TableroService {
 
     private final TableroRepository tableroRepository;
 
+<<<<<<< HEAD
     private final ColumnaService columnaService;
 
     public TableroResponseDTO crearTablero(Long proyectoId, TableroRequestDTO tablero) {
@@ -77,18 +88,23 @@ public class TableroService {
     }
 
     public TableroResponseDTO obtenerTablero(Long idTablero) {
+=======
+    private final DTOMapper mapper;
 
-        // Obtener usuario autenticado
-        Authentication auth = SecurityContextHolder
-                .getContext()
-                .getAuthentication();
+    public TableroDTO obtenerTablero(Long idTablero) {
+>>>>>>> main
 
-        String correo = auth.getName();
+    Authentication auth = SecurityContextHolder
+            .getContext()
+            .getAuthentication();
 
-        Usuario usuario = usuarioRepository
-                .findByCorreo(correo)
-                .orElseThrow();
+    String correo = auth.getName();
 
+    Usuario usuario = usuarioRepository
+            .findByCorreo(correo)
+            .orElseThrow();
+
+<<<<<<< HEAD
         // obtener tablero
 
         Tablero tablero = tableroRepository.findByIdTablero(idTablero)
@@ -173,6 +189,66 @@ public class TableroService {
     }
 
     public List<TableroResponseDTO> listarTablerosPorProyecto(Long idProyecto) {
+=======
+    // obtener tablero
+    Tablero tablero = tableroRepository
+            .findByIdTablero(idTablero)
+            .orElseThrow(() -> new ResponseStatusException(
+                    HttpStatus.NOT_FOUND,
+                    "Tablero no encontrado"
+            ));
+
+    Long idProyecto = tablero.getProyecto().getIdProyecto();
+
+    // validar pertenencia al proyecto
+    boolean pertenece = proyectoUsuarioRepository
+            .existsByUsuarioIdUsuarioAndProyectoIdProyecto(
+                    usuario.getIdUsuario(),
+                    idProyecto
+            );
+
+    if (!pertenece) {
+        throw new ResponseStatusException(
+                HttpStatus.FORBIDDEN,
+                "El usuario " + correo +
+                " no pertenece al proyecto con id " + idProyecto
+        );
+    }
+
+    // columnas ordenadas
+    List<Columna> columnas =
+            columnaRepository
+            .findByTableroIdTableroOrderByPosicionAsc(idTablero);
+
+    List<ColumnaDTO> columnasDTO = new ArrayList<>();
+
+    for (Columna columna : columnas) {
+
+        List<TarjetaXColumna> relaciones =
+                tarjetaXColumnaRepository
+                        .findByIdColumnaOrderByPosicionAsc(
+                                columna.getIdColumna()
+                        );
+
+        List<TarjetaResponseDTO> tarjetasDTO = new ArrayList<>();
+
+        for (TarjetaXColumna txc : relaciones) {
+            tarjetasDTO.add(mapper.toTarjetaDTO(txc.getTarjeta()));
+        }
+        ColumnaDTO columnaDTO = mapper.toColumnaDTO(columna, idTablero, tarjetasDTO);
+        columnasDTO.add(columnaDTO);
+    }
+
+    TableroDTO tableroKanban = new TableroDTO();
+
+    tableroKanban.setIdTablero(idTablero);
+    tableroKanban.setIdProyecto(idProyecto);
+    tableroKanban.setColumnas(columnasDTO);
+
+    return tableroKanban;
+}
+
+>>>>>>> main
 
         // Obtener usuario autenticado
         Authentication auth = SecurityContextHolder
@@ -199,6 +275,7 @@ public class TableroService {
         // );
         // }
 
+<<<<<<< HEAD
         // Obtener tableros del proyecto
         List<Tablero> tableros = tableroRepository.findByProyectoIdProyecto(idProyecto);
 
@@ -226,3 +303,28 @@ public class TableroService {
     }
 
 }
+=======
+    if (!pertenece) {
+        throw new ResponseStatusException(
+                HttpStatus.FORBIDDEN,
+                "El usuario " + correo +
+                " no pertenece al proyecto con id " + idProyecto
+        );
+    }
+
+    // Obtener tableros ordenados
+    List<Tablero> tableros =
+            tableroRepository
+            .findByProyectoIdProyectoOrderByIdTableroAsc(idProyecto);
+
+    // Mapear a DTO
+    List<TableroDTO> tablerosDTO = new ArrayList<>();
+
+    for (Tablero tablero : tableros) {
+        tablerosDTO.add(mapper.toTableroDTO(tablero));
+    }
+
+    return tablerosDTO;
+}
+}
+>>>>>>> main

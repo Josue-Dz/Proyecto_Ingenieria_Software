@@ -13,5 +13,5 @@ public interface TableroRepository extends JpaRepository<Tablero, Long> {
     
     Optional<Tablero> findByIdTablero(Long idTablero);
 
-    List<Tablero> findByProyectoIdProyecto(Long idProyecto);
+    List<Tablero> findByProyectoIdProyectoOrderByIdTableroAsc(Long idProyecto);
 }

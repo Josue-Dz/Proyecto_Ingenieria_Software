@@ -8,6 +8,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
+import edu.unah.hn.projecto_ingenieria.DTO.DTOMapper;
 import edu.unah.hn.projecto_ingenieria.DTO.TarjetaRequestDTO;
 import edu.unah.hn.projecto_ingenieria.DTO.TarjetaResponseDTO;
 import edu.unah.hn.projecto_ingenieria.Entity.Columna;

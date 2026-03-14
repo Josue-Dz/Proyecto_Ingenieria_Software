@@ -11,6 +11,7 @@ import PublicRoute from './layouts/components/PublicRoute';
 import BoardsPage from '../features/boards/pages/BoardsPage';
 import BoardPage from '../features/boards/pages/BoardPage';
 import KanbanBoard from '../features/boards/components/KanbanBoard';
+import ProfilePage from '../features/boards/pages/ProfilePage';
 
 function AppRoutes() {
     return (
@@ -27,6 +28,8 @@ function AppRoutes() {
                 <Route path='/projects/:id/boards' element={<BoardsPage />}/>
                 <Route path='/projects/:id/boards/:boardId' element={<KanbanBoard />} />
                 <Route path='/boards/:id' element={<BoardPage />}/>
+                <Route path = '/perfil' element ={<ProfilePage />}/>
+                <Route />
             </Route>
         </Routes>
     )

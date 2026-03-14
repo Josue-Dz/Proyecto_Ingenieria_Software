@@ -35,11 +35,13 @@ public class Tablero {
     @Column(name = "id_tablero")
     private Long idTablero;
 
-    private String nombre;
+    @Column(name = "nombre_tablero")
+    private String nombreTablero;
 
-    private String descripcion;
+    @Column(name = "descripcion_tablero")
+    private String descripcionTablero;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_proyecto")
     @JsonBackReference
     private Proyecto proyecto;
