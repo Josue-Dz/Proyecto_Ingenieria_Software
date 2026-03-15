@@ -29,15 +29,15 @@ public class DTOMapper {
         );
     }
 
-    public TableroDTO toTableroDTO(Tablero tablero) {
+    public TableroRequestDTO toTableroDTO(Tablero tablero) {
         if (tablero == null) {
             return null;
         }
-        TableroDTO dto = new TableroDTO();
+        TableroRequestDTO dto = new TableroRequestDTO();
         dto.setIdTablero(tablero.getIdTablero());
         dto.setIdProyecto(tablero.getProyecto().getIdProyecto());
-        dto.setNombreTablero(tablero.getProyecto().getNombreProyecto());
-        dto.setDescripcionTablero(tablero.getProyecto().getDescripcion());
+        dto.setNombre(tablero.getProyecto().getNombreProyecto());
+        dto.setDescripcion(tablero.getProyecto().getDescripcion());
         return dto;
     }
 

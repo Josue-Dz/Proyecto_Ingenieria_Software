@@ -2,6 +2,8 @@
 import { useEffect, useState } from "react";
 import { getProjectsRequest } from "../services/projectService";
 import CreateProjectModal from "./CreateProjectModal";
+import { useNavigate } from "react-router-dom";
+import AddButton from "./AddButton";
 import DeleteProjectModal from "./DeleteProjectModal";
 import EditProjectModal from "./EditProjectModal";
 import ProjectCardMenu from "./ProjectCardMenu";
@@ -11,6 +13,7 @@ const Dashboard = () => {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const [isModalOpen, setIsModalOpen] = useState(false);
+    const navigate = useNavigate();
     const [projectToDelete, setProjectToDelete] = useState(null);
     const [projectToEdit, setProjectToEdit] = useState(null);
 
@@ -18,8 +21,8 @@ const Dashboard = () => {
         const fetchProjects = async () => {
             try {
                 const data = await getProjectsRequest();
-                console.log("Esta es la lista de proyectos:", data); //borrar luego para no tener ese monton de objetos en consola
                 setProjects(data);
+                console.log("Estos son los proyectos: ", data)
             } catch (err) {
                 setError("No se pudieron cargar los proyectos.");
                 console.error(err);
@@ -35,9 +38,14 @@ const Dashboard = () => {
         setProjects((prev) => [newProject, ...prev]);
     };
 
+    const handleClick = (projectId) => {
+        navigate(`/projects/${projectId}/boards`);
+    };
+
     const handleProjectDeleted = (deletedId) => {
         setProjects((prev) => prev.filter((p) => p.idProyecto !== deletedId));
-    };
+    }
+
 
     const handleProjectUpdated = (updatedProject) => {
         setProjects((prev) =>
@@ -49,16 +57,7 @@ const Dashboard = () => {
         <div className="pt-6 pb-14">
             <h1 className="text-2xl font-bold dark:text-white mb-6">Mis Proyectos</h1>
 
-
-            <div className="mb-4 flex justify-end">
-                <button disabled={loading}
-                    onClick={() => setIsModalOpen(true)} // Abre el modal para crear un nuevo proyecto
-                    className="flex items-center justify-center gap-2 px-6 py-3 rounded-xl bg-indigo-600 text-white hover:bg-indigo-700 dark:bg-[#a3ff12]/15 border dark:border-[#a3ff12]/30 dark:text-[#a3ff12] text-base font-semibold dark:hover:bg-[#a3ff12]/25 transition-colors">
-                    <span className="material-symbols-rounded text-lg">add</span>
-                    Nuevo proyecto
-                </button>
-
-            </div>
+            <AddButton disabled={loading} setIsModalOpen={setIsModalOpen} textoBoton="Nuevo proyecto" />
 
             {loading && (
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -92,7 +91,6 @@ const Dashboard = () => {
                                dark:hover:border-[#A3FF12]/40"
 
                         >
-                            {/* Header de la card con título y menú */}
                             <div className="flex items-start justify-between mb-2">
                                 <h2 className="text-lg font-semibold text-slate-900 dark:text-[#A3FF12] 
                                 leading-tight pr-2">
@@ -116,26 +114,24 @@ const Dashboard = () => {
                                   dark:bg-[#A3FF12]/20 dark:border-[#A3FF12]/40 dark:text-white py-2 rounded-lg
                                    dark:hover:bg-[#A3FF12]/30 transition-all duration-200 ease-in-out"
                                 onClick={() => {
-                                    window.location.href = `/projects/${project.idProyecto}`;
+                                    window.location.href = `/boards/projects/${project.idProyecto}`;
                                 }}
                             >
                                 Ver Panel
                             </button>
 
-                            
+
                         </div>
                     ))}
                 </div>
             )}
 
-            {/* Modal de crear proyecto */}
             <CreateProjectModal
                 isOpen={isModalOpen}
                 onClose={() => setIsModalOpen(false)}
                 onProjectCreated={handleProjectCreated}
             />
 
-            {/* Modal de eliminar proyecto */}
             <DeleteProjectModal
                 isOpen={!!projectToDelete}
                 onClose={() => setProjectToDelete(null)}
@@ -143,7 +139,6 @@ const Dashboard = () => {
                 onProjectDeleted={handleProjectDeleted}
             />
 
-                {/* Modal de editar proyecto */}
             <EditProjectModal
                 isOpen={!!projectToEdit}
                 onClose={() => setProjectToEdit(null)}

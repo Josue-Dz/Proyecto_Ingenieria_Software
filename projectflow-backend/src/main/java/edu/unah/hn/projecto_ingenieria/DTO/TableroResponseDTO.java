@@ -11,7 +11,7 @@ import lombok.Setter;
 @AllArgsConstructor
 @NoArgsConstructor
 @Setter
-public class TableroDTO {
+public class TableroResponseDTO {
     
     private Long idTablero;
 

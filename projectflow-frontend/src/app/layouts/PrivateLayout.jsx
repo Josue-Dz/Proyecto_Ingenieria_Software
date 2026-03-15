@@ -2,10 +2,13 @@ import Navbar from "../layouts/components/PrivateNavbar"
 import { Outlet } from "react-router-dom"
 import Sidebar from "./components/Sidebar"
 import { useState } from "react";
+import { useAuth } from "../../features/auth/hooks/useAuth";
 
 
 const PrivateLayout = () => {
     const [sidebarOpen, setSidebarOpen] = useState(true);
+    const { user, loading } = useAuth();
+    console.log("PrivateLayout:", { user, loading });
 
     return (
         <>

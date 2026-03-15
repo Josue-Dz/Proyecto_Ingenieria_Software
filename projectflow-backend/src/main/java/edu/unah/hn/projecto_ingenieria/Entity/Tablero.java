@@ -1,6 +1,10 @@
 package edu.unah.hn.projecto_ingenieria.Entity;
 
+import java.time.LocalDate;
 import java.util.List;
+
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -39,8 +43,14 @@ public class Tablero {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_proyecto")
+    @JsonBackReference
     private Proyecto proyecto;
 
-    @OneToMany(mappedBy = "tablero", cascade = CascadeType.ALL)
+    //private LocalDate fechaInicio; revision 
+
+    //private LocalDate fechaFin;  revision
+
+    @OneToMany(mappedBy = "tablero", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JsonManagedReference
     private List<Columna> columnas;
 }

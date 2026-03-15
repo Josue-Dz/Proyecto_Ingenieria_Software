@@ -2,6 +2,7 @@ package edu.unah.hn.projecto_ingenieria.Entity;
 
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -29,25 +30,18 @@ import lombok.Setter;
 @NoArgsConstructor
 public class Columna {
     
-    public enum NombreColumna {
-        PENDIENTE,
-        EN_PROGRESO,
-        FINALIZADA
-    }
+    private String nombreColumna;
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id_columna")
     private Long idColumna;
-
-    @Column(name = "nombre_columna")
-    @Enumerated(EnumType.STRING)
-    private NombreColumna nombreColumna;
     
     private Integer posicion;
 
     @ManyToOne
     @JoinColumn(name = "id_tablero")
+    @JsonBackReference
     private Tablero tablero;
 
     @OneToMany(mappedBy = "columna", cascade = CascadeType.ALL)

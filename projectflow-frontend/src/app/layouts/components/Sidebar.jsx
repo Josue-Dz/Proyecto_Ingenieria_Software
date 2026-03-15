@@ -20,7 +20,6 @@ const Sidebar = ({ isOpen, onToggle }) => {
             <nav className="mt-6 dark:text-white">
                 <ul className="flex flex-col gap-2 px-2">
 
-                    {/* Proyectos → Dashboard */}
                     <li>
                         <NavLink
                             to="/dashboard"
