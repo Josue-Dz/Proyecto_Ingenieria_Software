@@ -19,17 +19,27 @@ export const getColumnsRequest = async (boardId) => {
 };
 
 export const createColumnRequest = async (boardId, nombre) => {
-    const response = await apiClient.post(`/boards/${boardId}/columns`, { nombre });
+    console.log("Crear Columna: ", boardId, nombre)
+    const response = await apiClient.post(`/columns/${boardId}`, { nombreColumna: nombre });
     return response.data;
 };
 
 export const createTaskRequest = async (columnId, task) => {
-    const response = await apiClient.post(`/colums/${columnId}/tasks`, task);
+    console.log("Esto tiene task: ", task)
+    const response = await apiClient.post(`/tasks/${columnId}`, task);
     return response.data;
 }
 
 export const updateTaskRequest = async (taskId, taskData) => {
-    const response = await apiClient.put(`/tasks/${taskId}`, taskData);
+    console.log("Request Actualizar taskData: ", taskData)
+    const response = await apiClient.put(`/tasks/${taskId}`, {
+        titulo: taskData.titulo,
+        descripcion: taskData.descripcion,
+        prioridad: taskData.prioridad,
+        fechaLimite: taskData.fechaLimite || null,
+        estado: taskData.estado,
+        usuariosAsignados: taskData.usuariosAsignados ?? [],
+    });
     return response.data;
 }
 
@@ -45,5 +55,12 @@ export const moveTaskRequest = async (taskId, sourceColumnId, destColumnId, newP
     )
     return response.data;
 }
+
+export const searchUserRequest = async (correo) => {
+    const response = await apiClient.get(`/users/buscar`, {
+        params: { correo }
+    });
+    return response.data;
+};
 
 

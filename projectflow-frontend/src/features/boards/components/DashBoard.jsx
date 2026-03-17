@@ -39,7 +39,7 @@ const Dashboard = () => {
     };
 
     const handleClick = (projectId) => {
-        navigate(`/projects/${projectId}/boards`);
+        navigate(`/boards/projects/${projectId}`);
     };
 
     const handleProjectDeleted = (deletedId) => {
@@ -113,9 +113,7 @@ const Dashboard = () => {
                                  text-indigo-600 hover:bg-indigo-100 hover:border-indigo-300
                                   dark:bg-[#A3FF12]/20 dark:border-[#A3FF12]/40 dark:text-white py-2 rounded-lg
                                    dark:hover:bg-[#A3FF12]/30 transition-all duration-200 ease-in-out"
-                                onClick={() => {
-                                    window.location.href = `/boards/projects/${project.idProyecto}`;
-                                }}
+                                onClick={() => handleClick(project.idProyecto)}
                             >
                                 Ver Panel
                             </button>

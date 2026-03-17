@@ -4,6 +4,7 @@ import { createColumnRequest, createTaskRequest, getColumnsRequest, moveTaskRequ
 export function useKanban(boardId){
     const [columns, setColumns] = useState([]);
     const [loading, setLoading] = useState(true);
+    //const [projectId, setProjectId] = useState(null);
     const [error, setError] = useState(null);
 
     useEffect(() => {
@@ -45,7 +46,6 @@ export function useKanban(boardId){
 
      const moveTask = async (taskId, sourceColumnId, destColumnId, newPosition) => {
         try {
-            console.log("movetask useKanban: ", taskId,sourceColumnId, destColumnId, newPosition)
             await moveTaskRequest(taskId, sourceColumnId, destColumnId, newPosition);
         } catch (err) {
             console.error("Error al mover tarea:", err);
