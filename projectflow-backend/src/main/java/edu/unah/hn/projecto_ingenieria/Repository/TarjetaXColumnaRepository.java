@@ -12,4 +12,5 @@ import edu.unah.hn.projecto_ingenieria.Entity.TarjetaXColumnaId;
 public interface TarjetaXColumnaRepository extends JpaRepository<TarjetaXColumna, TarjetaXColumnaId> {
     
     List<TarjetaXColumna> findByIdColumnaOrderByPosicionAsc(Long idColumna);
+    
 }

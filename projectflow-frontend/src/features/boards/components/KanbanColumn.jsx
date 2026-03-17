@@ -1,21 +1,14 @@
-import { useState } from 'react'
+import { useDroppable } from '@dnd-kit/react';
+import { CollisionPriority } from "@dnd-kit/abstract";
 import KanbanCard from './KanbanCard';
 import CreateTaskPopover from './CreateTaskPopover';
-import { CollisionPriority } from "@dnd-kit/abstract";
-import { useDroppable } from '@dnd-kit/react';
 
 const KanbanColumn = ({ column, onAddTask, onTaskClick }) => {
-
-    const [showForm, setShowForm] = useState(false);
-    const [titulo, setTitulo] = useState("");
-    const [prioridad, setPrioridad] = useState("MEDIA");
-    const [fechaLimite, setFecha] = useState("");
-    const [loading, setLoading] = useState(false);
 
     const { ref: droppableRef } = useDroppable({
         id: String(column.idColumna),
         type: "column",
-        accept: ["item"],      
+        accept: ["item"],
         collisionPriority: CollisionPriority.Low,
         data: {
             columnId: column.idColumna,
@@ -23,27 +16,8 @@ const KanbanColumn = ({ column, onAddTask, onTaskClick }) => {
         },
     });
 
-    const handleSubmit = async (e) => {
-        e.preventDefault();
-        if (!titulo.trim()) return;
-        setLoading(true);
-        await onAddTask(column.idColumna, {
-            titulo,
-            prioridad,
-            fechaLimite: fechaLimite || null,
-
-        });
-        setTitulo("");
-        setPrioridad("MEDIA");
-        setFecha("");
-        setShowForm(false);
-        setLoading(false);
-    }
-
-
     return (
-        <div className="flex flex-col w-72 pt-8">
-
+        <div className="flex flex-col w-76 pt-8 shrink-0">
             <div className="flex items-center gap-2 px-1 mb-3">
                 <span className="dark:text-white/80 text-sm font-semibold tracking-tight">
                     {column.nombreColumna}
@@ -55,7 +29,10 @@ const KanbanColumn = ({ column, onAddTask, onTaskClick }) => {
 
             <div
                 ref={droppableRef}
-                className="flex flex-col gap-2.5 flex-1 min-h-30 rounded-2xl p-3 bg-white/60 dark:bg-white/3 border border-white/70 dark:border-white/6">
+                className="flex flex-col gap-2.5 overflow-y-auto max-h-[calc(100vh-260px)] rounded-2xl p-3 bg-white/60 dark:bg-white/3 border border-white/70 dark:border-white/6">
+
+                <CreateTaskPopover columnId={column.idColumna} onAddTask={onAddTask} />
+
                 {column.tarjetas?.map((task, index) => (
                     <KanbanCard
                         key={task.idTarjeta}
@@ -65,13 +42,9 @@ const KanbanColumn = ({ column, onAddTask, onTaskClick }) => {
                         onTaskClick={onTaskClick}
                     />
                 ))}
-
-                <CreateTaskPopover columnId={column.idColumna} onAddTask={onAddTask} />
-
             </div>
-
         </div>
-    )
-}
+    );
+};
 
-export default KanbanColumn 
+export default KanbanColumn;

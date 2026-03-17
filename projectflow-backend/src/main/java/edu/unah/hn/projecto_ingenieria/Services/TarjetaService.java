@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -17,10 +18,12 @@ import edu.unah.hn.projecto_ingenieria.Entity.Tarjeta;
 import edu.unah.hn.projecto_ingenieria.Entity.Tarjeta.Prioridad;
 import edu.unah.hn.projecto_ingenieria.Entity.TarjetaXColumna;
 import edu.unah.hn.projecto_ingenieria.Entity.TarjetaXColumnaId;
+import edu.unah.hn.projecto_ingenieria.Entity.Usuario;
 import edu.unah.hn.projecto_ingenieria.Repository.ColumnaRepository;
 import edu.unah.hn.projecto_ingenieria.Repository.ProyectoRepository;
 import edu.unah.hn.projecto_ingenieria.Repository.TarjetaRepository;
 import edu.unah.hn.projecto_ingenieria.Repository.TarjetaXColumnaRepository;
+import edu.unah.hn.projecto_ingenieria.Repository.UsuarioRepository;
 import lombok.RequiredArgsConstructor;
 
 @Service
@@ -33,55 +36,46 @@ public class TarjetaService {
 
     private final ProyectoRepository proyectoRepository;
 
+    private final UsuarioRepository usuarioRepository;
+
     private final TarjetaRepository tarjetaRepository;
 
-    public TarjetaRequestDTO crearTarjeta(Long idTablero, TarjetaRequestDTO request, Long idUsuario) {
+    private final AuthService authService;
+
+    private final DTOMapper mapper;
+
+    public TarjetaResponseDTO crearTarjeta(Long columnaId, TarjetaRequestDTO request) {
+
+        Columna columna = columnaRepository.findById(columnaId)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Columna no encontrada"));
+
+        Long tableroId = columna.getTablero().getIdTablero();
 
         // 1. Validar que sea líder
-        Proyecto proyecto = proyectoRepository.findByTablero_IdTablero(idTablero)
+        Proyecto proyecto = proyectoRepository.findByTablero_IdTablero(tableroId)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Proyecto no encontrado"));
 
-        if (!proyecto.getCreador().getIdUsuario().equals(idUsuario)) {
+        if (!proyecto.getCreador().getIdUsuario().equals(authService.getUsuarioAutenticado().getIdUsuario())) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Solo el líder puede crear tareas");
         }
 
-        // 2. Buscar columna 'Pendiente'
-        Columna columnaPendiente = columnaRepository
-                .findByTableroIdTableroAndNombreColumna(idTablero, "Pendiente")
-                .orElseThrow(
-                        () -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Columna 'Pendiente' no encontrada"));
+        // tarjetaXColumnaRepository.desplazarTarjetasHaciaAbajo(columnaId);
 
-        // 3. Crear tarjeta
         Tarjeta tarjeta = new Tarjeta();
         tarjeta.setTitulo(request.getTitulo());
-        tarjeta.setDescripcion(request.getDescripcion());
-        tarjeta.setFechaLimite(request.getFechaLimite());
         tarjeta.setFechaCreacion(LocalDateTime.now());
-        tarjeta.setPrioridad(Prioridad.valueOf(request.getPrioridad())); // ya es enum
+        tarjeta.setColumna(columna);
+        tarjeta.setCreador(columna.getTablero().getProyecto().getCreador());
+        tarjeta = tarjetaRepository.save(tarjeta);
 
-        tarjetaRepository.save(tarjeta);
+        TarjetaXColumna tarjetaXColumna = new TarjetaXColumna();
+        tarjetaXColumna.setIdColumna(columnaId);
+        tarjetaXColumna.setIdTarjeta(tarjeta.getIdTarjeta());
+        tarjetaXColumna.setPosicion(0);
 
-        // 4. Asignar a columna
-        List<TarjetaXColumna> tarjetas = tarjetaXColumnaRepository
-                .findByIdColumnaOrderByPosicionAsc(columnaPendiente.getIdColumna());
+        tarjetaXColumnaRepository.save(tarjetaXColumna);
 
-        int nuevaPosicion = tarjetas.isEmpty() ? 1 : tarjetas.get(tarjetas.size() - 1).getPosicion() + 1;
-
-        TarjetaXColumna relacion = new TarjetaXColumna();
-        relacion.setTarjeta(tarjeta);
-        relacion.setColumna(columnaPendiente);
-        relacion.setPosicion(nuevaPosicion);
-
-        tarjetaXColumnaRepository.save(relacion);
-
-        // 5. Devolver DTO
-        TarjetaRequestDTO dto = new TarjetaRequestDTO();
-        dto.setTitulo(tarjeta.getTitulo());
-        dto.setDescripcion(tarjeta.getDescripcion());
-        dto.setFechaLimite(tarjeta.getFechaLimite());
-        dto.setPrioridad(tarjeta.getPrioridad().name());
-
-        return dto;
+        return mapper.toTarjetaResponseDTO(tarjeta);
     }
 
     public List<TarjetaResponseDTO> mapToDTO(Columna columna) {
@@ -106,16 +100,17 @@ public class TarjetaService {
             tarjetaDTO.setPrioridad(tarjeta.getPrioridad());
 
             tarjetaDTO.setEstado(tarjeta.getEstado());
-            tarjetaDTO.setAsignados(
-                    tarjeta.getAsignados()
-                            .stream()
-                            .map(u -> u.getNombre() + " " + u.getApellido())
-                            .toList());
+            tarjetaDTO.setAsignados(null);
 
             tarjetasDTO.add(tarjetaDTO);
         }
 
         return tarjetasDTO;
+    }
+
+    public TarjetaResponseDTO actualizarTarjeta() {
+
+        return null;
     }
 
     public void moverTarjeta(Long tarjetaId, Long columnaOrigen, TarjetaRequestDTO tarjetaDto) {
@@ -148,4 +143,41 @@ public class TarjetaService {
         nueva.setPosicion(tarjetaDto.getNuevaPosicion());
         tarjetaXColumnaRepository.save(nueva);
     }
+
+    public TarjetaResponseDTO actualizarInformacionTarjeta(Long tarjetaId, TarjetaRequestDTO request) {
+
+        // Buscar la tarjeta
+        Tarjeta tarjeta = tarjetaRepository.findById(tarjetaId)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Tarjeta no encontrada"));
+
+        List<Usuario> usuariosAsignados = new ArrayList<>();
+
+        // Buscar los usuarios a asignar a la tarjeta por su correo
+        if (request.getUsuariosAsignados() != null && !request.getUsuariosAsignados().isEmpty()) {
+            for (String correoUsuario : request.getUsuariosAsignados()) {
+                Usuario usuario = usuarioRepository.findByCorreo(correoUsuario).orElseThrow(
+                        () -> new ResponseStatusException(HttpStatus.NOT_FOUND, "El usuario a asignar no existe."));
+
+                usuariosAsignados.add(usuario);
+            }
+        }
+
+        if (!tarjeta.getCreador().getIdUsuario().equals(authService.getUsuarioAutenticado().getIdUsuario())) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Solo el líder puede crear tareas");
+        }
+
+        // Setear los nuevos valores
+        tarjeta.setTitulo(request.getTitulo());
+        tarjeta.setDescripcion(request.getDescripcion());
+        tarjeta.setFechaLimite(request.getFechaLimite());
+        tarjeta.setPrioridad(request.getPrioridad());
+        tarjeta.setEstado(request.getEstado());
+        tarjeta.setAsignados(usuariosAsignados);
+
+        // Guardar
+        tarjeta = tarjetaRepository.save(tarjeta);
+
+        return mapper.toTarjetaDTO(tarjeta);
+    }
+
 }

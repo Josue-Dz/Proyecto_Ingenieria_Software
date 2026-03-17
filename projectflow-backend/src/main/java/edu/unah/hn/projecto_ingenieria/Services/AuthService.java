@@ -26,159 +26,159 @@ import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 
-
 @Service
 @RequiredArgsConstructor
 public class AuthService {
 
-        private final UsuarioRepository usuarioRepository;
-        private final PasswordEncoder passwordEncoder;
-        private final JwtService jwtService;
-        private final AuthenticationManager authenticationManager;
+    private final UsuarioRepository usuarioRepository;
+    private final PasswordEncoder passwordEncoder;
+    private final JwtService jwtService;
+    private final AuthenticationManager authenticationManager;
 
-        public AuthResponse login(LoginRequestDTO dto, HttpServletResponse response) {
+    public AuthResponse login(LoginRequestDTO dto, HttpServletResponse response) {
 
-                authenticationManager.authenticate(
-                                new UsernamePasswordAuthenticationToken(dto.getEmail(), dto.getPassword()));
-                Usuario user = usuarioRepository.findByCorreo(dto.getEmail())
-                                .orElseThrow(() -> new RuntimeException("Credenciales incorrectas"));
+        authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(dto.getEmail(), dto.getPassword()));
+        Usuario user = usuarioRepository.findByCorreo(dto.getEmail())
+                .orElseThrow(() -> new RuntimeException("Credenciales incorrectas"));
 
-                String token = jwtService.getToken(user);
+        String token = jwtService.getToken(user);
 
-                // Crear la cookie
-                Cookie cookie = crearCookie(token);
-                response.addCookie(cookie);
+        // Crear la cookie
+        Cookie cookie = crearCookie(token);
+        response.addCookie(cookie);
 
-                // Creo el dto con la data que tiene user
-                UsuarioDTO usuarioDTO = crearUsuarioDTO(user);
+        // Creo el dto con la data que tiene user
+        UsuarioDTO usuarioDTO = crearUsuarioDTO(user);
 
-                return AuthResponse.builder()
-                                .user(usuarioDTO)
-                                .build();
+        return AuthResponse.builder()
+                .user(usuarioDTO)
+                .build();
 
-        }
+    }
 
-        public AuthResponse register(UsuarioRegistroDTO dto, HttpServletResponse response) {
+    public AuthResponse register(UsuarioRegistroDTO dto, HttpServletResponse response) {
 
-                Usuario usuario = Usuario.builder()
-                                .nombre(dto.getNombre())
-                                .apellido(dto.getApellido())
-                                .correo(dto.getCorreo())
-                                .password(passwordEncoder.encode(dto.getPassword()))
-                                .estado("A")
-                                .fechaRegistro(LocalDateTime.now())
-                                .proyectosUsuario(new ArrayList<>())
-                                .build();
+        Usuario usuario = Usuario.builder()
+                .nombre(dto.getNombre())
+                .apellido(dto.getApellido())
+                .correo(dto.getCorreo())
+                .password(passwordEncoder.encode(dto.getPassword()))
+                .estado("A")
+                .fechaRegistro(LocalDateTime.now())
+                .proyectosUsuario(new ArrayList<>())
+                .build();
 
-                usuarioRepository.save(usuario);
+        usuarioRepository.save(usuario);
 
-                String token = jwtService.getToken(usuario);
+        String token = jwtService.getToken(usuario);
 
-                //Crear la cookie
-                Cookie cookie = crearCookie(token);
-                response.addCookie(cookie);
+        // Crear la cookie
+        Cookie cookie = crearCookie(token);
+        response.addCookie(cookie);
 
-                Usuario user = usuarioRepository.findByCorreo(usuario.getCorreo())
-                                .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
+        Usuario user = usuarioRepository.findByCorreo(usuario.getCorreo())
+                .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
 
-               UsuarioDTO usuarioDTO = crearUsuarioDTO(user);
+        UsuarioDTO usuarioDTO = crearUsuarioDTO(user);
 
-                return AuthResponse.builder()
-                                .user(usuarioDTO)
-                                .build();
-        }
+        return AuthResponse.builder()
+                .user(usuarioDTO)
+                .build();
+    }
 
-        public UsuarioDTO getMyProfile(){
-                Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-                Usuario usuario = (Usuario) authentication.getPrincipal();
+    public UsuarioDTO getMyProfile() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        Usuario usuario = (Usuario) authentication.getPrincipal();
 
-                UsuarioDTO usuarioDTO = new UsuarioDTO(
-                        usuario.getNombre(),
-                        usuario.getApellido(),
-                        usuario.getNombre() + " " + usuario.getApellido(),
-                        usuario.getCorreo(),
-                        usuario.obtenerInicialesDeNombre(usuario.getNombre(), usuario.getApellido())
-                );
+        UsuarioDTO usuarioDTO = new UsuarioDTO(
+                usuario.getNombre(),
+                usuario.getApellido(),
+                usuario.getNombre() + " " + usuario.getApellido(),
+                usuario.getCorreo(),
+                usuario.obtenerInicialesDeNombre(usuario.getNombre(), usuario.getApellido()));
 
-                return usuarioDTO;
-        }
+        return usuarioDTO;
+    }
 
-        public void logout(HttpServletResponse response){
-                Cookie cookie = new Cookie("token", null);
-                cookie.setHttpOnly(false);
-                cookie.setPath("/");
-                cookie.setMaxAge(0);
-                response.addCookie(cookie);
-        }
+    public void logout(HttpServletResponse response) {
+        Cookie cookie = new Cookie("token", null);
+        cookie.setHttpOnly(false);
+        cookie.setPath("/");
+        cookie.setMaxAge(0);
+        response.addCookie(cookie);
+    }
 
-        private UsuarioDTO crearUsuarioDTO(Usuario usuario){
-                return new UsuarioDTO(
-                        usuario.getNombre(),
-                        usuario.getApellido(),
-                        usuario.getNombre() + " " + usuario.getApellido(),
-                        usuario.getCorreo(),
-                        usuario.obtenerInicialesDeNombre(usuario.getNombre(), usuario.getApellido())
-                );
-        }
+    private UsuarioDTO crearUsuarioDTO(Usuario usuario) {
+        return new UsuarioDTO(
+                usuario.getNombre(),
+                usuario.getApellido(),
+                usuario.getNombre() + " " + usuario.getApellido(),
+                usuario.getCorreo(),
+                usuario.obtenerInicialesDeNombre(usuario.getNombre(), usuario.getApellido()));
+    }
 
-        private Cookie crearCookie(String token){
-                Cookie cookie = new Cookie("token", token);
-                cookie.setHttpOnly(true);
-                cookie.setSecure(false);
-                cookie.setPath("/");
-                cookie.setMaxAge(3600);
-                return cookie;
-        }
+    private Cookie crearCookie(String token) {
+        Cookie cookie = new Cookie("token", token);
+        cookie.setHttpOnly(true);
+        cookie.setSecure(false);
+        cookie.setPath("/");
+        cookie.setMaxAge(3600);
+        return cookie;
+    }
 
+    public UsuarioDTO updateMyProfile(ActualizarPerfilDTO actualizarPerfil) {
 
-        public UsuarioDTO updateMyProfile(ActualizarPerfilDTO actualizarPerfil ){
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        Usuario usuario = (Usuario) authentication.getPrincipal();
 
-                Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-    Usuario usuario = (Usuario) authentication.getPrincipal();
+        // Recargar desde BD para tener la entidad gestionada
+        Usuario usuarioBD = usuarioRepository.findById(usuario.getIdUsuario())
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Usuario no encontrado"));
 
-    // Recargar desde BD para tener la entidad gestionada
-    Usuario usuarioBD = usuarioRepository.findById(usuario.getIdUsuario())
-        .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Usuario no encontrado"));
+        if (actualizarPerfil.getNombre() == null || actualizarPerfil.getNombre().isBlank())
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "El nombre no puede estar vacío");
 
-    if (actualizarPerfil.getNombre() == null || actualizarPerfil.getNombre().isBlank())
-        throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "El nombre no puede estar vacío");
+        if (actualizarPerfil.getApellido() == null || actualizarPerfil.getApellido().isBlank())
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "El apellido no puede estar vacío");
 
-    if (actualizarPerfil.getApellido() == null || actualizarPerfil.getApellido().isBlank())
-        throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "El apellido no puede estar vacío");
+        usuarioBD.setNombre(actualizarPerfil.getNombre());
+        usuarioBD.setApellido(actualizarPerfil.getApellido());
+        usuarioRepository.save(usuarioBD);
 
-    usuarioBD.setNombre(actualizarPerfil.getNombre());
-    usuarioBD.setApellido(actualizarPerfil.getApellido());
-    usuarioRepository.save(usuarioBD);
+        return new UsuarioDTO(
+                usuarioBD.getNombre(),
+                usuarioBD.getApellido(),
+                usuarioBD.getNombre() + " " + usuarioBD.getApellido(),
+                usuarioBD.getCorreo(),
+                usuarioBD.obtenerInicialesDeNombre(usuarioBD.getNombre(), usuarioBD.getApellido()));
 
-    return new UsuarioDTO(
-        usuarioBD.getNombre(),
-        usuarioBD.getApellido(),
-        usuarioBD.getNombre() + " " + usuarioBD.getApellido(),
-        usuarioBD.getCorreo(),
-        usuarioBD.obtenerInicialesDeNombre(usuarioBD.getNombre(), usuarioBD.getApellido())
-    );
+    }
 
-        }
+    public void changeMyPassword(CambioContraseniaDTO cambioContrasenia) {
 
-        public void changeMyPassword(CambioContraseniaDTO cambioContrasenia){
-
-                Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String correo = authentication.getName();// El correo / nombre del usuario
 
         Usuario usuarioBD = usuarioRepository.findByCorreo(correo)
-            .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Usuario no encontrado"));
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Usuario no encontrado"));
 
-            if(!passwordEncoder.matches(cambioContrasenia.getContraseniaActual(), usuarioBD.getPassword()))
-                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "La contraseña actual es incorrecta");
+        if (!passwordEncoder.matches(cambioContrasenia.getContraseniaActual(), usuarioBD.getPassword()))
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "La contraseña actual es incorrecta");
 
-            if(cambioContrasenia.getNuevaContrasenia()== null || cambioContrasenia.getNuevaContrasenia().length() < 8)
-                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "La nueva contraseña debe tener al menos 8 caracteres");
+        if (cambioContrasenia.getNuevaContrasenia() == null || cambioContrasenia.getNuevaContrasenia().length() < 8)
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
+                    "La nueva contraseña debe tener al menos 8 caracteres");
 
-            usuarioBD.setPassword(passwordEncoder.encode(cambioContrasenia.getNuevaContrasenia()));
-            usuarioRepository.save(usuarioBD);
+        usuarioBD.setPassword(passwordEncoder.encode(cambioContrasenia.getNuevaContrasenia()));
+        usuarioRepository.save(usuarioBD);
 
+    }
 
-
-        }
+    public Usuario getUsuarioAutenticado() {
+        Usuario usuarioPrincipal = (Usuario) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        return usuarioRepository.findByCorreo(usuarioPrincipal.getCorreo())
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Usuario no encontrado"));
+    }
 
 }

@@ -24,8 +24,7 @@ const CreateProjectModal = ({ isOpen, onClose, onProjectCreated }) => {
         setError(null);
         setLoading(true);
         try {
-            const newProject = await createProjectRequest(form);// aqui se llama al servicio para crear el proyecto 
-            // y devuelve el proyecto creado con su id
+            const newProject = await createProjectRequest(form);
             onProjectCreated(newProject);
             setForm(initialForm);
             onClose();

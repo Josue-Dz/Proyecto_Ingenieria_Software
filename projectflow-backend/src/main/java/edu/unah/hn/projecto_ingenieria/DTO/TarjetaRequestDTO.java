@@ -3,6 +3,8 @@ package edu.unah.hn.projecto_ingenieria.DTO;
 import java.time.LocalDate;
 import java.util.List;
 
+import edu.unah.hn.projecto_ingenieria.Entity.Tarjeta.EstadoTarjeta;
+import edu.unah.hn.projecto_ingenieria.Entity.Tarjeta.Prioridad;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -22,9 +24,9 @@ public class TarjetaRequestDTO {
 
     private LocalDate fechaLimite;
 
-    private String prioridad;
+    private Prioridad prioridad;
 
-    private String estado;
+    private EstadoTarjeta estado;
     
-    private List<Long> usuariosAsignados;
+    private List<String> usuariosAsignados;
 }

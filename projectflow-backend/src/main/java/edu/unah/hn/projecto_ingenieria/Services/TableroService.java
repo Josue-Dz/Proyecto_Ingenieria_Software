@@ -13,18 +13,13 @@ import org.springframework.web.server.ResponseStatusException;
 import edu.unah.hn.projecto_ingenieria.DTO.ColumnaDTO;
 import edu.unah.hn.projecto_ingenieria.DTO.TableroRequestDTO;
 import edu.unah.hn.projecto_ingenieria.DTO.TableroResponseDTO;
-import edu.unah.hn.projecto_ingenieria.DTO.TarjetaResponseDTO;
 import edu.unah.hn.projecto_ingenieria.Entity.Columna;
 import edu.unah.hn.projecto_ingenieria.Entity.Proyecto;
 import edu.unah.hn.projecto_ingenieria.Entity.Tablero;
-import edu.unah.hn.projecto_ingenieria.Entity.Tarjeta;
-import edu.unah.hn.projecto_ingenieria.Entity.TarjetaXColumna;
 import edu.unah.hn.projecto_ingenieria.Entity.Usuario;
 import edu.unah.hn.projecto_ingenieria.Repository.ColumnaRepository;
 import edu.unah.hn.projecto_ingenieria.Repository.ProyectoRepository;
-import edu.unah.hn.projecto_ingenieria.Repository.ProyectoUsuarioRepository;
 import edu.unah.hn.projecto_ingenieria.Repository.TableroRepository;
-import edu.unah.hn.projecto_ingenieria.Repository.TarjetaXColumnaRepository;
 import edu.unah.hn.projecto_ingenieria.Repository.UsuarioRepository;
 import lombok.RequiredArgsConstructor;
 
@@ -33,8 +28,6 @@ import lombok.RequiredArgsConstructor;
 public class TableroService {
 
     private final ColumnaRepository columnaRepository;
-
-    private final TarjetaXColumnaRepository tarjetaXColumnaRepository;
 
     private final ProyectoRepository proyectoRepository;
 

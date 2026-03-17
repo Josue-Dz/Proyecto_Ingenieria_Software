@@ -28,7 +28,7 @@ function AppRoutes() {
                 <Route path='/boards/projects/:id' element={<BoardsPage />}/>
                 <Route path='/projects/:id/boards/:boardId' element={<KanbanBoard />} />
                 <Route path='/boards/:id' element={<BoardPage />}/>
-                <Route path = '/perfil' element ={<ProfilePage />}/>
+                <Route path='/perfil' element ={<ProfilePage />}/>
                 <Route />
             </Route>
         </Routes>

@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import edu.unah.hn.projecto_ingenieria.DTO.TarjetaRequestDTO;
+import edu.unah.hn.projecto_ingenieria.DTO.TarjetaResponseDTO;
 import edu.unah.hn.projecto_ingenieria.Services.TarjetaService;
 import lombok.RequiredArgsConstructor;
 
@@ -20,11 +21,12 @@ public class TarjetaController {
 
     private final TarjetaService tarjetaService;
 
-    @PostMapping("/{idTablero}/task")
-    public ResponseEntity<TarjetaRequestDTO> crearTarjeta(@PathVariable Long idTablero,
-            @RequestBody TarjetaRequestDTO tarjetaRequest, @RequestParam Long idUsuario) {
+    @PostMapping("/{columnaId}")
+    public ResponseEntity<TarjetaResponseDTO> crearTarjeta(@PathVariable Long columnaId,
+            @RequestBody TarjetaRequestDTO tarjetaRequest) {
 
-        return ResponseEntity.ok(tarjetaService.crearTarjeta(idTablero, tarjetaRequest, idUsuario));
+        System.out.println("Estoy en el endpoint crear tarjeta: " + columnaId + tarjetaRequest.getTitulo());
+        return ResponseEntity.ok(tarjetaService.crearTarjeta(columnaId, tarjetaRequest));
     }
 
     @PutMapping("/{tarjetaId}/mover")
@@ -35,5 +37,12 @@ public class TarjetaController {
                 "Estoy en el metodo mover tarjeta y esto tiene tarjeta DTO: " + tarjetaDto.getColumnaDestinoId());
         tarjetaService.moverTarjeta(tarjetaId, columnaOrigenId, tarjetaDto);
         return ResponseEntity.ok().build();
+    }
+
+    @PutMapping("/{tarjetaId}")
+    public ResponseEntity<TarjetaResponseDTO> actualizarInfoTarjeta(@PathVariable Long tarjetaId,
+            @RequestBody TarjetaRequestDTO request) {
+                System.out.println("Estoy en el endpoint actualizar tarjeta: " + tarjetaId + request.toString());
+        return ResponseEntity.ok(tarjetaService.actualizarInformacionTarjeta(tarjetaId, request));
     }
 }

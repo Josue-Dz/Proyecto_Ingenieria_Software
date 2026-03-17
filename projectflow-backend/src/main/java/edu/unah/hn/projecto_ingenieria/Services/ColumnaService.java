@@ -2,7 +2,6 @@ package edu.unah.hn.projecto_ingenieria.Services;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -29,8 +28,27 @@ public class ColumnaService {
 
     private final DTOMapper mapper;
 
-    public List<ColumnaDTO> mapToListDTO (List<Columna> columnas){
-         List<ColumnaDTO> columnasDTO = new ArrayList<>();
+    public ColumnaDTO crearColumna(Long tableroId, ColumnaDTO dto) {
+        Tablero tablero = tableroRepository.findById(tableroId)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Tablero no encontrado"));
+
+        Columna columna = new Columna();
+        columna.setNombreColumna(dto.getNombreColumna());
+        columna.setTablero(tablero);
+
+        // Posición al final de las columnas existentes
+        int posicion = tablero.getColumnas() != null ? tablero.getColumnas().size() : 0;
+        columna.setPosicion(posicion);
+
+        // Lista Vacia
+        List<TarjetaResponseDTO> tarjetas = new ArrayList<>();
+
+        columnaRepository.save(columna);
+        return mapper.toColumnaDTO(columna, tableroId, tarjetas);
+    }
+
+    public List<ColumnaDTO> mapToListDTO(List<Columna> columnas) {
+        List<ColumnaDTO> columnasDTO = new ArrayList<>();
 
         // Por cada columna, obtener tarjetas ordenadas por posición
         for (Columna columna : columnas) {
@@ -51,25 +69,6 @@ public class ColumnaService {
 
         return columnasDTO;
 
-    }
-
-    public ColumnaDTO crearColumna(Long tableroId, ColumnaDTO dto) {
-        Tablero tablero = tableroRepository.findById(tableroId)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Tablero no encontrado"));
-
-        Columna columna = new Columna();
-        columna.setNombreColumna(dto.getNombreColumna());
-        columna.setTablero(tablero);
-
-        // Posición al final de las columnas existentes
-        int posicion = tablero.getColumnas() != null ? tablero.getColumnas().size() : 0;
-        columna.setPosicion(posicion);
-
-        //Lista Vacia
-        List<TarjetaResponseDTO> tarjetas = new ArrayList<>();
-
-        columnaRepository.save(columna);
-        return mapper.toColumnaDTO(columna, tableroId, tarjetas);
     }
 
 }
