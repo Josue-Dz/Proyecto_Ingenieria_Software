@@ -3,9 +3,6 @@ import React, { useEffect, useRef, useState } from 'react'
 const CreateTaskPopover = ({ onAddTask, columnId }) => {
     const [open, setOpen] = useState(false);
     const [titulo, setTitulo] = useState("");
-    const [descripcion, setDesc] = useState("");
-    const [prioridad, setPrioridad] = useState("MEDIA");
-    const [fechaLimite, setFecha] = useState("");
     const [loading, setLoading] = useState(false);
     const popoverRef = useRef(null);
 
@@ -26,15 +23,8 @@ const CreateTaskPopover = ({ onAddTask, columnId }) => {
         if (!titulo.trim()) return;
         setLoading(true);
         await onAddTask(columnId, {
-            titulo,
-            descripcion: descripcion || null,
-            prioridad,
-            fechaLimite: fechaLimite || null,
+            titulo
         });
-        setTitulo("");
-        setDesc("");
-        setPrioridad("MEDIA");
-        setFecha("");
 
         setOpen(false);
         setLoading(false);
@@ -45,7 +35,7 @@ const CreateTaskPopover = ({ onAddTask, columnId }) => {
         <div className="relative mt-1" ref={popoverRef}>
             <button
                 onClick={() => setOpen(!open)}
-                className="flex items-center gap-1.5 px-2 py-1.5 rounded-xl text-white/25 text-xs hover:text-white/50 hover:bg-white/5 transition-colors w-full"
+                className="flex items-center gap-1.5 px-2 py-1.5 rounded-xl text-slate-500 dark:text-white/25 text-xs dark:hover:text-white/50 hover:bg-white/5 transition-colors w-full"
             >
                 <span className="material-symbols-rounded text-[14px]">add</span>
                 Agregar tarea
@@ -59,7 +49,7 @@ const CreateTaskPopover = ({ onAddTask, columnId }) => {
                     </p>
 
                     <form onSubmit={handleSubmit} className="flex flex-col gap-2.5">
-                        
+
                         <input
                             autoFocus
                             type="text"
@@ -69,34 +59,6 @@ const CreateTaskPopover = ({ onAddTask, columnId }) => {
                             className="bg-white/5 border border-white/10 rounded-xl px-3 py-2 text-white text-xs placeholder-white/20 focus:outline-none focus:border-white/25 transition-colors"
                         />
 
-                        <textarea
-                            placeholder="Descripción (opcional)"
-                            value={descripcion}
-                            onChange={e => setDesc(e.target.value)}
-                            row={2}
-                            className="bg-white/5 border border-white/10 rounded-xl px-3 py-2 text-white text-xs placeholder-white/20 focus:outline-none focus:border-white/25 transition-colors resize-none"
-                        />
-
-                        <div className="grid grid-cols-2 gap-2">
-                            <select
-                                value={prioridad}
-                                onChange={e => setPrioridad(e.target.value)}
-                                className="bg-white/5 border border-white/10 rounded-xl px-3 py-2 text-white/70 text-xs focus:outline-none focus:border-white/25 transition-colors"
-                            >
-                                <option value="BAJA">Baja</option>
-                                <option value="MEDIA">Media</option>
-                                <option value="ALTA">Alta</option>
-                                
-                            </select>
-
-                            <input
-                                type="date"
-                                value={fechaLimite}
-                                onChange={e => setFecha(e.target.value)}
-                                className="bg-white/5 border border-white/10 rounded-xl px-3 py-2 text-white/70 text-xs focus:outline-none focus:border-white/25 transition-colors"
-                            />
-
-                        </div>
                         <div className="flex gap-2 mt-1">
                             <button
                                 type="submit"
@@ -114,7 +76,7 @@ const CreateTaskPopover = ({ onAddTask, columnId }) => {
                                 Cancelar
                             </button>
                         </div>
-                        
+
                     </form>
                 </div>
             )}

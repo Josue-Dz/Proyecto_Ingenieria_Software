@@ -28,12 +28,14 @@ public class ProyectoService {
     private final ProyectoRepository proyectoRepository;
     private final UsuarioRepository usuarioRepository;
     private final ProyectoUsuarioRepository proyectoUsuarioRepository;
+    
+    private final AuthService authService;
 
     private final DTOMapper mapper;
 
     @Transactional
     public ProyectoResponseDTO crearProyecto(ProyectoRequestDTO dto) {
-        Usuario creador = getUsuarioAutenticado();
+        Usuario creador = authService.getUsuarioAutenticado();
 
         if (dto.getFechaInicio() != null && dto.getFechaFin() != null && dto.getFechaInicio().isAfter(dto.getFechaFin())) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "La fecha de inicio debe ser anterior a la fecha de fin");
@@ -63,7 +65,7 @@ public class ProyectoService {
         Proyecto proyecto = proyectoRepository.findById(id)
             .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Proyecto no encontrado"));
 
-        Usuario usuario = getUsuarioAutenticado();
+        Usuario usuario = authService.getUsuarioAutenticado();
 
         boolean esCreador = proyecto.getCreador() != null && proyecto.getCreador().getIdUsuario().equals(usuario.getIdUsuario());
         boolean miembro = proyectoUsuarioRepository.findByProyecto_IdProyectoAndUsuario_IdUsuario(id, usuario.getIdUsuario()).isPresent();
@@ -78,7 +80,7 @@ public class ProyectoService {
 
     @Transactional
     public ProyectoResponseDTO actualizarProyecto(Long id, ProyectoRequestDTO dto) {
-        Usuario usuario = getUsuarioAutenticado();
+        Usuario usuario = authService.getUsuarioAutenticado();
         Proyecto proyecto = proyectoRepository.findById(id)
             .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Proyecto no encontrado"));
 
@@ -107,7 +109,7 @@ public class ProyectoService {
 
     @Transactional
     public void eliminarProyecto(Long id) {
-        Usuario usuario = getUsuarioAutenticado();
+        Usuario usuario = authService.getUsuarioAutenticado();
         Proyecto proyecto = proyectoRepository.findById(id)
             .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Proyecto no encontrado"));
 
@@ -127,18 +129,12 @@ public class ProyectoService {
 
     @Transactional(Transactional.TxType.REQUIRED)
     public List<ProyectoResponseDTO> obtenerProyectosPorUsuario() {
-        Usuario usuario = getUsuarioAutenticado();
+        Usuario usuario = authService.getUsuarioAutenticado();
         List<ProyectoUsuario> proyectosUsuario = proyectoUsuarioRepository.findByUsuario_IdUsuario(usuario.getIdUsuario());
 
         return proyectosUsuario.stream()
             .map(pu -> mapper.toProyectoDTO(pu.getProyecto()))
             .collect(Collectors.toList());
-    }
-
-    private Usuario getUsuarioAutenticado() {
-        Usuario usuarioPrincipal = (Usuario) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        return usuarioRepository.findByCorreo(usuarioPrincipal.getCorreo())
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Usuario no encontrado"));
     }
 
 }

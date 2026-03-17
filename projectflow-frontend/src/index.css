@@ -40,3 +40,21 @@ input:-webkit-autofill {
 .dark {
   --bg-gradient: radial-gradient(125% 125% at 50% 10%, #000000 40%, #2b0707 100%);
 }
+
+::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+}
+
+::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 999px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: rgba(255, 255, 255, 0.2);
+}

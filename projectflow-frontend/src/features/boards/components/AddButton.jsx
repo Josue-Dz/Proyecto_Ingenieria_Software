@@ -1,6 +1,5 @@
-import React from 'react'
 
-const AddButton = ({ textoBoton, isModalOpen, setIsModalOpen, loading }) => {
+const AddButton = ({ textoBoton, setIsModalOpen, loading }) => {
   return (
     <div className="mb-4 flex justify-end">
         <button 
