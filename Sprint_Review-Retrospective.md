@@ -89,7 +89,7 @@ Desarrollar el núcleo funcional del sistema mediante la implementación del **T
 * **Historias de Usuario (HU) comprometidas:** 11
 * **Tareas Técnicas comprometidas:** 2 (Pruebas y UML)
 * **Total de elementos terminados:** 13/13 (100% de cumplimiento)
-* **Puntos de historia totales:** 34 puntos (Fibonacci)
+* **Puntos de historia totales:** 42 puntos (Fibonacci)
 
 ## 3. Demostración de Logros (Lo que se terminó)
 
