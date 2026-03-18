@@ -1,7 +1,7 @@
 # Multi-stage build for the Spring Boot backend
 
 # 1) Build stage
-FROM maven:3.10.1-eclipse-temurin-17 AS build
+FROM maven:3.9.6-eclipse-temurin-17 AS build
 WORKDIR /workspace
 
 # Copy maven metadata first for better caching
