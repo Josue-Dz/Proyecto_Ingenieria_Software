@@ -72,3 +72,63 @@ El sistema permite el flujo completo de registro, login seguro y creación de pr
 ## 3. Compromisos para el Sprint #2
 * **Prioridad:** Finalizar la tarea técnica pendiente del Sprint #1.
 * **Investigación:** Analizar librerías de "Drag and Drop" antes de iniciar el desarrollo del tablero para optimizar tiempos.
+
+---------------------------------------------------------
+
+# Acta de Sprint Review – Sprint #2
+
+**Proyecto:** Sistema de Gestión de Proyectos de Software
+**Equipo:** CodeFlow
+**Integrantes:** Ronny Posadas, David Parada, José Núñez
+**Fecha:** 28/02/26 – 13/03/26
+
+## 1. Objetivo del Sprint
+Desarrollar el núcleo funcional del sistema mediante la implementación del **Tablero Kanban interactivo**, permitiendo la gestión dinámica de tareas, la organización de tableros por proyecto y la personalización de la experiencia de usuario (UI/UX).
+
+## 2. Resumen del Sprint (Métricas)
+* **Historias de Usuario (HU) comprometidas:** 11
+* **Tareas Técnicas comprometidas:** 2 (Pruebas y UML)
+* **Total de elementos terminados:** 13/13 (100% de cumplimiento)
+* **Puntos de historia totales:** 34 puntos (Fibonacci)
+
+## 3. Demostración de Logros (Lo que se terminó)
+
+### A. Funcionalidades (Historias de Usuario)
+1. **Tablero Kanban Operativo:** Visualización dinámica de columnas y tarjetas.
+2. **Gestión de Estructura:** Creación de nuevas columnas (listas) y tableros múltiples dentro de un mismo proyecto.
+3. **Gestión de Tareas:** Creación de tarjetas y visualización detallada de su contenido.
+4. **Interactividad:** Implementación del cambio de estado (*Drag & Drop*) para mover tarjetas entre columnas.
+5. **Administración de Proyectos:** Funcionalidades de edición y eliminación de proyectos existentes.
+6. **Experiencia de Usuario:** Implementación de Modo Oscuro y gestión de perfil de usuario.
+
+### B. Infraestructura y Calidad Técnica
+* **Diagramas UML:** Finalización de los 8 diagramas estructurales y de comportamiento (Clases, Casos de Uso, Secuencia, etc.).
+* **Pruebas Unitarias:** Implementación de tests para validar la lógica de negocio en el backend (Spring Boot).
+* **Navegación:** Refinamiento de las rutas para transicionar entre el Dashboard y los tableros específicos.
+
+## 4. Estado del Incremento
+El sistema ahora es una herramienta funcional de gestión. El usuario no solo crea proyectos, sino que puede operarlos mediante un tablero Kanban interactivo, organizar su flujo de trabajo en columnas y personalizar su entorno. El producto está listo para la fase de métricas y colaboración masiva.
+
+--------------------------------------
+
+# Acta de Sprint Retrospective – Sprint #2
+
+## 1. Análisis de Cumplimiento
+* **Tareas completadas:** 13
+* **Tareas pendientes:** 0
+* **Porcentaje de éxito:** 100% (Se recuperó la tarea pendiente del Sprint #1).
+
+## 2. Feedback del Equipo
+
+### ¿Qué salió bien?
+* **Recuperación de Ritmo:** Se logró finalizar la visualización del Kanban que quedó pendiente, sin retrasar las nuevas historias.
+* **Calidad de Código:** Las pruebas unitarias redujeron los errores al momento de integrar el frontend con el backend.
+
+### ¿Qué puede mejorar?
+* **Complejidad del Drag & Drop:** La lógica de reordenamiento en la base de datos fue más difícil de lo previsto inicialmente.
+* **Carga de Documentación:** Generar los 8 diagramas UML al mismo tiempo que se programaba generó una carga de trabajo pesada a mitad del sprint.
+
+## 3. Plan de Mejora y Compromisos para el Sprint #3
+* **Investigación de Librerías:** Para el módulo de métricas, dedicaremos los primeros 2 días a investigar bibliotecas de gráficos.
+* **Refactorización:** Limpiar el código del movimiento de tarjetas para asegurar que sea escalable cuando haya cientos de tareas.
+* **Enfoque en Métricas:** La prioridad del siguiente sprint será cumplir con el requerimiento del ingeniero sobre la generación de reportes y exportación a PDF.
