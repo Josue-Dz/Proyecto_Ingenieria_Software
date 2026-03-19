@@ -29,7 +29,6 @@ public class ProyectoController {
 
 	@PostMapping("/create")
 	public ResponseEntity<ProyectoResponseDTO> crearProyecto(@RequestBody ProyectoRequestDTO dto) {
-		System.out.println("Esto llego al backend" + dto);
 		ProyectoResponseDTO created = proyectoService.crearProyecto(dto);
 		return ResponseEntity.created(URI.create("/projects/" + created.getIdProyecto())).body(created);
 	}
@@ -49,9 +48,9 @@ public class ProyectoController {
 		return ResponseEntity.ok(proyectoService.actualizarProyecto(id, dto));
 	}
 
-	@DeleteMapping("/{id}")
+	@DeleteMapping("/{id}")	
 	public ResponseEntity<Void> eliminar(@PathVariable Long id) {
-		proyectoService.eliminarProyecto(id);
+		proyectoService.eliminarProyecto(id);		
 		return ResponseEntity.noContent().build();
 	}
 

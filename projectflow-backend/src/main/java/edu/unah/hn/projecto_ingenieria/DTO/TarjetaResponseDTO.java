@@ -31,6 +31,6 @@ public class TarjetaResponseDTO {
 
     private EstadoTarjeta estado;
 
-    private List<String> asignados;
+    private List<UsuarioDTO> asignados;
 }
 

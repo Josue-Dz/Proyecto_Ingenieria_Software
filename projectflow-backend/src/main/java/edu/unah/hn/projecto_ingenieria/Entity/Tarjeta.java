@@ -4,6 +4,8 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -78,7 +80,6 @@ public class Tarjeta {
         joinColumns = @JoinColumn(name = "id_tarjeta"),
         inverseJoinColumns = @JoinColumn(name = "id_usuario")
     )
-    
     private List<Usuario> asignados;
 }
 

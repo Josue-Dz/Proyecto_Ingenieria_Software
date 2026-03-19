@@ -7,7 +7,6 @@ const EditProjectModal = ({ isOpen, onClose, project, onProjectUpdated }) => {
     const [error, setError] = useState(null);
     const [success, setSuccess] = useState(false);
 
-    // Aqui se prellena el form con los datos actuales del proyecto
     useEffect(() => {
         if (project) {
             setForm({
@@ -32,7 +31,6 @@ const EditProjectModal = ({ isOpen, onClose, project, onProjectUpdated }) => {
         setError(null);
         setSuccess(false);
 
-        // Validación por parte del frontend
         if (form.fechaInicio && form.fechaFin && form.fechaInicio > form.fechaFin) {
             setError("La fecha de inicio debe ser anterior a la fecha de fin.");
             return;
@@ -68,19 +66,25 @@ const EditProjectModal = ({ isOpen, onClose, project, onProjectUpdated }) => {
     return (
         <div
             onClick={handleBackdropClick}
-            className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm px-4"
+            className="fixed inset-0 z-50 flex items-center justify-center bg-black/30
+             dark:bg-black/60 backdrop-blur-sm px-4"
         >
-            <div className="bg-[#1a1a1a] border border-white/10 rounded-2xl w-full max-w-sm shadow-2xl">
+            <div className="bg-indigo-50 dark:bg-[#1a1a1a] border border-indigo-300/15
+             dark:border-white/10 rounded-2xl w-full max-w-sm shadow-2xl">
 
                 {/* Header */}
-                <div className="flex items-center justify-between px-5 pt-4 pb-3 border-b border-white/8">
+                <div className="flex items-center justify-between px-5 pt-4 pb-3 border-b border-indigo-600/15
+                 dark:border-white/8">
                     <div className="flex items-center gap-2">
-                        <div className="w-7 h-7 rounded-lg bg-[#A3FF12]/15 flex items-center justify-center">
-                            <span className="material-symbols-rounded text-[#A3FF12] text-sm">edit</span>
+                        <div className="w-7 h-7 rounded-lg bg-indigo-100 dark:bg-[#A3FF12]/15 
+                        flex items-center justify-center">
+                            <span className="material-symbols-rounded text-indigo-600
+                             dark:text-[#A3FF12] text-sm">edit</span>
                         </div>
-                        <h2 className="text-white font-semibold text-sm">Editar proyecto</h2>
+                        <h2 className="text-slate-800 dark:text-white font-semibold text-sm">Editar proyecto</h2>
                     </div>
-                    <button onClick={onClose} className="text-white/30 hover:text-white/70 transition-colors">
+                    <button onClick={onClose} className="text-slate-400 dark:text-white/30 hover:text-rose-500
+                     dark:hover:text-white/70 transition-colors">
                         <span className="material-symbols-rounded text-lg">close</span>
                     </button>
                 </div>
@@ -90,8 +94,8 @@ const EditProjectModal = ({ isOpen, onClose, project, onProjectUpdated }) => {
 
                     {/* Nombre */}
                     <div>
-                        <label className="text-white/50 text-xs font-medium block mb-1">
-                            Nombre <span className="text-[#A3FF12]">*</span>
+                        <label className="text-slate-500 dark:text-white/50 text-xs font-medium block mb-1">
+                            Nombre <span className="text-indigo-500 dark:text-[#A3FF12]">*</span>
                         </label>
                         <input
                             type="text"
@@ -99,15 +103,16 @@ const EditProjectModal = ({ isOpen, onClose, project, onProjectUpdated }) => {
                             value={form.nombreProyecto}
                             onChange={handleChange}
                             required
-                            className="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2
-                             text-white text-sm placeholder-white/20 focus:outline-none
-                              focus:border-[#A3FF12]/40 transition-colors"
+                            className="w-full bg-white dark:bg-white/5 border border-slate-200
+                             dark:border-white/10 rounded-lg px-3 py-2 text-slate-800 dark:text-white text-sm
+                              placeholder-slate-300 dark:placeholder-white/20 focus:outline-none
+                               focus:border-indigo-400 dark:focus:border-[#A3FF12]/40 transition-colors"
                         />
                     </div>
 
                     {/* Descripción */}
                     <div>
-                        <label className="text-white/50 text-xs font-medium block mb-1">
+                        <label className="text-slate-500 dark:text-white/50 text-xs font-medium block mb-1">
                             Descripción
                         </label>
                         <textarea
@@ -115,17 +120,18 @@ const EditProjectModal = ({ isOpen, onClose, project, onProjectUpdated }) => {
                             value={form.descripcion}
                             onChange={handleChange}
                             rows={2}
-                            className="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2
-                             text-white text-sm placeholder-white/20 focus:outline-none
-                              focus:border-[#A3FF12]/40 transition-colors resize-none"
+                            className="w-full bg-white dark:bg-white/5 border border-slate-200
+                             dark:border-white/10 rounded-lg px-3 py-2 text-slate-800 dark:text-white text-sm
+                              placeholder-slate-300 dark:placeholder-white/20 focus:outline-none
+                               focus:border-indigo-400 dark:focus:border-[#A3FF12]/40 transition-colors resize-none"
                         />
                     </div>
 
                     {/* Fechas */}
                     <div className="grid grid-cols-2 gap-2">
                         <div>
-                            <label className="text-white/50 text-xs font-medium block mb-1">
-                                Inicio <span className="text-[#A3FF12]">*</span>
+                            <label className="text-slate-500 dark:text-white/50 text-xs font-medium block mb-1">
+                                Inicio <span className="text-indigo-500 dark:text-[#A3FF12]">*</span>
                             </label>
                             <input
                                 type="date"
@@ -133,15 +139,16 @@ const EditProjectModal = ({ isOpen, onClose, project, onProjectUpdated }) => {
                                 value={form.fechaInicio}
                                 onChange={handleChange}
                                 required
-                                min={new Date().toISOString().split('T')[0]} // No se permite fechas pasadas
-                                className="w-full bg-white/5 border border-white/10 rounded-lg px-2 py-2
-                                 text-white text-xs focus:outline-none
-                                 focus:border-[#A3FF12]/40 transition-colors scheme-dark"
+                                min={new Date().toISOString().split('T')[0]}
+                                className="w-full bg-white dark:bg-white/5 border border-slate-200
+                                 dark:border-white/10 rounded-lg px-2 py-2 text-slate-800
+                                  dark:text-white text-xs focus:outline-none focus:border-indigo-400
+                                   dark:focus:border-[#A3FF12]/40 transition-colors scheme-light dark:scheme-dark"
                             />
                         </div>
                         <div>
-                            <label className="text-white/50 text-xs font-medium block mb-1">
-                                Fin <span className="text-[#A3FF12]">*</span>
+                            <label className="text-slate-500 dark:text-white/50 text-xs font-medium block mb-1">
+                                Fin <span className="text-indigo-500 dark:text-[#A3FF12]">*</span>
                             </label>
                             <input
                                 type="date"
@@ -150,24 +157,27 @@ const EditProjectModal = ({ isOpen, onClose, project, onProjectUpdated }) => {
                                 onChange={handleChange}
                                 required
                                 min={form.fechaInicio}
-                                className="w-full bg-white/5 border border-white/10 rounded-lg px-2 py-2
-                                 text-white text-xs focus:outline-none
-                                  focus:border-[#A3FF12]/40 transition-colors scheme-dark"
+                                className="w-full bg-white dark:bg-white/5 border border-slate-200
+                                dark:border-white/10 rounded-lg px-2 py-2 text-slate-800
+                                 dark:text-white text-xs focus:outline-none focus:border-indigo-400
+                                  dark:focus:border-[#A3FF12]/40 transition-colors scheme-light dark:scheme-dark"
                             />
                         </div>
                     </div>
 
                     {/* Error */}
                     {error && (
-                        <p className="text-red-400 text-xs bg-red-400/10 border
-                         border-red-400/20 rounded-lg px-3 py-2">
+                        <p className="text-red-500 dark:text-red-400 text-xs bg-red-50
+                         dark:bg-red-400/10 border border-red-200 dark:border-red-400/20 rounded-lg px-3 py-2">
                             {error}
                         </p>
                     )}
 
                     {/* Éxito */}
                     {success && (
-                        <p className="text-[#A3FF12] text-xs bg-[#A3FF12]/10 border border-[#A3FF12]/20 rounded-lg px-3 py-2 flex items-center gap-1.5">
+                        <p className="text-green-600 dark:text-[#A3FF12] text-xs bg-green-50
+                         dark:bg-[#A3FF12]/10 border border-green-200
+                          dark:border-[#A3FF12]/20 rounded-lg px-3 py-2 flex items-center gap-1.5">
                             <span className="material-symbols-rounded text-sm">check_circle</span>
                             Proyecto actualizado correctamente.
                         </p>
@@ -178,15 +188,19 @@ const EditProjectModal = ({ isOpen, onClose, project, onProjectUpdated }) => {
                         <button
                             type="button"
                             onClick={onClose}
-                            className="flex-1 py-2 rounded-lg border border-white/10
-                             text-white/50 text-xs font-semibold hover:bg-white/5 transition-colors"
+                            className="flex-1 py-2 rounded-lg border border-slate-200 dark:border-white/10
+                             text-slate-500 dark:text-white/50 text-xs font-semibold hover:bg-slate-100
+                              dark:hover:bg-white/5 transition-colors"
                         >
                             Cancelar
                         </button>
                         <button
                             type="submit"
                             disabled={loading || success}
-                            className="flex-1 flex items-center justify-center gap-1.5 py-2 rounded-lg bg-[#A3FF12]/15 border border-[#A3FF12]/30 text-[#A3FF12] text-xs font-semibold hover:bg-[#A3FF12]/25 transition-colors disabled:opacity-50"
+                            className="flex-1 flex items-center justify-center gap-1.5 py-2 rounded-lg
+                             bg-indigo-600 hover:bg-indigo-700 dark:bg-[#A3FF12]/15 border
+                              border-indigo-600 dark:border-[#A3FF12]/30 text-white 
+                              dark:text-[#A3FF12] text-xs font-semibold dark:hover:bg-[#A3FF12]/25 transition-colors disabled:opacity-50"
                         >
                             {loading ? (
                                 <span className="material-symbols-rounded text-sm animate-spin">progress_activity</span>

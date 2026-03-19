@@ -2,10 +2,13 @@ import Navbar from "../layouts/components/PrivateNavbar"
 import { Outlet } from "react-router-dom"
 import Sidebar from "./components/Sidebar"
 import { useState } from "react";
+import { useAuth } from "../../features/auth/hooks/useAuth";
 
 
 const PrivateLayout = () => {
     const [sidebarOpen, setSidebarOpen] = useState(true);
+    const { user, loading } = useAuth();
+    console.log("PrivateLayout:", { user, loading });
 
     return (
         <>
@@ -24,7 +27,7 @@ const PrivateLayout = () => {
 
                         <Sidebar isOpen={sidebarOpen} onToggle={() => setSidebarOpen(!sidebarOpen)} />
 
-                        <main className={`flex-1 transition-all duration-300 px-4 max-w-7xl sm:px-6 md:px-12 pt-22 ${sidebarOpen ? "ml-64" : "ml-20"}`}>
+                        <main className={`flex-1 transition-all duration-300 px-4 sm:px-6 md:px-12 pt-22 overflow-x-auto ${sidebarOpen ? "ml-64" : "ml-20"}`}>
                             <Outlet />
                         </main>
 

@@ -13,7 +13,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Entity
-@Table(name = "tarjeta_x_columna")
+@Table(name = "tbl_tarjeta_x_columna")
 @IdClass(TarjetaXColumnaId.class)
 @Getter
 @Setter

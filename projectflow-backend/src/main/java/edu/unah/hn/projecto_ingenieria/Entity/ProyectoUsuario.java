@@ -41,6 +41,4 @@ public class ProyectoUsuario {
     @Enumerated(EnumType.STRING)
     private role rol;
 
-
-
 }

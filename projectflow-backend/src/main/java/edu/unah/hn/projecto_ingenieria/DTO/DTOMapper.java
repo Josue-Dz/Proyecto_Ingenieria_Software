@@ -1,5 +1,6 @@
 package edu.unah.hn.projecto_ingenieria.DTO;
 
+import java.util.ArrayList;
 import java.util.List;
 import org.springframework.stereotype.Component;
 
@@ -7,6 +8,7 @@ import edu.unah.hn.projecto_ingenieria.Entity.Columna;
 import edu.unah.hn.projecto_ingenieria.Entity.Proyecto;
 import edu.unah.hn.projecto_ingenieria.Entity.Tablero;
 import edu.unah.hn.projecto_ingenieria.Entity.Tarjeta;
+import edu.unah.hn.projecto_ingenieria.Entity.Usuario;
 
 /**
  * Utility component responsible for converting entity objects into their
@@ -21,22 +23,21 @@ public class DTOMapper {
             return null;
         }
         return new ProyectoResponseDTO(
-            p.getIdProyecto(),
-            p.getNombreProyecto(),
-            p.getDescripcion(),
-            p.getFechaInicio(),
-            p.getFechaFin()
-        );
+                p.getIdProyecto(),
+                p.getNombreProyecto(),
+                p.getDescripcion(),
+                p.getFechaInicio(),
+                p.getFechaFin());
     }
 
-    public TableroDTO toTableroDTO(Tablero tablero) {
+    public TableroRequestDTO toTableroDTO(Tablero tablero) {
         if (tablero == null) {
             return null;
         }
-        TableroDTO dto = new TableroDTO();
+        TableroRequestDTO dto = new TableroRequestDTO();
         dto.setIdTablero(tablero.getIdTablero());
         dto.setIdProyecto(tablero.getProyecto().getIdProyecto());
-        dto.setNombreProyecto(tablero.getProyecto().getNombreProyecto());
+        dto.setNombre(tablero.getProyecto().getNombreProyecto());
         dto.setDescripcion(tablero.getProyecto().getDescripcion());
         return dto;
     }
@@ -53,15 +54,27 @@ public class DTOMapper {
         dto.setFechaLimite(tarjeta.getFechaLimite());
         dto.setPrioridad(tarjeta.getPrioridad());
         dto.setEstado(tarjeta.getEstado());
-        dto.setAsignados(
-                tarjeta.getAsignados() == null ? List.of() :
-                        tarjeta.getAsignados()
-                                .stream()
-                                .map(u -> u.getNombre() + " " + u.getApellido())
-                                .toList()
-        );
+        dto.setAsignados(toListUsuarioDTO(tarjeta));
         return dto;
     }
+
+    private List<UsuarioDTO> toListUsuarioDTO(Tarjeta tarjeta) {
+        List<UsuarioDTO> usuariosAsignados = new ArrayList<>();
+
+        if (tarjeta.getAsignados() != null && !tarjeta.getAsignados().isEmpty()) {
+            for (Usuario usuario : tarjeta.getAsignados()) {
+                UsuarioDTO usuarioDTO = new UsuarioDTO();
+                usuarioDTO.setNombreCompleto(usuario.getNombre() + " " + usuario.getApellido());
+                usuarioDTO.setCorreo(usuario.getCorreo());
+                usuarioDTO.setIniciales(usuario.obtenerInicialesDeNombre(usuario.getNombre(), usuario.getApellido()));
+
+                usuariosAsignados.add(usuarioDTO);
+            }
+        }
+
+        return usuariosAsignados;
+    }
+
     public TarjetaRequestDTO toTarjetaRequestDTO(Tarjeta tarjeta) {
         if (tarjeta == null) {
             return null;
@@ -70,7 +83,23 @@ public class DTOMapper {
         dto.setTitulo(tarjeta.getTitulo());
         dto.setDescripcion(tarjeta.getDescripcion());
         dto.setFechaLimite(tarjeta.getFechaLimite());
-        dto.setPrioridad(tarjeta.getPrioridad().name());
+        dto.setPrioridad(tarjeta.getPrioridad());
+        return dto;
+    }
+
+    public TarjetaResponseDTO toTarjetaResponseDTO(Tarjeta tarjeta) {
+        if (tarjeta == null) {
+            return null;
+        }
+        TarjetaResponseDTO dto = new TarjetaResponseDTO();
+        dto.setIdTarjeta(tarjeta.getIdTarjeta());
+        dto.setTitulo(tarjeta.getTitulo());
+        dto.setDescripcion(tarjeta.getDescripcion());
+        dto.setFechaLimite(tarjeta.getFechaLimite());
+        dto.setPrioridad(tarjeta.getPrioridad());
+        dto.setEstado(tarjeta.getEstado());
+        dto.setAsignados(toListUsuarioDTO(tarjeta));
+
         return dto;
     }
 
@@ -79,11 +108,22 @@ public class DTOMapper {
             return null;
         }
         ColumnaDTO dto = new ColumnaDTO();
+        dto.setIdColumna(columna.getIdColumna());
         dto.setNombreColumna(columna.getNombreColumna());
         dto.setPosicion(columna.getPosicion());
         dto.setIdTablero(idTablero);
         dto.setTarjetas(tarjetas);
         return dto;
     }
-    // future mappers can be added here in the same centralized location
+    
+    public UsuarioDTO toUsuarioDTO(Usuario usuario){
+        UsuarioDTO dto = new UsuarioDTO();
+
+        dto.setNombreCompleto(usuario.getNombre() + " " + usuario.getApellido());
+        dto.setNombre(usuario.getNombre());
+        dto.setApellido(usuario.getApellido());
+        dto.setIniciales(usuario.obtenerInicialesDeNombre(usuario.getNombre(), usuario.getApellido()));
+
+        return dto; 
+    }
 }

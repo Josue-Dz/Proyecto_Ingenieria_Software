@@ -1,3 +1,4 @@
+import { NavLink } from "react-router-dom";
 
 const Sidebar = ({ isOpen, onToggle }) => {
     return (
@@ -17,15 +18,51 @@ const Sidebar = ({ isOpen, onToggle }) => {
             </div>
 
             <nav className="mt-6 dark:text-white">
-                <ul className="flex flex-col gap-2">
-                    <li className="flex items-center gap-3 px-4 py-2 hover:bg-indigo-600/15 dark:hover:bg-[#A3FF12]/20 rounded-md cursor-pointer transition-colors">
-                        <span className="material-symbols-rounded text-indigo-600 dark:text-[#A3FF12]">view_kanban</span>
-                        {isOpen && <span>Proyectos</span>}
+                <ul className="flex flex-col gap-2 px-2">
+
+                    <li>
+                        <NavLink
+                            to="/dashboard"
+                            className={({ isActive }) =>
+                                `flex items-center gap-3 px-3 py-2 rounded-md transition-colors
+                                ${isActive
+                                    ? "bg-indigo-600/20 dark:bg-[#A3FF12]/20 text-indigo-700 dark:text-[#A3FF12]"
+                                    : "hover:bg-indigo-600/15 dark:hover:bg-[#A3FF12]/10 text-gray-700 dark:text-white"
+                                }`
+                            }
+                            title="Proyectos"
+                        >
+                            <span className="material-symbols-rounded text-indigo-600 dark:text-[#A3FF12] shrink-0">
+                                view_kanban
+                            </span>
+                            {isOpen && <span className="text-sm font-medium">Proyectos</span>}
+                        </NavLink>
                     </li>
+
+                    {/* Perfil */}
+                    <li>
+                        <NavLink
+                            to="/perfil"
+                            className={({ isActive }) =>
+                                `flex items-center gap-3 px-3 py-2 rounded-md transition-colors
+                                ${isActive
+                                    ? "bg-indigo-600/20 dark:bg-[#A3FF12]/20 text-indigo-700 dark:text-[#A3FF12]"
+                                    : "hover:bg-indigo-600/15 dark:hover:bg-[#A3FF12]/10 text-gray-700 dark:text-white"
+                                }`
+                            }
+                            title="Mi perfil"
+                        >
+                            <span className="material-symbols-rounded text-indigo-600 dark:text-[#A3FF12] shrink-0">
+                                person
+                            </span>
+                            {isOpen && <span className="text-sm font-medium">Mi perfil</span>}
+                        </NavLink>
+                    </li>
+
                 </ul>
             </nav>
         </aside>
     );
 };
 
-export default Sidebar
+export default Sidebar;
