@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import { useKanban } from '../hooks/useKanban'
 import { DragDropProvider } from '@dnd-kit/react'
 import { move } from "@dnd-kit/helpers"
@@ -9,47 +9,59 @@ import { isSortable } from '@dnd-kit/react/sortable';
 
 const KanbanBoard = () => {
     const { boardId } = useParams();
-    const { columns, proyectoId, setColumns, addColumn, addTask, moveTask } = useKanban(boardId);
+    const { columns, items, taskMap, setItems, addColumn, addTask, moveTask, updateTask } = useKanban(boardId);
     const [showAddColumn, setShowAddColumn] = useState(false);
     const [newColumnName, setNewColumnName] = useState("");
     const [addingColumn, setAddingColumn] = useState(false);
     const [selectedTask, setSelectedTask] = useState(null);
 
-    const columnsToMap = (cols) =>
-        Object.fromEntries(cols.map(col => [String(col.idColumna), col.tarjetas ?? []]));
+    const itemsRef = useRef(items);
+    const sourceGroupRef = useRef(null);
 
-    const mapToColumns = (cols, map) =>
-        cols.map(col => ({ ...col, tarjetas: map[String(col.idColumna)] ?? [] }));
+    const handleDragStart = (event) => {
+        const { source } = event.operation;
+        if (source) {
+            sourceGroupRef.current = source.group;
+        }
+    };
 
     const handleDragOver = (event) => {
-        const { source, target } = event;
-        if (!source || !target) return;
+        const { source } = event.operation;
 
-        setColumns(prev => {
-            const map = columnsToMap(prev);
-            const updated = move(map, event);
-            prev.forEach(col => {
-                if (!updated[col.idColumna]) {
-                    updated[col.idColumna] = [];
-                }
-            });
-            return mapToColumns(prev, updated);
+        if (!source || source.type === "column") return;
+        setItems(prev => {
+            const updated = move(prev, event);
+            itemsRef.current = updated;
+            return updated;
         });
     };
 
     const handleDragEnd = (event) => {
-        if (event.canceled) return;
+        if (event.canceled) {
+            sourceGroupRef.current = null;
+            return;
+        }
 
         const { source } = event.operation;
         if (!source || !isSortable(source)) return;
 
         const taskId = source.id;
-        const sourceColumnId = Number(source.initialGroup);
-        const destColumnId = Number(source.group);
-        const newPosition = source.index ?? 0;
+        const sourceColumnId = Number(sourceGroupRef.current);
+        sourceGroupRef.current = null;
+
+        let destColumnId = sourceColumnId;
+        for (const [colId, taskIds] of Object.entries(itemsRef.current)) {
+            if (taskIds.includes(taskId)) {
+                destColumnId = Number(colId);
+                break;
+            }
+        }
+
+        const newPosition = itemsRef.current[String(destColumnId)]?.indexOf(taskId) ?? 0;
 
         if (sourceColumnId === destColumnId && source.initialIndex === source.index) return;
 
+        console.log(`moveTask: ${taskId}, origen: ${sourceColumnId}, destino: ${destColumnId}, pos: ${newPosition}`);
         moveTask(taskId, sourceColumnId, destColumnId, newPosition);
     };
 
@@ -66,6 +78,7 @@ const KanbanBoard = () => {
     return (
         <>
             <DragDropProvider
+                onDragStart={handleDragStart}
                 onDragOver={handleDragOver}
                 onDragEnd={handleDragEnd}
             >
@@ -105,7 +118,10 @@ const KanbanBoard = () => {
                         <KanbanColumn
                             key={col.idColumna}
                             index={index}
-                            column={col}
+                            column={{
+                                ...col,
+                                tarjetas: (items[String(col.idColumna)] ?? []).map(id => taskMap[id]).filter(Boolean)
+                            }}
                             onAddTask={addTask}
                             onTaskClick={setSelectedTask}
                         />
@@ -119,12 +135,7 @@ const KanbanBoard = () => {
                     proyectoId={proyectoId}
                     onClose={() => setSelectedTask(null)}
                     onTaskUpdated={(updated) => {
-                        setColumns(prev => prev.map((col) => ({
-                            ...col,
-                            tarjetas: col.tarjetas.map(t =>
-                                t.idTarjeta === updated.idTarjeta ? updated : t
-                            )
-                        })));
+                        updateTask(updated);
                         setSelectedTask(null);
                     }}
                 />
