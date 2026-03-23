@@ -49,8 +49,7 @@ public class TableroService {
         tableroNuevo.setDescripcionTablero(tablero.getDescripcion());
         Tablero guardado = tableroRepository.save(tableroNuevo);
 
-        // Tablero se crea con 3 columnas por defecto que posteriormente puede modificar
-        // el usuario
+        // Tablero se crea con 3 columnas por defecto que posteriormente puede modificar el usuario
         List<String> columnasPorDefecto = List.of("Pendiente", "En Progreso", "Finalizado");
         List<Columna> columnas = new ArrayList<>();
         for (int i = 0; i < columnasPorDefecto.size(); i++) {

@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 
 const CreateTaskPopover = ({ onAddTask, columnId }) => {
     const [open, setOpen] = useState(false);
