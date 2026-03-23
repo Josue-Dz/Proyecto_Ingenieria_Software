@@ -132,7 +132,6 @@ const KanbanBoard = () => {
             {selectedTask && (
                 <TaskDetailModal
                     task={selectedTask}
-                    proyectoId={proyectoId}
                     onClose={() => setSelectedTask(null)}
                     onTaskUpdated={(updated) => {
                         updateTask(updated);
