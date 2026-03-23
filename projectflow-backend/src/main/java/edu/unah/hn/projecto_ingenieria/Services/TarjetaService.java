@@ -1,9 +1,11 @@
 package edu.unah.hn.projecto_ingenieria.Services;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.stereotype.Service;
@@ -19,6 +21,9 @@ import edu.unah.hn.projecto_ingenieria.Entity.Tarjeta.Prioridad;
 import edu.unah.hn.projecto_ingenieria.Entity.TarjetaXColumna;
 import edu.unah.hn.projecto_ingenieria.Entity.TarjetaXColumnaId;
 import edu.unah.hn.projecto_ingenieria.Entity.Usuario;
+import edu.unah.hn.projecto_ingenieria.Events.TarjetaAsignadaEvent;
+import edu.unah.hn.projecto_ingenieria.Events.TarjetaFechaCambioEvent;
+import edu.unah.hn.projecto_ingenieria.Events.TarjetaMovidaEvent;
 import edu.unah.hn.projecto_ingenieria.Repository.ColumnaRepository;
 import edu.unah.hn.projecto_ingenieria.Repository.ProyectoRepository;
 import edu.unah.hn.projecto_ingenieria.Repository.TarjetaRepository;
@@ -44,6 +49,8 @@ public class TarjetaService {
 
     private final DTOMapper mapper;
 
+    private final ApplicationEventPublisher eventPublisher;
+
     public TarjetaResponseDTO crearTarjeta(Long columnaId, TarjetaRequestDTO request) {
 
         Columna columna = columnaRepository.findById(columnaId)
@@ -66,6 +73,17 @@ public class TarjetaService {
         tarjeta.setFechaCreacion(LocalDateTime.now());
         tarjeta.setColumna(columna);
         tarjeta.setCreador(columna.getTablero().getProyecto().getCreador());
+
+        List<Usuario> usuariosAsignados = new ArrayList<>();
+        if (request.getUsuariosAsignados() != null && !request.getUsuariosAsignados().isEmpty()) {
+            for (String correoUsuario : request.getUsuariosAsignados()) {
+                Usuario usuario = usuarioRepository.findByCorreo(correoUsuario).orElseThrow(
+                        () -> new ResponseStatusException(HttpStatus.NOT_FOUND, "El usuario a asignar no existe."));
+                usuariosAsignados.add(usuario);
+            }
+            tarjeta.setAsignados(usuariosAsignados);
+        }
+
         tarjeta = tarjetaRepository.save(tarjeta);
 
         TarjetaXColumna tarjetaXColumna = new TarjetaXColumna();
@@ -74,6 +92,11 @@ public class TarjetaService {
         tarjetaXColumna.setPosicion(0);
 
         tarjetaXColumnaRepository.save(tarjetaXColumna);
+
+        // Publicar evento de asignación si hay usuarios asignados
+        if (!usuariosAsignados.isEmpty()) {
+            eventPublisher.publishEvent(new TarjetaAsignadaEvent(this, tarjeta, usuariosAsignados));
+        }
 
         return mapper.toTarjetaResponseDTO(tarjeta);
     }
@@ -115,6 +138,15 @@ public class TarjetaService {
 
     public void moverTarjeta(Long tarjetaId, Long columnaOrigen, TarjetaRequestDTO tarjetaDto) {
 
+        Columna columnaAntigua = columnaRepository.findById(columnaOrigen)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Columna origen no encontrada"));
+
+        Columna columnaNueva = columnaRepository.findById(tarjetaDto.getColumnaDestinoId())
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Columna destino no encontrada"));
+
+        Tarjeta tarjeta = tarjetaRepository.findById(tarjetaId)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Tarjeta no encontrada"));
+
         TarjetaXColumnaId origenId = new TarjetaXColumnaId(tarjetaId, columnaOrigen);
         tarjetaXColumnaRepository.deleteById(origenId);
 
@@ -142,6 +174,13 @@ public class TarjetaService {
         nueva.setIdColumna(tarjetaDto.getColumnaDestinoId());
         nueva.setPosicion(tarjetaDto.getNuevaPosicion());
         tarjetaXColumnaRepository.save(nueva);
+
+        // Actualizar la columna de la tarjeta
+        tarjeta.setColumna(columnaNueva);
+        tarjetaRepository.save(tarjeta);
+
+        // Publicar evento de movimiento
+        eventPublisher.publishEvent(new TarjetaMovidaEvent(this, tarjeta, columnaAntigua, columnaNueva));
     }
 
     public TarjetaResponseDTO actualizarInformacionTarjeta(Long tarjetaId, TarjetaRequestDTO request) {
@@ -149,6 +188,9 @@ public class TarjetaService {
         // Buscar la tarjeta
         Tarjeta tarjeta = tarjetaRepository.findById(tarjetaId)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Tarjeta no encontrada"));
+
+        // Almacenar valores antiguos para eventos
+        LocalDate fechaAntigua = tarjeta.getFechaLimite();
 
         List<Usuario> usuariosAsignados = new ArrayList<>();
 
@@ -176,6 +218,16 @@ public class TarjetaService {
 
         // Guardar
         tarjeta = tarjetaRepository.save(tarjeta);
+
+        // Publicar eventos
+        if (!usuariosAsignados.isEmpty()) {
+            eventPublisher.publishEvent(new TarjetaAsignadaEvent(this, tarjeta, usuariosAsignados));
+        }
+
+        if (fechaAntigua != null && !fechaAntigua.equals(request.getFechaLimite()) ||
+            fechaAntigua == null && request.getFechaLimite() != null) {
+            eventPublisher.publishEvent(new TarjetaFechaCambioEvent(this, tarjeta, fechaAntigua, request.getFechaLimite()));
+        }
 
         return mapper.toTarjetaDTO(tarjeta);
     }
