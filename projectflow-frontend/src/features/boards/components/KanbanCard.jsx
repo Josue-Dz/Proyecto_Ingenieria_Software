@@ -29,6 +29,7 @@ const KanbanCard = ({ task, index, columnId, onTaskClick }) => {
         index,
         group: String(columnId),
         type: "item",
+        accept: "item",
     });
 
 
@@ -43,7 +44,7 @@ const KanbanCard = ({ task, index, columnId, onTaskClick }) => {
             ref={ref}
             style={{ opacity: isDragging ? 0.4 : 1 }}
             onClick={() => onTaskClick(task)}
-            className="bg-white dark:bg-white/5 border border-white/95 dark:border-white/10 rounded-xl p-3.5 dark:hover:border-white/20 dark:hover:bg-white/8 shadow-md transition-colors select-none active: cursor-grabbing"
+            className="bg-white/90 dark:bg-white/5 border border-white/95 dark:border-white/10 rounded-xl p-3.5 dark:hover:border-white/20 dark:hover:bg-white/8 shadow-md transition-colors select-none active: cursor-grabbing"
         >
             <div
                 ref={handleRef}
