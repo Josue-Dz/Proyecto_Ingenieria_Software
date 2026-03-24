@@ -6,6 +6,7 @@ import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import edu.unah.hn.projecto_ingenieria.Entity.ProyectoUsuario;
@@ -28,6 +29,9 @@ public interface ProyectoUsuarioRepository extends JpaRepository<ProyectoUsuario
     @Query("delete from ProyectoUsuario p where p.proyecto.idProyecto = :idProyecto")
     void deleteByProyecto_IdProyecto(Long idProyecto); // return type void or int if you need count
 
-    boolean existsByUsuario_IdUsuarioAndProyecto_IdProyecto(Long idUsuario, Long idProyecto);
+    
+    @Query("SELECT COUNT(pu) > 0 FROM ProyectoUsuario pu WHERE pu.usuario.idUsuario = :idUsuario AND pu.proyecto.idProyecto = :idProyecto")
+boolean existsByUsuarioAndProyecto(@Param("idUsuario") Long idUsuario, @Param("idProyecto") Long idProyecto);
+
 
 }

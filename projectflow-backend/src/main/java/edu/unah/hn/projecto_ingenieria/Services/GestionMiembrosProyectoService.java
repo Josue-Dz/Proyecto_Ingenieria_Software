@@ -75,10 +75,10 @@ public MiembroResponseDTO invitarMiembro(Long idProyecto, InvitarMiembroRequestD
         .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "No existe un usuario con ese correo"));
 
     boolean yaEsMiembro = proyectoUsuarioRepository
-        .existsByUsuario_IdUsuarioAndProyecto_IdProyecto(nuevoMiembro.getIdUsuario(), idProyecto);
+     .existsByUsuarioAndProyecto(nuevoMiembro.getIdUsuario(), idProyecto);
 
     if (yaEsMiembro)
-        throw new ResponseStatusException(HttpStatus.CONFLICT, "El usuario ya es miembro de este proyecto");
+      throw new ResponseStatusException(HttpStatus.CONFLICT, "El usuario ya es miembro de este proyecto");
 
     role rolAsignado;
     try {
