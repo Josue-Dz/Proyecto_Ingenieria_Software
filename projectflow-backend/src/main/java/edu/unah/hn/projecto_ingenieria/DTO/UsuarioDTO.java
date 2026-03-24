@@ -13,6 +13,9 @@ import jakarta.validation.constraints.*;
 @Getter
 @Setter
 public class UsuarioDTO {
+
+    private Long idUsuario;
+
     @NotBlank(message = "El nombre no puede estar vacío")
     private String nombre;
 
@@ -28,4 +31,14 @@ public class UsuarioDTO {
 
     @NotBlank(message = "Las iniciales no pueden estar vacías")
     private String iniciales;
+
+    // Constructor extra para registro sin id ni rol
+    public UsuarioDTO(String nombre, String apellido, String nombreCompleto, String correo, String iniciales) {
+        this.nombre = nombre;
+        this.apellido = apellido;
+        this.nombreCompleto = nombreCompleto;
+        this.correo = correo;
+        this.iniciales = iniciales;
+    }
+
 }

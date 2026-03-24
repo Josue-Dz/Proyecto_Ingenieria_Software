@@ -119,6 +119,8 @@ public class DTOMapper {
     public UsuarioDTO toUsuarioDTO(Usuario usuario){
         UsuarioDTO dto = new UsuarioDTO();
 
+        dto.setIdUsuario(usuario.getIdUsuario());
+        dto.setCorreo(usuario.getCorreo());
         dto.setNombreCompleto(usuario.getNombre() + " " + usuario.getApellido());
         dto.setNombre(usuario.getNombre());
         dto.setApellido(usuario.getApellido());

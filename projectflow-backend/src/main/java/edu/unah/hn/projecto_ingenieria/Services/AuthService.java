@@ -88,15 +88,16 @@ public class AuthService {
     }
 
     public UsuarioDTO getMyProfile() {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        Usuario usuario = (Usuario) authentication.getPrincipal();
-
+        
+        Usuario usuarioPrincipal = getUsuarioAutenticado();
+        
         UsuarioDTO usuarioDTO = new UsuarioDTO(
-                usuario.getNombre(),
-                usuario.getApellido(),
-                usuario.getNombre() + " " + usuario.getApellido(),
-                usuario.getCorreo(),
-                usuario.obtenerInicialesDeNombre(usuario.getNombre(), usuario.getApellido()));
+                usuarioPrincipal.getIdUsuario(),
+                usuarioPrincipal.getNombre(),
+                usuarioPrincipal.getApellido(),
+                usuarioPrincipal.getNombre() + " " + usuarioPrincipal.getApellido(),
+                usuarioPrincipal.getCorreo(),
+                usuarioPrincipal.obtenerInicialesDeNombre(usuarioPrincipal.getNombre(), usuarioPrincipal.getApellido()));
 
         return usuarioDTO;
     }
@@ -111,6 +112,7 @@ public class AuthService {
 
     private UsuarioDTO crearUsuarioDTO(Usuario usuario) {
         return new UsuarioDTO(
+                usuario.getIdUsuario(),
                 usuario.getNombre(),
                 usuario.getApellido(),
                 usuario.getNombre() + " " + usuario.getApellido(),
@@ -147,6 +149,7 @@ public class AuthService {
         usuarioRepository.save(usuarioBD);
 
         return new UsuarioDTO(
+                usuarioBD.getIdUsuario(),
                 usuarioBD.getNombre(),
                 usuarioBD.getApellido(),
                 usuarioBD.getNombre() + " " + usuarioBD.getApellido(),

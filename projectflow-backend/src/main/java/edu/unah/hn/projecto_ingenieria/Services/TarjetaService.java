@@ -3,6 +3,7 @@ package edu.unah.hn.projecto_ingenieria.Services;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
@@ -12,6 +13,7 @@ import org.springframework.web.server.ResponseStatusException;
 import edu.unah.hn.projecto_ingenieria.DTO.DTOMapper;
 import edu.unah.hn.projecto_ingenieria.DTO.TarjetaRequestDTO;
 import edu.unah.hn.projecto_ingenieria.DTO.TarjetaResponseDTO;
+import edu.unah.hn.projecto_ingenieria.DTO.UsuarioDTO;
 import edu.unah.hn.projecto_ingenieria.Entity.Columna;
 import edu.unah.hn.projecto_ingenieria.Entity.Proyecto;
 import edu.unah.hn.projecto_ingenieria.Entity.Tarjeta;
@@ -100,7 +102,23 @@ public class TarjetaService {
             tarjetaDTO.setPrioridad(tarjeta.getPrioridad());
 
             tarjetaDTO.setEstado(tarjeta.getEstado());
-            tarjetaDTO.setAsignados(null);
+            
+                            // Mapear asignados a DTO
+                if (tarjeta.getAsignados() != null) {
+                    List<UsuarioDTO> asignadosDTO = tarjeta.getAsignados().stream()
+                        .map(u -> new UsuarioDTO(
+                            u.getIdUsuario(),
+                            u.getNombre(),
+                            u.getApellido(),
+                            u.getNombre() + " " + u.getApellido(),
+                            u.getCorreo(),
+                            u.obtenerInicialesDeNombre(u.getNombre(), u.getApellido())
+                        ))
+                        .collect(Collectors.toList());
+                    tarjetaDTO.setAsignados(asignadosDTO);
+                } else {
+                    tarjetaDTO.setAsignados(new ArrayList<>());
+                }
 
             tarjetasDTO.add(tarjetaDTO);
         }
