@@ -26,7 +26,6 @@ const TaskDetailModal = ({ task, onClose, onTaskUpdated }) => {
     const [asignados, setAsignados]       = useState(task.asignados ?? []);
     const [saving, setSaving]             = useState(false);
 
-    // Búsqueda de usuarios
     const [searchCorreo, setSearchCorreo] = useState("");
     const [searchResult, setSearchResult] = useState(null);
     const [searching, setSearching]       = useState(false);
@@ -117,10 +116,10 @@ const TaskDetailModal = ({ task, onClose, onTaskUpdated }) => {
                     </button>
                 </div>
 
-                {/* Body — dos columnas como Trello */}
+                {/* Body */}
                 <div className="flex gap-0 max-h-[75vh] overflow-y-auto">
 
-                    {/* Columna izquierda — info principal */}
+                    {/* Columna izquierda */}
                     <div className="flex-1 px-6 py-5 flex flex-col gap-5">
 
                         <div className="flex flex-col gap-1.5">
@@ -191,7 +190,7 @@ const TaskDetailModal = ({ task, onClose, onTaskUpdated }) => {
                         )}
                     </div>
 
-                    {/* Columna derecha — asignados */}
+                    {/* Columna derecha*/}
                     <div className="w-56 border-l border-white/6 px-4 py-5 flex flex-col gap-4 shrink-0">
 
                         <div className="flex flex-col gap-3">
