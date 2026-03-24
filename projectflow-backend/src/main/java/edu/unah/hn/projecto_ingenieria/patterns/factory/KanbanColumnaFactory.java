@@ -27,6 +27,4 @@ public class KanbanColumnaFactory implements ColumnaFactory{
        return columnas;
     }
 
-
-
 }

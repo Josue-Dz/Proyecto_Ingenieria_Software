@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import edu.unah.hn.projecto_ingenieria.DTO.ProyectoRequestDTO;
 import edu.unah.hn.projecto_ingenieria.DTO.ProyectoResponseDTO;
-import edu.unah.hn.projecto_ingenieria.Services.ProyectoService;
+import edu.unah.hn.projecto_ingenieria.patterns.facade.IProyectoService;
 import lombok.RequiredArgsConstructor;
 
 @RestController
@@ -25,32 +25,32 @@ import lombok.RequiredArgsConstructor;
 @Validated
 public class ProyectoController {
 
-	private final ProyectoService proyectoService;
+	private final IProyectoService iProyectoService;
 
 	@PostMapping("/create")
 	public ResponseEntity<ProyectoResponseDTO> crearProyecto(@RequestBody ProyectoRequestDTO dto) {
-		ProyectoResponseDTO created = proyectoService.crearProyecto(dto);
+		ProyectoResponseDTO created = iProyectoService.crearProyecto(dto);
 		return ResponseEntity.created(URI.create("/projects/" + created.getIdProyecto())).body(created);
 	}
 
 	@GetMapping("/mine")
 	public ResponseEntity<List<ProyectoResponseDTO>> misProyectos() {
-		return ResponseEntity.ok(proyectoService.obtenerProyectosPorUsuario());
+		return ResponseEntity.ok(iProyectoService.obtenerProyectosPorUsuario());
 	}
 
 	@GetMapping("/{id}")
 	public ResponseEntity<ProyectoResponseDTO> obtenerPorId(@PathVariable Long id) {
-		return ResponseEntity.ok(proyectoService.obtenerProyectoPorId(id));
+		return ResponseEntity.ok(iProyectoService.obtenerProyectoPorId(id));
 	}
 
 	@PutMapping("/{id}")
 	public ResponseEntity<ProyectoResponseDTO> actualizar(@PathVariable Long id, @RequestBody ProyectoRequestDTO dto) {
-		return ResponseEntity.ok(proyectoService.actualizarProyecto(id, dto));
+		return ResponseEntity.ok(iProyectoService.actualizarProyecto(id, dto));
 	}
 
 	@DeleteMapping("/{id}")	
 	public ResponseEntity<Void> eliminar(@PathVariable Long id) {
-		proyectoService.eliminarProyecto(id);		
+		iProyectoService.eliminarProyecto(id);		
 		return ResponseEntity.noContent().build();
 	}
 
