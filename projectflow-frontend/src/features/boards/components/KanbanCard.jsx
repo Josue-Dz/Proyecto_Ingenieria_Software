@@ -22,14 +22,13 @@ function isOverdue(dateStr) {
 }
 
 
-const KanbanCard = ({ task, index, columnId, onTaskClick, canMove }) => {
+const KanbanCard = ({ task, index, columnId, onTaskClick }) => {
 
     const sortable = useSortable({
         id: task.idTarjeta,
         index,
         group: String(columnId),
         type: "item",
-        disabled: !canMove,
     });
 
 
@@ -46,7 +45,6 @@ const KanbanCard = ({ task, index, columnId, onTaskClick, canMove }) => {
             onClick={() => onTaskClick(task)}
             className="bg-white dark:bg-white/5 border border-white/95 dark:border-white/10 rounded-xl p-3.5 dark:hover:border-white/20 dark:hover:bg-white/8 shadow-md transition-colors select-none active: cursor-grabbing"
         >
-            {canMove && (
             <div
                 ref={handleRef}
                 onClick={e => e.stopPropagation()}
@@ -56,7 +54,6 @@ const KanbanCard = ({ task, index, columnId, onTaskClick, canMove }) => {
                     drag_indicator
                 </span>
             </div>
-            )}
 
             <p className="dark:text-white/90 text-sm font-medium leading-snug mb-3">
                 {task.titulo}
