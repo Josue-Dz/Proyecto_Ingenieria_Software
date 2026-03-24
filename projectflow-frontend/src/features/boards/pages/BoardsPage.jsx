@@ -3,6 +3,7 @@ import { getBoardsRequest } from '../services/boardService';
 import { useNavigate, useParams } from 'react-router-dom';
 import CreateBoardModal from '../components/CreateBoardModal';
 import AddButton from '../components/AddButton';
+import MembersSection from '../components/MembersSection';
 
 const BoardsPage = () => {
 
@@ -35,9 +36,14 @@ const BoardsPage = () => {
     }
 
     return (
+
         <div className="pt-6 pb-14">
 
-            <h2 className="text-xl font-bold dark:text-white mb-6">Tableros del Proyecto</h2>
+            {/* Header con título y miembros en la misma línea */}
+                        <div className="flex items-center justify-between mb-6 flex-wrap gap-4">
+                            <h2 className="text-xl font-bold dark:text-white">Tableros del Proyecto</h2>
+                            <MembersSection idProyecto={id} />
+                        </div>
 
             <AddButton disabled={loading} setIsModalOpen={setIsModalOpen} textoBoton="Nuevo tablero" />
 
