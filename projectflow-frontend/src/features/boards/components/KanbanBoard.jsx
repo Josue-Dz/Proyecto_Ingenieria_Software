@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useKanban } from '../hooks/useKanban'
 import { DragDropProvider } from '@dnd-kit/react'
 import { move } from "@dnd-kit/helpers"
@@ -6,14 +6,34 @@ import KanbanColumn from './KanbanColumn';
 import { useParams } from 'react-router-dom';
 import TaskDetailModal from './TaskDetailModal';
 import { isSortable } from '@dnd-kit/react/sortable';
+import MembersSection from './MembersSection';
+import { getMembersRequest } from '../services/MemberService';
+import { useAuth } from '../../auth/hooks/useAuth';
+
 
 const KanbanBoard = () => {
-    const { boardId } = useParams();
-    const { columns, proyectoId, setColumns, addColumn, addTask, moveTask } = useKanban(boardId);
+    const { boardId, id: idProyecto } = useParams();
+    const { columns, setColumns, addColumn, addTask, moveTask } = useKanban(boardId);
     const [showAddColumn, setShowAddColumn] = useState(false);
     const [newColumnName, setNewColumnName] = useState("");
     const [addingColumn, setAddingColumn] = useState(false);
     const [selectedTask, setSelectedTask] = useState(null);
+
+    const { user } = useAuth();
+const [userRol, setUserRol] = useState(null);
+
+    useEffect(() => {
+        if (!idProyecto || !user?.idUsuario) return;
+        getMembersRequest(idProyecto)
+            .then((members) => {
+                const me = members.find((m) => Number(m.idUsuario) === Number(user.idUsuario));
+                setUserRol(me?.rol ?? null);
+            })
+            .catch(console.error);
+    }, [idProyecto, user?.idUsuario]);
+
+    const canCreate = userRol === "ADMIN";
+    const canMove   = userRol === "ADMIN" || userRol === "COLABORADOR";
 
     const columnsToMap = (cols) =>
         Object.fromEntries(cols.map(col => [String(col.idColumna), col.tarjetas ?? []]));
@@ -22,6 +42,7 @@ const KanbanBoard = () => {
         cols.map(col => ({ ...col, tarjetas: map[String(col.idColumna)] ?? [] }));
 
     const handleDragOver = (event) => {
+        if(!canMove) return;
         const { source, target } = event;
         if (!source || !target) return;
 
@@ -38,6 +59,7 @@ const KanbanBoard = () => {
     };
 
     const handleDragEnd = (event) => {
+        if(!canMove) return;
         if (event.canceled) return;
 
         const { source } = event.operation;
@@ -55,7 +77,7 @@ const KanbanBoard = () => {
 
     const handleAddColumn = async (e) => {
         e.preventDefault();
-        if (!newColumnName.trim()) return;
+        if (!newColumnName.trim() || !canCreate) return;
         setAddingColumn(true);
         await addColumn(newColumnName.trim());
         setNewColumnName("");
@@ -65,10 +87,19 @@ const KanbanBoard = () => {
 
     return (
         <>
+
+        {/* Miembros del proyecto */}
+            <div className="flex items-center py-3 px-1 mb-2">
+                <MembersSection idProyecto={idProyecto} />
+            </div>
+
+
             <DragDropProvider
                 onDragOver={handleDragOver}
                 onDragEnd={handleDragEnd}
             >
+
+                {canCreate && (
                 <div className="py-1">
                     {showAddColumn ? (
                         <form onSubmit={handleAddColumn} className="w-72 dark:bg-white/3 border border-indigo-400/15 dark:border-white/6 rounded-2xl p-3 flex flex-col gap-2">
@@ -99,6 +130,7 @@ const KanbanBoard = () => {
                         </button>
                     )}
                 </div>
+                )}
 
                 <div className="flex gap-4 overflow-x-auto pb-6 items-start">
                     {columns.map((col, index) => (
@@ -108,6 +140,8 @@ const KanbanBoard = () => {
                             column={col}
                             onAddTask={addTask}
                             onTaskClick={setSelectedTask}
+                            canCreate={canCreate}
+                            canMove={canMove}
                         />
                     ))}
                 </div>
@@ -116,7 +150,7 @@ const KanbanBoard = () => {
             {selectedTask && (
                 <TaskDetailModal
                     task={selectedTask}
-                    proyectoId={proyectoId}
+                    proyectoId={idProyecto}
                     onClose={() => setSelectedTask(null)}
                     onTaskUpdated={(updated) => {
                         setColumns(prev => prev.map((col) => ({

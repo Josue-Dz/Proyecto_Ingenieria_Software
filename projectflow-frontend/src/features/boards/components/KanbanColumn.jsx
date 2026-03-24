@@ -3,7 +3,7 @@ import { CollisionPriority } from "@dnd-kit/abstract";
 import KanbanCard from './KanbanCard';
 import CreateTaskPopover from './CreateTaskPopover';
 
-const KanbanColumn = ({ column, onAddTask, onTaskClick }) => {
+const KanbanColumn = ({ column, onAddTask, onTaskClick, canCreate, canMove }) => {
 
     const { ref: droppableRef } = useDroppable({
         id: String(column.idColumna),
@@ -31,8 +31,9 @@ const KanbanColumn = ({ column, onAddTask, onTaskClick }) => {
                 ref={droppableRef}
                 className="flex flex-col gap-2.5 overflow-y-auto max-h-[calc(100vh-260px)] rounded-2xl p-3 bg-white/60 dark:bg-white/3 border border-white/70 dark:border-white/6">
 
+                {canCreate && ( 
                 <CreateTaskPopover columnId={column.idColumna} onAddTask={onAddTask} />
-
+                )}
                 {column.tarjetas?.map((task, index) => (
                     <KanbanCard
                         key={task.idTarjeta}
@@ -40,6 +41,7 @@ const KanbanColumn = ({ column, onAddTask, onTaskClick }) => {
                         index={index}
                         columnId={column.idColumna}
                         onTaskClick={onTaskClick}
+                        canMove={canMove}
                     />
                 ))}
             </div>

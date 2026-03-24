@@ -12,7 +12,7 @@ apiClient.interceptors.request.use((config) => {
 
 const token = localStorage.getItem("token");
 if (token) {
-    apiClient.defaults.headers.common["Authorization"] = `Bearer ${token}`;
+    config.headers["Authorization"] = `Bearer ${token}`;
 }
 return config;
 
