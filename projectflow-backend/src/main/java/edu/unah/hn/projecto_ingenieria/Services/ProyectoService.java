@@ -7,7 +7,6 @@ import java.util.stream.Collectors;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
-import org.springframework.security.core.context.SecurityContextHolder;
 
 import edu.unah.hn.projecto_ingenieria.DTO.ProyectoRequestDTO;
 import edu.unah.hn.projecto_ingenieria.DTO.ProyectoResponseDTO;
@@ -17,22 +16,22 @@ import edu.unah.hn.projecto_ingenieria.Entity.ProyectoUsuario;
 import edu.unah.hn.projecto_ingenieria.Entity.Usuario;
 import edu.unah.hn.projecto_ingenieria.Repository.ProyectoRepository;
 import edu.unah.hn.projecto_ingenieria.Repository.ProyectoUsuarioRepository;
-import edu.unah.hn.projecto_ingenieria.Repository.UsuarioRepository;
-
+import edu.unah.hn.projecto_ingenieria.patterns.facade.IProyectoService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor
-public class ProyectoService {
+public class ProyectoService implements IProyectoService{
     private final ProyectoRepository proyectoRepository;
-    private final UsuarioRepository usuarioRepository;
+
     private final ProyectoUsuarioRepository proyectoUsuarioRepository;
     
     private final AuthService authService;
 
     private final DTOMapper mapper;
 
+    @Override
     @Transactional
     public ProyectoResponseDTO crearProyecto(ProyectoRequestDTO dto) {
         Usuario creador = authService.getUsuarioAutenticado();
@@ -59,7 +58,7 @@ public class ProyectoService {
         return mapper.toProyectoDTO(savedProyecto);
     }
 
-    
+    @Override
     @Transactional(Transactional.TxType.REQUIRED)
     public ProyectoResponseDTO obtenerProyectoPorId(Long id) {
         Proyecto proyecto = proyectoRepository.findById(id)
@@ -78,6 +77,7 @@ public class ProyectoService {
     }
 
 
+    @Override
     @Transactional
     public ProyectoResponseDTO actualizarProyecto(Long id, ProyectoRequestDTO dto) {
         Usuario usuario = authService.getUsuarioAutenticado();
@@ -107,6 +107,7 @@ public class ProyectoService {
     }
 
 
+    @Override
     @Transactional
     public void eliminarProyecto(Long id) {
         Usuario usuario = authService.getUsuarioAutenticado();
@@ -127,6 +128,7 @@ public class ProyectoService {
         proyectoRepository.delete(proyecto);
     }
 
+    @Override
     @Transactional(Transactional.TxType.REQUIRED)
     public List<ProyectoResponseDTO> obtenerProyectosPorUsuario() {
         Usuario usuario = authService.getUsuarioAutenticado();

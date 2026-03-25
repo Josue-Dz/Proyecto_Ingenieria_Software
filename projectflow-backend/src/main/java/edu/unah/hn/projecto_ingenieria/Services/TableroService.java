@@ -21,6 +21,7 @@ import edu.unah.hn.projecto_ingenieria.Repository.ColumnaRepository;
 import edu.unah.hn.projecto_ingenieria.Repository.ProyectoRepository;
 import edu.unah.hn.projecto_ingenieria.Repository.TableroRepository;
 import edu.unah.hn.projecto_ingenieria.Repository.UsuarioRepository;
+import edu.unah.hn.projecto_ingenieria.patterns.factory.ColumnaFactory;
 import lombok.RequiredArgsConstructor;
 
 @Service
@@ -37,6 +38,8 @@ public class TableroService {
 
     private final ColumnaService columnaService;
 
+    private final ColumnaFactory columnaFactory;
+
     public TableroResponseDTO crearTablero(Long proyectoId, TableroRequestDTO tablero) {
 
         Proyecto proyecto = proyectoRepository.findById(proyectoId)
@@ -49,17 +52,20 @@ public class TableroService {
         tableroNuevo.setDescripcionTablero(tablero.getDescripcion());
         Tablero guardado = tableroRepository.save(tableroNuevo);
 
-        // Tablero se crea con 3 columnas por defecto que posteriormente puede modificar el usuario
-        List<String> columnasPorDefecto = List.of("Pendiente", "En Progreso", "Finalizado");
-        List<Columna> columnas = new ArrayList<>();
-        for (int i = 0; i < columnasPorDefecto.size(); i++) {
-            Columna columna = new Columna();
-            columna.setNombreColumna(columnasPorDefecto.get(i));
-            columna.setPosicion(i);
-            columna.setTablero(guardado);
+        //Esta logica sustituye a la logica que esta abajo delegando a una factory la creacion de la estructura de columnas del tablero
+        List<Columna> columnas = columnaFactory.crearEstructuraInicial(guardado);
 
-            columnas.add(columna);
-        }
+        // // Tablero se crea con 3 columnas por defecto que posteriormente puede modificar el usuario
+        // List<String> columnasPorDefecto = List.of("Pendiente", "En Progreso", "Finalizado");
+        // List<Columna> columnas = new ArrayList<>();
+        // for (int i = 0; i < columnasPorDefecto.size(); i++) {
+        //     Columna columna = new Columna();
+        //     columna.setNombreColumna(columnasPorDefecto.get(i));
+        //     columna.setPosicion(i);
+        //     columna.setTablero(guardado);
+
+        //     columnas.add(columna);
+        // }
 
         guardado.setColumnas(columnaRepository.saveAll(columnas));
 
