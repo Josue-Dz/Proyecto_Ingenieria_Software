@@ -79,5 +79,9 @@ public class Tarjeta {
         inverseJoinColumns = @JoinColumn(name = "id_usuario")
     )
     private List<Usuario> asignados;
+
+    @ManyToOne
+    @JoinColumn(name = "id_backlog")
+    private Backlog backlog;
 }
 
