@@ -18,7 +18,7 @@ const rolBadge = (rol) => {
     return styles[rol] || styles.LECTOR;
 };
 
-// ── Modal de detalle de miembro ───────────────────────────────────────────────
+// Modal de detalle de miembro
 const MemberDetailModal = ({ member, anchorRef, onClose, onRolChange, onRemove, isAdmin }) => {
     const [editingRol, setEditingRol] = useState(member.rol);
     const [rolLoading, setRolLoading] = useState(false);
@@ -79,7 +79,7 @@ const MemberDetailModal = ({ member, anchorRef, onClose, onRolChange, onRemove, 
     return (
         <div
             ref={modalRef}
-            className="absolute z-50 top-12 left-0 w-56 bg-white dark:bg-[#1a1a1a] border border-slate-200 dark:border-white/10 rounded-2xl shadow-2xl p-4 space-y-3"
+            className="absolute z-50 top-12 right-0 w-56 bg-white dark:bg-[#1a1a1a] border border-slate-200 dark:border-white/10 rounded-2xl shadow-2xl p-4 space-y-3"
         >
             {/* Info */}
             <div className="flex items-center gap-3">
@@ -176,7 +176,7 @@ const MemberBubble = ({ member, onRolChange, onRemove, isAdmin }) => {
             <button
                 onClick={() => setShowModal(!showModal)}
                 title={`${member.nombre} ${member.apellido} — ${member.correo}`}
-                className="group relative w-9 h-9 rounded-full bg-indigo-100 dark:bg-[#A3FF12]/15 border-2 border-white dark:border-[#0f0f0f] hover:border-indigo-400 dark:hover:border-[#A3FF12]/60 flex items-center justify-center transition-all duration-200 hover:scale-110 hover:z-10"
+                className="group relative w-9 h-9 rounded-full bg-indigo-100 dark:bg-[#A3FF12]/15 border-2 border-white dark:border-[#0f0f0f] hover:border-indigo-400 dark:hover:border-[#A3FF12]/60 flex items-center justify-center transition-all duration-200 hover:scale-110 hover:z-30"
             >
                 <span className="text-indigo-600 dark:text-[#A3FF12] font-bold text-xs">
                     {member.iniciales}

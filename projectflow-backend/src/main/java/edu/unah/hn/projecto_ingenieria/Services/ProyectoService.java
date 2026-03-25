@@ -16,7 +16,6 @@ import edu.unah.hn.projecto_ingenieria.Entity.ProyectoUsuario;
 import edu.unah.hn.projecto_ingenieria.Entity.Usuario;
 import edu.unah.hn.projecto_ingenieria.Repository.ProyectoRepository;
 import edu.unah.hn.projecto_ingenieria.Repository.ProyectoUsuarioRepository;
-import edu.unah.hn.projecto_ingenieria.Repository.UsuarioRepository;
 import edu.unah.hn.projecto_ingenieria.patterns.facade.IProyectoService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -25,8 +24,6 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class ProyectoService implements IProyectoService{
     private final ProyectoRepository proyectoRepository;
-
-    private final UsuarioRepository usuarioRepository;
 
     private final ProyectoUsuarioRepository proyectoUsuarioRepository;
     

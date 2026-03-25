@@ -34,7 +34,7 @@ public class Backlog {
     private Proyecto proyecto;
 
     @OneToMany(cascade = CascadeType.ALL)
-    @JoinColumn(name = "id_backlog")
+    @JoinColumn(name = "id_tarjeta")
     private List<Tarjeta> tarjetas;
 
 }
