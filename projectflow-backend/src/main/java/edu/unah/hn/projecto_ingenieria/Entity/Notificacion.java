@@ -44,7 +44,6 @@ public class Notificacion {
     @Column(name = "leida")
     private Boolean leida = false;
 
-    // Relación opcional con Tarjeta si se quiere rastrear
     @ManyToOne
     @JoinColumn(name = "id_tarjeta")
     private Tarjeta tarjeta;
