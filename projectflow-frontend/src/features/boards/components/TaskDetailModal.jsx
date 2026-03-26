@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { updateTaskRequest } from "../services/boardService";
-import { searchUserRequest } from "../services/boardService";
+import { getMembersRequest } from "../services/MemberService";
 
 const PRIORITY_OPTIONS = ["BAJA", "MEDIA", "ALTA"];
 
@@ -17,7 +17,7 @@ const ESTADO_STYLES = {
     FINALIZADA:  { label: "Finalizada",  class: "bg-green-500/15 text-green-400 border-green-500/30" },
 };
 
-const TaskDetailModal = ({ task, onClose, onTaskUpdated }) => {
+const TaskDetailModal = ({ task, proyectoId, userRol,onClose, onTaskUpdated }) => {
     const [titulo, setTitulo]             = useState(task.titulo ?? "");
     const [descripcion, setDescripcion]   = useState(task.descripcion ?? "");
     const [prioridad, setPrioridad]       = useState(task.prioridad ?? "MEDIA");
@@ -25,12 +25,8 @@ const TaskDetailModal = ({ task, onClose, onTaskUpdated }) => {
     const [estado, setEstado]             = useState(task.estado ?? "PENDIENTE");
     const [asignados, setAsignados]       = useState(task.asignados ?? []);
     const [saving, setSaving]             = useState(false);
-
-    // Búsqueda de usuarios
-    const [searchCorreo, setSearchCorreo] = useState("");
-    const [searchResult, setSearchResult] = useState(null);
-    const [searching, setSearching]       = useState(false);
-    const [searchError, setSearchError]   = useState(null);
+    const [miembros, setMiembros]         = useState([]);
+    const [showMiembros, setShowMiembros] = useState(false);
 
     useEffect(() => {
         const handleKey = (e) => { if (e.key === "Escape") onClose(); };
@@ -38,36 +34,26 @@ const TaskDetailModal = ({ task, onClose, onTaskUpdated }) => {
         return () => window.removeEventListener("keydown", handleKey);
     }, [onClose]);
 
-    const handleSearch = async () => {
-        if (!searchCorreo.trim()) return;
-        setSearching(true);
-        setSearchError(null);
-        setSearchResult(null);
-        try {
-            const user = await searchUserRequest(searchCorreo.trim());
-            // Verificar que no esté ya asignado
-            const yaAsignado = asignados.some(a => a.correo === user.correo);
-            if (yaAsignado) {
-                setSearchError("Este usuario ya está asignado.");
-            } else {
-                setSearchResult(user);
-            }
-        } catch {
-            setSearchError("No se encontró ningún usuario con ese correo.");
-        } finally {
-            setSearching(false);
+    // Cargar miembros del proyecto
+    useEffect(() => {
+        if (!proyectoId) return;
+        getMembersRequest(proyectoId)
+            .then(setMiembros)
+            .catch(console.error);
+    }, [proyectoId]);
+
+    const isAsignado = (correo) => asignados.some(a => a.correo === correo);
+
+    const handleToggleMiembro = (miembro) => {
+        if (isAsignado(miembro.correo)) {
+            setAsignados(prev => prev.filter(a => a.correo !== miembro.correo));
+        } else {
+            setAsignados(prev => [...prev, {
+                correo: miembro.correo,
+                nombreCompleto: `${miembro.nombre} ${miembro.apellido}`,
+                iniciales: miembro.iniciales,
+            }]);
         }
-    };
-
-    const handleAddUser = () => {
-        if (!searchResult) return;
-        setAsignados(prev => [...prev, searchResult]);
-        setSearchResult(null);
-        setSearchCorreo("");
-    };
-
-    const handleRemoveUser = (correo) => {
-        setAsignados(prev => prev.filter(a => a.correo !== correo));
     };
 
     const handleSave = async () => {
@@ -98,12 +84,12 @@ const TaskDetailModal = ({ task, onClose, onTaskUpdated }) => {
             className="fixed inset-0 z-50 flex items-center justify-center p-4"
             onClick={(e) => { if (e.target === e.currentTarget) onClose(); }}
         >
-            <div className="absolute inset-0 bg-black/60 backdrop-blur-xs" />
+            <div className="absolute inset-0 bg-black/30 dark:bg-black/60 backdrop-blur-sm" />
 
-            <div className="relative z-10 w-full max-w-3xl bg-[#0f0f0f] border border-white/10 rounded-2xl shadow-2xl overflow-hidden">
+            <div className="relative z-10 w-full max-w-3xl bg-white dark:bg-[#0f0f0f] border border-slate-200 dark:border-white/10 rounded-2xl shadow-2xl overflow-hidden">
 
                 {/* Header */}
-                <div className="flex items-center justify-between px-6 pt-5 pb-4 border-b border-white/6">
+                <div className="flex items-center justify-between px-6 pt-5 pb-4 border-b border-slate-100 dark:border-white/6">
                     <div className="flex items-center gap-2">
                         <span className={`text-[0.65rem] font-medium px-2 py-0.5 rounded-full border ${priority.class}`}>
                             {priority.label}
@@ -112,78 +98,81 @@ const TaskDetailModal = ({ task, onClose, onTaskUpdated }) => {
                             {estadoStyle.label}
                         </span>
                     </div>
-                    <button onClick={onClose} className="text-white/30 hover:text-white/70 transition-colors">
+                    <button onClick={onClose} className="text-slate-400 dark:text-white/30 hover:text-slate-600 dark:hover:text-white/70 transition-colors">
                         <span className="material-symbols-rounded text-[20px]">close</span>
                     </button>
                 </div>
 
-                {/* Body — dos columnas como Trello */}
+                {/* Body */}
                 <div className="flex gap-0 max-h-[75vh] overflow-y-auto">
 
-                    {/* Columna izquierda — info principal */}
+                    {/* Columna izquierda */}
                     <div className="flex-1 px-6 py-5 flex flex-col gap-5">
 
                         <div className="flex flex-col gap-1.5">
-                            <label className="text-white/40 text-xs font-medium uppercase tracking-wider">Título</label>
+                            <label className="text-slate-400 dark:text-white/40 text-xs font-medium uppercase tracking-wider">Título</label>
                             <input
                                 type="text"
                                 value={titulo}
                                 onChange={e => setTitulo(e.target.value)}
-                                className="bg-white/4 border border-white/10 rounded-xl px-4 py-2.5 text-white text-sm focus:outline-none focus:border-white/25 transition-colors"
+                                className="bg-slate-50 dark:bg-white/4 border border-slate-200 dark:border-white/10 rounded-xl px-4 py-2.5 text-slate-800 dark:text-white text-sm focus:outline-none focus:border-indigo-400 dark:focus:border-white/25 transition-colors"
                             />
                         </div>
 
                         <div className="flex flex-col gap-1.5">
-                            <label className="text-white/40 text-xs font-medium uppercase tracking-wider">Descripción</label>
+                            <label className="text-slate-400 dark:text-white/40 text-xs font-medium uppercase tracking-wider">Descripción</label>
                             <textarea
                                 value={descripcion}
                                 onChange={e => setDescripcion(e.target.value)}
                                 rows={4}
                                 placeholder="Sin descripción..."
-                                className="bg-white/4 border border-white/10 rounded-xl px-4 py-2.5 text-white text-sm focus:outline-none focus:border-white/25 transition-colors resize-none placeholder-white/20"
+                                className="bg-slate-50 dark:bg-white/4 border border-slate-200 dark:border-white/10 rounded-xl px-4 py-2.5 text-slate-800 dark:text-white text-sm focus:outline-none focus:border-indigo-400 dark:focus:border-white/25 transition-colors resize-none placeholder-slate-300 dark:placeholder-white/20"
                             />
                         </div>
 
                         <div className="grid grid-cols-2 gap-4">
                             <div className="flex flex-col gap-1.5">
-                                <label className="text-white/40 text-xs font-medium uppercase tracking-wider">Prioridad</label>
+                                <label className="text-slate-400 dark:text-white/40 text-xs font-medium uppercase tracking-wider">Prioridad</label>
                                 <select
                                     value={prioridad}
                                     onChange={e => setPrioridad(e.target.value)}
-                                    className="bg-white/4 border border-white/10 rounded-xl px-3 py-2.5 text-white text-sm focus:outline-none focus:border-white/25 transition-colors"
+                                    className="bg-slate-50 dark:bg-white/4 border border-slate-200 dark:border-white/10 rounded-xl px-3 py-2.5 text-slate-800 dark:text-white text-sm focus:outline-none focus:border-indigo-400 dark:focus:border-white/25 transition-colors"
                                 >
                                     {PRIORITY_OPTIONS.map(p => (
-                                        <option key={p} value={p}>{PRIORITY_STYLES[p].label}</option>
+                                        <option key={p} value={p} className="bg-white dark:bg-[#0f0f0f]">{PRIORITY_STYLES[p].label}</option>
                                     ))}
                                 </select>
                             </div>
 
                             <div className="flex flex-col gap-1.5">
-                                <label className="text-white/40 text-xs font-medium uppercase tracking-wider">Estado</label>
+                                <label className="text-slate-400 dark:text-white/40 text-xs font-medium uppercase tracking-wider">Estado</label>
                                 <select
                                     value={estado}
                                     onChange={e => setEstado(e.target.value)}
-                                    className="bg-white/4 border border-white/10 rounded-xl px-3 py-2.5 text-white text-sm focus:outline-none focus:border-white/25 transition-colors"
+                                    className="bg-slate-50 dark:bg-white/4 border border-slate-200 dark:border-white/10 rounded-xl px-3 py-2.5 text-slate-800 dark:text-white text-sm focus:outline-none focus:border-indigo-400 dark:focus:border-white/25 transition-colors"
                                 >
                                     {ESTADO_OPTIONS.map(s => (
-                                        <option key={s} value={s}>{ESTADO_STYLES[s].label}</option>
+                                        <option key={s} value={s} className="bg-white dark:bg-[#0f0f0f]">{ESTADO_STYLES[s].label}</option>
                                     ))}
                                 </select>
                             </div>
                         </div>
 
                         <div className="flex flex-col gap-1.5">
-                            <label className="text-white/40 text-xs font-medium uppercase tracking-wider">Fecha límite</label>
+                            <label className="text-slate-400 dark:text-white/40 text-xs font-medium uppercase tracking-wider">Fecha límite</label>
                             <input
                                 type="date"
                                 value={fechaLimite}
                                 onChange={e => setFechaLimite(e.target.value)}
-                                className="bg-white/4 border border-white/10 rounded-xl px-3 py-2.5 text-white/70 text-sm focus:outline-none focus:border-white/25 transition-colors"
+                                className="bg-slate-50 dark:bg-white/4 border border-slate-200
+                                 dark:border-white/10 rounded-xl px-3 py-2.5 text-slate-600
+                                  dark:text-white/70 text-sm focus:outline-none focus:border-indigo-400
+                                   dark:focus:border-white/25 transition-colors scheme-light dark:scheme-dark"
                             />
                         </div>
 
                         {task.fechaCreacion && (
-                            <p className="text-white/25 text-xs">
+                            <p className="text-slate-300 dark:text-white/25 text-xs">
                                 Creada el {new Date(task.fechaCreacion).toLocaleDateString("es-HN", {
                                     day: "numeric", month: "long", year: "numeric"
                                 })}
@@ -191,31 +180,30 @@ const TaskDetailModal = ({ task, onClose, onTaskUpdated }) => {
                         )}
                     </div>
 
-                    {/* Columna derecha — asignados */}
-                    <div className="w-56 border-l border-white/6 px-4 py-5 flex flex-col gap-4 shrink-0">
-
+                    {/* Columna derecha — miembros */}
+                    <div className="w-56 border-l border-slate-100 dark:border-white/6 px-4 py-5 flex flex-col gap-4 shrink-0">
                         <div className="flex flex-col gap-3">
-                            <p className="text-white/40 text-xs font-medium uppercase tracking-wider">Miembros</p>
+                            <p className="text-slate-400 dark:text-white/40 text-xs font-medium uppercase tracking-wider">Miembros</p>
 
                             {/* Asignados actuales */}
                             <div className="flex flex-col gap-2">
                                 {asignados.length === 0 && (
-                                    <p className="text-white/20 text-xs">Sin asignados</p>
+                                    <p className="text-slate-300 dark:text-white/20 text-xs">Sin asignados</p>
                                 )}
                                 {asignados.map(user => (
                                     <div key={user.correo} className="flex items-center gap-2 group">
-                                        <div className="w-7 h-7 rounded-full bg-indigo-500/30 border border-indigo-500/40 flex items-center justify-center shrink-0">
-                                            <span className="text-[0.6rem] font-semibold text-indigo-300">
+                                        <div className="w-7 h-7 rounded-full bg-indigo-100 dark:bg-indigo-500/30 border border-indigo-300 dark:border-indigo-500/40 flex items-center justify-center shrink-0">
+                                            <span className="text-[0.6rem] font-semibold text-indigo-500 dark:text-indigo-300">
                                                 {user.iniciales}
                                             </span>
                                         </div>
                                         <div className="flex-1 min-w-0">
-                                            <p className="text-white/80 text-xs font-medium truncate">{user.nombreCompleto}</p>
-                                            <p className="text-white/30 text-[0.6rem] truncate">{user.correo}</p>
+                                            <p className="text-slate-700 dark:text-white/80 text-xs font-medium truncate">{user.nombreCompleto}</p>
+                                            <p className="text-slate-400 dark:text-white/30 text-[0.6rem] truncate">{user.correo}</p>
                                         </div>
                                         <button
-                                            onClick={() => handleRemoveUser(user.correo)}
-                                            className="opacity-0 group-hover:opacity-100 text-white/30 hover:text-red-400 transition-all"
+                                            onClick={() => handleToggleMiembro(user)}
+                                            className="opacity-0 group-hover:opacity-100 text-slate-300 dark:text-white/30 hover:text-red-400 transition-all"
                                         >
                                             <span className="material-symbols-rounded text-[14px]">close</span>
                                         </button>
@@ -223,50 +211,53 @@ const TaskDetailModal = ({ task, onClose, onTaskUpdated }) => {
                                 ))}
                             </div>
 
-                            {/* Buscador */}
-                            <div className="flex flex-col gap-2 pt-1 border-t border-white/6">
-                                <p className="text-white/30 text-[0.65rem]">Buscar por correo</p>
-                                <div className="flex gap-1.5">
-                                    <input
-                                        type="email"
-                                        value={searchCorreo}
-                                        onChange={e => { setSearchCorreo(e.target.value); setSearchError(null); setSearchResult(null); }}
-                                        onKeyDown={e => { if (e.key === "Enter") handleSearch(); }}
-                                        placeholder="correo@..."
-                                        className="flex-1 min-w-0 bg-white/5 border border-white/10 rounded-lg px-2 py-1.5 text-white text-xs placeholder-white/20 focus:outline-none focus:border-white/25 transition-colors"
-                                    />
-                                    <button
-                                        onClick={handleSearch}
-                                        disabled={searching || !searchCorreo.trim()}
-                                        className="px-2 py-1.5 rounded-lg bg-white/5 border border-white/10 text-white/50 hover:text-white/80 hover:bg-white/10 transition-colors disabled:opacity-40"
-                                    >
-                                        <span className="material-symbols-rounded text-[14px]">
-                                            {searching ? "hourglass_empty" : "search"}
-                                        </span>
-                                    </button>
-                                </div>
+                            {/* Lista de miembros del proyecto */}
+                            <div className="flex flex-col gap-2 pt-1 border-t border-slate-100 dark:border-white/6">
+                               {userRol === "ADMIN" && (
+                                <button
+                                    onClick={() => setShowMiembros(!showMiembros)}
+                                    className="flex items-center gap-1.5 text-slate-400 dark:text-white/30 hover:text-slate-600 dark:hover:text-white/60 text-[0.65rem] transition-colors"
+                                >
+                                    <span className="material-symbols-rounded text-[14px]">
+                                        {showMiembros ? "expand_less" : "person_add"}
+                                    </span>
+                                    {showMiembros ? "Cerrar" : "Asignar miembro"}
+                                </button>
+                                 )}
 
-                                {searchError && (
-                                    <p className="text-red-400/70 text-[0.65rem]">{searchError}</p>
-                                )}
-
-                                {searchResult && (
-                                    <div className="flex items-center gap-2 bg-white/5 border border-white/10 rounded-xl p-2">
-                                        <div className="w-7 h-7 rounded-full bg-indigo-500/30 border border-indigo-500/40 flex items-center justify-center shrink-0">
-                                            <span className="text-[0.6rem] font-semibold text-indigo-300">
-                                                {searchResult.iniciales}
-                                            </span>
-                                        </div>
-                                        <div className="flex-1 min-w-0">
-                                            <p className="text-white/80 text-xs font-medium truncate">{searchResult.nombreCompleto}</p>
-                                            <p className="text-white/30 text-[0.6rem] truncate">{searchResult.correo}</p>
-                                        </div>
-                                        <button
-                                            onClick={handleAddUser}
-                                            className="text-[#a3ff12]/70 hover:text-[#a3ff12] transition-colors"
-                                        >
-                                            <span className="material-symbols-rounded text-[16px]">add</span>
-                                        </button>
+                                {showMiembros && (
+                                    <div className="flex flex-col gap-1.5 max-h-48 overflow-y-auto">
+                                        {miembros.length === 0 && (
+                                            <p className="text-slate-300 dark:text-white/20 text-xs">No hay miembros.</p>
+                                        )}
+                                        {miembros.map(miembro => {
+                                            const asignado = isAsignado(miembro.correo);
+                                            return (
+                                                <button
+                                                    key={miembro.idUsuario}
+                                                    onClick={() => handleToggleMiembro(miembro)}
+                                                    className={`flex items-center gap-2 px-2 py-1.5 rounded-lg transition-colors text-left ${
+                                                        asignado
+                                                            ? "bg-[#a3ff12]/10 border border-[#a3ff12]/20"
+                                                            : "hover:bg-slate-100 dark:hover:bg-white/5 border border-transparent"
+                                                    }`}
+                                                >
+                                                    <div className="w-6 h-6 rounded-full bg-indigo-100 dark:bg-indigo-500/30 border border-indigo-300 dark:border-indigo-500/40 flex items-center justify-center shrink-0">
+                                                        <span className="text-[0.55rem] font-semibold text-indigo-500 dark:text-indigo-300">
+                                                            {miembro.iniciales}
+                                                        </span>
+                                                    </div>
+                                                    <div className="flex-1 min-w-0">
+                                                        <p className="text-slate-600 dark:text-white/70 text-xs truncate">
+                                                            {miembro.nombre} {miembro.apellido}
+                                                        </p>
+                                                    </div>
+                                                    {asignado && (
+                                                        <span className="material-symbols-rounded text-[#a3ff12] text-[14px]">check</span>
+                                                    )}
+                                                </button>
+                                            );
+                                        })}
                                     </div>
                                 )}
                             </div>
@@ -275,17 +266,17 @@ const TaskDetailModal = ({ task, onClose, onTaskUpdated }) => {
                 </div>
 
                 {/* Footer */}
-                <div className="flex items-center justify-end px-6 py-4 border-t border-white/6 gap-2">
+                <div className="flex items-center justify-end px-6 py-4 border-t border-slate-100 dark:border-white/6 gap-2">
                     <button
                         onClick={onClose}
-                        className="px-4 py-2 rounded-xl border border-white/10 text-white/40 text-sm hover:bg-white/5 transition-colors"
+                        className="px-4 py-2 rounded-xl border border-slate-200 dark:border-white/10 text-slate-500 dark:text-white/40 text-sm hover:bg-slate-100 dark:hover:bg-white/5 transition-colors"
                     >
                         Cancelar
                     </button>
                     <button
                         onClick={handleSave}
                         disabled={saving}
-                        className="px-4 py-2 rounded-xl bg-[#a3ff12]/15 border border-[#a3ff12]/30 text-[#a3ff12] text-sm font-medium hover:bg-[#a3ff12]/25 transition-colors disabled:opacity-50"
+                        className="px-4 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-700 dark:bg-[#a3ff12]/15 border border-indigo-600 dark:border-[#a3ff12]/30 text-white dark:text-[#a3ff12] text-sm font-medium dark:hover:bg-[#a3ff12]/25 transition-colors disabled:opacity-50"
                     >
                         {saving ? "Guardando..." : "Guardar cambios"}
                     </button>

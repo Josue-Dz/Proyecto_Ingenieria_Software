@@ -3,18 +3,21 @@ import { CollisionPriority } from "@dnd-kit/abstract";
 import KanbanCard from './KanbanCard';
 import CreateTaskPopover from './CreateTaskPopover';
 
-const KanbanColumn = ({ column, onAddTask, onTaskClick }) => {
+const KanbanColumn = ({ column, onAddTask, onTaskClick, index, canCreate, canMove }) => {
 
-    const { ref: droppableRef } = useDroppable({
+    const { isDropTarget, ref } = useDroppable({
         id: String(column.idColumna),
-        type: "column",
-        accept: ["item"],
+        index,
+        type: 'column',
+        accept: ['item', 'column'],
         collisionPriority: CollisionPriority.Low,
         data: {
             columnId: column.idColumna,
             group: String(column.idColumna),
         },
     });
+
+    const style = isDropTarget ? { background: '#00000030' } : undefined;
 
     return (
         <div className="flex flex-col w-76 pt-8 shrink-0">
@@ -28,10 +31,14 @@ const KanbanColumn = ({ column, onAddTask, onTaskClick }) => {
             </div>
 
             <div
-                ref={droppableRef}
-                className="flex flex-col gap-2.5 overflow-y-auto max-h-[calc(100vh-260px)] rounded-2xl p-3 bg-white/60 dark:bg-white/3 border border-white/70 dark:border-white/6">
-
-                <CreateTaskPopover columnId={column.idColumna} onAddTask={onAddTask} />
+                ref={ref}
+                className="flex flex-col gap-2.5 overflow-y-auto max-h-[calc(100vh-260px)] rounded-2xl p-3 bg-slate-200/70 dark:bg-white/3 border border-white/70 dark:border-white/6"
+                style={style}
+            >
+                {/* Crear tarea solo ADMIN */}
+                {canCreate && (
+                    <CreateTaskPopover columnId={column.idColumna} onAddTask={onAddTask} />
+                )}
 
                 {column.tarjetas?.map((task, index) => (
                     <KanbanCard
@@ -40,6 +47,7 @@ const KanbanColumn = ({ column, onAddTask, onTaskClick }) => {
                         index={index}
                         columnId={column.idColumna}
                         onTaskClick={onTaskClick}
+                        canMove={canMove}
                     />
                 ))}
             </div>

@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { getMyProfileRequest, updateMyProfileRequest, changeMyPasswordRequest } from "../../auth/services/userService";
 
-// ── Input reutilizable ─
+// Input reutilizable
 const Field = ({ label, name, type = "text", value, onChange, readOnly = false, required = false, placeholder = "" }) => (
     <div>
         <label className="text-slate-500 dark:text-white/50 text-xs font-medium block mb-1">
@@ -25,7 +25,7 @@ const Field = ({ label, name, type = "text", value, onChange, readOnly = false, 
     </div>
 );
 
-// ── Alerta de feedback ──
+// Alerta de feedback
 const Alert = ({ type, message }) => {
     if (!message) return null;
     const isSuccess = type === "success";
@@ -43,7 +43,7 @@ const Alert = ({ type, message }) => {
     );
 };
 
-// ── Componente principal ──
+// Componente principal
 const ProfileSection = () => {
     const [profile, setProfile] = useState(null);
     const [loadingProfile, setLoadingProfile] = useState(true);

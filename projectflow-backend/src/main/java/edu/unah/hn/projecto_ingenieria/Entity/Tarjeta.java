@@ -86,5 +86,9 @@ public class Tarjeta {
 
     @OneToMany(mappedBy = "tarjeta",cascade = CascadeType.ALL)
     private List<Notificacion> notificaciones;
+    
+    @ManyToOne
+    @JoinColumn(name = "id_backlog")
+    private Backlog backlog;
 }
 
