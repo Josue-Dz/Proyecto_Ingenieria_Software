@@ -3,6 +3,7 @@ import LogoLight from '../../../assets/LogoLight.png'
 import LogoDark from '../../../assets/LogoDark.png'
 import { useAuth } from '../../../features/auth/hooks/useAuth';
 import { useDarkMode } from '../hooks/useDarkMode';
+import NotificationBell from '../../../features/boards/components/NotificactionBells';
 
 const PrivateNavbar = () => {
     const { user, logout } = useAuth();
@@ -34,6 +35,8 @@ const PrivateNavbar = () => {
 
                 <div className="flex items-center gap-8">
 
+                    {/* Campana de notificaciones */}
+                    <NotificationBell />
 
                     {/* Burbuja de usuario — ahora es un link a /perfil */}
                     <Link

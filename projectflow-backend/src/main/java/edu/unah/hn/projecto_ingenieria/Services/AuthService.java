@@ -25,6 +25,8 @@ import edu.unah.hn.projecto_ingenieria.Repository.UsuarioRepository;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseCookie;
+import org.springframework.http.HttpHeaders;
 
 @Service
 @RequiredArgsConstructor
@@ -45,8 +47,7 @@ public class AuthService {
         String token = jwtService.getToken(user);
 
         // Crear la cookie
-        Cookie cookie = crearCookie(token);
-        response.addCookie(cookie);
+        crearCookie(token, response);
 
         // Creo el dto con la data que tiene user
         UsuarioDTO usuarioDTO = crearUsuarioDTO(user);
@@ -74,8 +75,7 @@ public class AuthService {
         String token = jwtService.getToken(usuario);
 
         // Crear la cookie
-        Cookie cookie = crearCookie(token);
-        response.addCookie(cookie);
+        crearCookie(token, response);
 
         Usuario user = usuarioRepository.findByCorreo(usuario.getCorreo())
                 .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
@@ -102,12 +102,16 @@ public class AuthService {
         return usuarioDTO;
     }
 
-    public void logout(HttpServletResponse response) {
-        Cookie cookie = new Cookie("token", null);
-        cookie.setHttpOnly(false);
-        cookie.setPath("/");
-        cookie.setMaxAge(0);
-        response.addCookie(cookie);
+    public void logout(HttpServletResponse response) { // Or whatever your method is named
+        ResponseCookie cookie = ResponseCookie.from("token", "")
+                .httpOnly(true)
+                .secure(true)         // Must match the original cookie's secure flag
+                .sameSite("None")     // Must match the original cookie's SameSite flag
+                .path("/")            // Must match the original cookie's path
+                .maxAge(0)            // CRITICAL: Setting maxAge to 0 instructs the browser to delete the cookie
+                .build();
+
+        response.addHeader(HttpHeaders.SET_COOKIE, cookie.toString());
     }
 
     private UsuarioDTO crearUsuarioDTO(Usuario usuario) {
@@ -120,13 +124,18 @@ public class AuthService {
                 usuario.obtenerInicialesDeNombre(usuario.getNombre(), usuario.getApellido()));
     }
 
-    private Cookie crearCookie(String token) {
-        Cookie cookie = new Cookie("token", token);
-        cookie.setHttpOnly(true);
-        cookie.setSecure(false);
-        cookie.setPath("/");
-        cookie.setMaxAge(3600);
-        return cookie;
+    public void crearCookie(String token, HttpServletResponse response) {
+        ResponseCookie cookie = ResponseCookie.from("token", token)
+                .httpOnly(true)       // Prevents JavaScript access to the cookie (protects against XSS)
+                .secure(true)         // CRITICAL: Must be true when using SameSite="None". Enforces HTTPS (provided by Azure).
+                .sameSite("None")     // CRITICAL: Tells the browser this cookie is allowed to be sent cross-domain (Vercel -> Azure)
+                .path("/")            // Makes the cookie available to all backend routes
+                .maxAge(10 * 60 * 60) // 10 hours in seconds, matching your JwtService expiration
+                .build();
+
+        // Because ResponseCookie is not a standard Servlet Cookie, 
+        // we inject it directly into the HTTP headers instead of using response.addCookie()
+        response.addHeader(HttpHeaders.SET_COOKIE, cookie.toString());
     }
 
     public UsuarioDTO updateMyProfile(ActualizarPerfilDTO actualizarPerfil) {
