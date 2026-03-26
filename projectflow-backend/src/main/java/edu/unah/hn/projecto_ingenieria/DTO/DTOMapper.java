@@ -2,9 +2,11 @@ package edu.unah.hn.projecto_ingenieria.DTO;
 
 import java.util.ArrayList;
 import java.util.List;
+
 import org.springframework.stereotype.Component;
 
 import edu.unah.hn.projecto_ingenieria.Entity.Columna;
+import edu.unah.hn.projecto_ingenieria.Entity.Notificacion;
 import edu.unah.hn.projecto_ingenieria.Entity.Proyecto;
 import edu.unah.hn.projecto_ingenieria.Entity.Tablero;
 import edu.unah.hn.projecto_ingenieria.Entity.Tarjeta;
@@ -128,4 +130,25 @@ public class DTOMapper {
 
         return dto; 
     }
+
+    public NotificacionDTO toNotificacionDTO(Notificacion nuevaNotificacion) {
+
+        NotificacionDTO dto = new NotificacionDTO();
+
+        dto.setIdNotificacion(nuevaNotificacion.getIdNotificacion());
+        dto.setMensaje(nuevaNotificacion.getMensaje());
+        dto.setTipo(nuevaNotificacion.getTipo());
+        dto.setFechaCreacion(nuevaNotificacion.getFechaCreacion());
+        dto.setLeida(nuevaNotificacion.getLeida());
+
+        if (nuevaNotificacion.getTarjeta() != null) {
+            dto.setIdTarjeta(nuevaNotificacion.getTarjeta().getIdTarjeta());
+        } else {
+            dto.setIdTarjeta(null);
+        }
+
+        return dto;
+    }
 }
+
+

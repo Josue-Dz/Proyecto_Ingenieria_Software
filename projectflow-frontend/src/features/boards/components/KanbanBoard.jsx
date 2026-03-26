@@ -97,7 +97,7 @@ const KanbanBoard = () => {
     return (
         <>
             {/* Miembros del proyecto */}
-            <div className="flex items-center py-3 px-1 mb-2">
+            <div className="flex items-center justify-end py-3 px-1 mb-2">
                 <MembersSection idProyecto={idProyecto} />
             </div>
 
