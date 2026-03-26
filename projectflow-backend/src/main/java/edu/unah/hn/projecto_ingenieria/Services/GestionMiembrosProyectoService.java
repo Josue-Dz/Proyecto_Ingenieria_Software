@@ -3,6 +3,7 @@ package edu.unah.hn.projecto_ingenieria.Services;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
@@ -16,6 +17,8 @@ import edu.unah.hn.projecto_ingenieria.Entity.Proyecto;
 import edu.unah.hn.projecto_ingenieria.Entity.ProyectoUsuario;
 import edu.unah.hn.projecto_ingenieria.Entity.ProyectoUsuario.role;
 import edu.unah.hn.projecto_ingenieria.Entity.Usuario;
+import edu.unah.hn.projecto_ingenieria.Events.MiembroAgregadoEvent;
+import edu.unah.hn.projecto_ingenieria.Events.RolCambiadoEvent;
 import edu.unah.hn.projecto_ingenieria.Repository.ProyectoRepository;
 import edu.unah.hn.projecto_ingenieria.Repository.ProyectoUsuarioRepository;
 import edu.unah.hn.projecto_ingenieria.Repository.UsuarioRepository;
@@ -29,6 +32,7 @@ public class GestionMiembrosProyectoService {
     private final ProyectoRepository proyectoRepository;
     private final UsuarioRepository usuarioRepository;
     private final ProyectoUsuarioRepository proyectoUsuarioRepository;
+    private final ApplicationEventPublisher eventPublisher;
 
     @Transactional(readOnly = true)
 public List<MiembroResponseDTO> listarMiembrosProyecto(Long idProyecto) {
@@ -93,6 +97,9 @@ public MiembroResponseDTO invitarMiembro(Long idProyecto, InvitarMiembroRequestD
     proyectoUsuario.setRol(rolAsignado);
     proyectoUsuarioRepository.save(proyectoUsuario);
 
+    // Publicar evento
+    eventPublisher.publishEvent(new MiembroAgregadoEvent(this, proyecto, nuevoMiembro));
+
     return new MiembroResponseDTO(
         nuevoMiembro.getIdUsuario(),
         nuevoMiembro.getNombre(),
@@ -128,10 +135,15 @@ public MiembroResponseDTO cambiarRolMiembro(Long idProyecto, Long idUsuario, Cam
         throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Rol inválido. Usa: ADMIN, COLABORADOR o LECTOR");
     }
 
+    String rolAnterior = proyectoUsuario.getRol().name();
     proyectoUsuario.setRol(nuevoRol);
     proyectoUsuarioRepository.save(proyectoUsuario);
 
     Usuario miembro = proyectoUsuario.getUsuario();
+
+    // Publicar evento
+    eventPublisher.publishEvent(new RolCambiadoEvent(this, proyecto, miembro, rolAnterior, nuevoRol.name()));
+
     return new MiembroResponseDTO(
         miembro.getIdUsuario(),
         miembro.getNombre(),
@@ -161,6 +173,8 @@ public void eliminarMiembro(Long idProyecto, Long idUsuario) {
         .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "El usuario no es miembro de este proyecto"));
 
     proyectoUsuarioRepository.delete(proyectoUsuario);
+
+
 }
 
 
