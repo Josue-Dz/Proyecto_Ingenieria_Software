@@ -44,7 +44,7 @@ public class JwtService {
         return Keys.hmacShaKeyFor(keyBytes);
     }
 
-    String getUsernameFromToken(String token) {
+    public String getUsernameFromToken(String token) {
         return getClaim(token, Claims::getSubject);
     }
 

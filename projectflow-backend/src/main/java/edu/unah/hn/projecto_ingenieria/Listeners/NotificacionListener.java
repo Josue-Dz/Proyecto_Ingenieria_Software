@@ -1,13 +1,14 @@
 package edu.unah.hn.projecto_ingenieria.Listeners;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
 import org.springframework.context.event.EventListener;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Component;
 
-import edu.unah.hn.projecto_ingenieria.Entity.Columna;
+import edu.unah.hn.projecto_ingenieria.DTO.DTOMapper;
+import edu.unah.hn.projecto_ingenieria.DTO.NotificacionDTO;
 import edu.unah.hn.projecto_ingenieria.Entity.Notificacion;
 import edu.unah.hn.projecto_ingenieria.Entity.Proyecto;
 import edu.unah.hn.projecto_ingenieria.Entity.ProyectoUsuario;
@@ -34,111 +35,100 @@ public class NotificacionListener {
 
     private final ProyectoUsuarioRepository proyectoUsuarioRepository;
 
-    @EventListener
+    private final SimpMessagingTemplate messagingTemplate;
+
+    private final DTOMapper dtoMapper;
+
+    
+  @EventListener
     public void handleTarjetaAsignada(TarjetaAsignadaEvent event) {
         Tarjeta tarjeta = event.getTarjeta();
-        List<Usuario> usuarios = event.getUsuariosAsignados();
-
-        for (Usuario usuario : usuarios) {
-            Notificacion notificacion = new Notificacion();
-            notificacion.setMensaje("Has sido asignado a la tarjeta: " + tarjeta.getTitulo());
-            notificacion.setTipo("ASIGNACION");
-            notificacion.setFechaCreacion(LocalDateTime.now());
-            notificacion.setUsuario(usuario);
-            notificacion.setTarjeta(tarjeta);
+        for (Usuario usuario : event.getUsuariosAsignados()) {
+            Notificacion notificacion = construir(
+                usuario,
+                "Has sido asignado a la tarjeta: " + tarjeta.getTitulo(),
+                "ASIGNACION",
+                tarjeta
+            );
             notificacionRepository.save(notificacion);
+            enviarAlUsuario(usuario, notificacion);
         }
     }
 
     @EventListener
     public void handleTarjetaMovida(TarjetaMovidaEvent event) {
         Tarjeta tarjeta = event.getTarjeta();
-        String columnaAntigua = event.getColumnaAntigua().getNombreColumna();
-        String columnaNueva = event.getColumnaNueva().getNombreColumna();
+        String mensaje = "La tarjeta '" + tarjeta.getTitulo() + "' se movió de '"
+                + event.getColumnaAntigua().getNombreColumna() + "' a '"
+                + event.getColumnaNueva().getNombreColumna() + "'";
 
-        List<Usuario> usuarios = tarjeta.getAsignados();
-        if (usuarios != null) {
-            for (Usuario usuario : usuarios) {
-                Notificacion notificacion = new Notificacion();
-                notificacion.setMensaje("La tarjeta '" + tarjeta.getTitulo() + "' se movió de '" + columnaAntigua + "' a '" + columnaNueva + "'");
-                notificacion.setTipo("MOVIMIENTO");
-                notificacion.setFechaCreacion(LocalDateTime.now());
-                notificacion.setUsuario(usuario);
-                notificacion.setTarjeta(tarjeta);
+        if (tarjeta.getAsignados() != null) {
+            for (Usuario usuario : tarjeta.getAsignados()) {
+                Notificacion notificacion = construir(usuario, mensaje, "MOVIMIENTO", tarjeta);
                 notificacionRepository.save(notificacion);
+                enviarAlUsuario(usuario, notificacion);
             }
         }
+    }
+        @EventListener
+        public void handleTarjetaFechaCambio(TarjetaFechaCambioEvent event) {
+        Tarjeta tarjeta = event.getTarjeta();
+        String mensaje = "La fecha límite de '" + tarjeta.getTitulo() + "' cambió de "
+           + event.getFechaAntigua() + " a " + event.getFechaNueva();
+
+            if (tarjeta.getAsignados() != null) {
+                for (Usuario usuario : tarjeta.getAsignados()) {
+                Notificacion notificacion = construir(usuario, mensaje, "FECHA_CAMBIO", tarjeta);
+                   notificacionRepository.save(notificacion);
+                        enviarAlUsuario(usuario, notificacion);
+                    }
+                }
+            }
+
+            @EventListener
+    public void handleColumnaCreada(ColumnaCreadaEvent event) {
+        String mensaje = "Se creó la columna '" + event.getColumna().getNombreColumna()
+                + "' en el proyecto " + event.getProyecto().getNombreProyecto();
+        notificarATodosLosMiembros(event.getProyecto(), mensaje, "COLUMNA_CREADA");
     }
 
     @EventListener
-    public void handleTarjetaFechaCambio(TarjetaFechaCambioEvent event) {
-        Tarjeta tarjeta = event.getTarjeta();
-        LocalDate fechaAntigua = event.getFechaAntigua();
-        LocalDate fechaNueva = event.getFechaNueva();
-
-        List<Usuario> usuarios = tarjeta.getAsignados();
-        if (usuarios != null) {
-            for (Usuario usuario : usuarios) {
-                Notificacion notificacion = new Notificacion();
-                notificacion.setMensaje("La fecha límite de la tarjeta '" + tarjeta.getTitulo() + "' cambió de " + fechaAntigua + " a " + fechaNueva);
-                notificacion.setTipo("FECHA_CAMBIO");
-                notificacion.setFechaCreacion(LocalDateTime.now());
-                notificacion.setUsuario(usuario);
-                notificacion.setTarjeta(tarjeta);
-                notificacionRepository.save(notificacion);
-            }
-        }
+    public void handleColumnaEliminada(ColumnaEliminadaEvent event) {
+        String mensaje = "Se eliminó la columna '" + event.getColumna().getNombreColumna()
+                + "' en el proyecto " + event.getProyecto().getNombreProyecto();
+        notificarATodosLosMiembros(event.getProyecto(), mensaje, "COLUMNA_ELIMINADA");
     }
 
-            @EventListener
-        public void handleColumnaCreada(ColumnaCreadaEvent event) {
-            Proyecto proyecto = event.getProyecto();
-            Columna columna = event.getColumna();
-            String mensaje = "Se creó la columna '" + columna.getNombreColumna() + "' en el proyecto " + proyecto.getNombreProyecto();
-            notificarATodosLosMiembros(proyecto, mensaje, "COLUMNA_CREADA");
-        }
+    @EventListener
+    public void handleTarjetaCreada(TarjetaCreadaEvent event) {
+        String mensaje = "Se creó la tarjeta '" + event.getTarjeta().getTitulo()
+                + "' en el proyecto " + event.getProyecto().getNombreProyecto();
+        notificarATodosLosMiembros(event.getProyecto(), mensaje, "TARJETA_CREADA");
+    }
 
-        @EventListener
-        public void handleColumnaEliminada(ColumnaEliminadaEvent event) {
-            Proyecto proyecto = event.getProyecto();
-            Columna columna = event.getColumna();
-            String mensaje = "Se eliminó la columna '" + columna.getNombreColumna() + "' en el proyecto " + proyecto.getNombreProyecto();
-            notificarATodosLosMiembros(proyecto, mensaje, "COLUMNA_ELIMINADA");
-        }
+    @EventListener
+    public void handleTarjetaEliminada(TarjetaEliminadaEvent event) {
+        String mensaje = "La tarjeta '" + event.getTarjeta().getTitulo()
+                + "' fue eliminada en el proyecto " + event.getProyecto().getNombreProyecto();
+        notificarATodosLosMiembros(event.getProyecto(), mensaje, "TARJETA_ELIMINADA");
+    }
 
-        @EventListener
-        public void handleTarjetaCreada(TarjetaCreadaEvent event) {
-            Proyecto proyecto = event.getProyecto();
-            Tarjeta tarjeta = event.getTarjeta();
-            String mensaje = "Se creó la tarjeta '" + tarjeta.getTitulo() + "' en el proyecto " + proyecto.getNombreProyecto();
-            notificarATodosLosMiembros(proyecto, mensaje, "TARJETA_CREADA");
-        }
+    @EventListener
+    public void handleMiembroAgregado(MiembroAgregadoEvent event) {
+        Usuario u = event.getUsuario();
+        String mensaje = "El usuario " + u.getNombre() + " " + u.getApellido()
+                + " fue agregado al proyecto " + event.getProyecto().getNombreProyecto();
+        notificarATodosLosMiembros(event.getProyecto(), mensaje, "MIEMBRO_AGREGADO");
+    }
 
-        @EventListener
-        public void handleTarjetaEliminada(TarjetaEliminadaEvent event) {
-            Proyecto proyecto = event.getProyecto();
-            Tarjeta tarjeta = event.getTarjeta();
-            String mensaje = "La tarjeta '" + tarjeta.getTitulo() + "' fue eliminada en el proyecto " + proyecto.getNombreProyecto();
-            notificarATodosLosMiembros(proyecto, mensaje, "TARJETA_ELIMINADA");
-        }
-
-        @EventListener
-        public void handleMiembroAgregado(MiembroAgregadoEvent event) {
-            Proyecto proyecto = event.getProyecto();
-            Usuario usuario = event.getUsuario();
-            String mensaje = "El usuario " + usuario.getNombre() + " " + usuario.getApellido() + " fue agregado al proyecto " + proyecto.getNombreProyecto();
-            notificarATodosLosMiembros(proyecto, mensaje, "MIEMBRO_AGREGADO");
-        }
-
-        @EventListener
-        public void handleRolCambiado(RolCambiadoEvent event) {
-            Proyecto proyecto = event.getProyecto();
-            Usuario usuario = event.getUsuario();
-            String mensaje = "El rol del usuario " + usuario.getNombre() + " " + usuario.getApellido() +
-                            " cambió de " + event.getRolAnterior() + " a " + event.getRolNuevo() +
-                            " en el proyecto " + proyecto.getNombreProyecto();
-            notificarATodosLosMiembros(proyecto, mensaje, "ROL_CAMBIADO");
-        }
+    @EventListener
+    public void handleRolCambiado(RolCambiadoEvent event) {
+        Usuario u = event.getUsuario();
+        String mensaje = "El rol de " + u.getNombre() + " " + u.getApellido()
+                + " cambió de " + event.getRolAnterior() + " a " + event.getRolNuevo()
+                + " en el proyecto " + event.getProyecto().getNombreProyecto();
+        notificarATodosLosMiembros(event.getProyecto(), mensaje, "ROL_CAMBIADO");
+    }
 
     private void notificarATodosLosMiembros(Proyecto proyecto, String mensaje, String tipo) {
 
@@ -152,7 +142,28 @@ public class NotificacionListener {
         notificacion.setFechaCreacion(LocalDateTime.now());
         notificacion.setUsuario(usuario);
         notificacionRepository.save(notificacion);
+        enviarAlUsuario(usuario, notificacion);
     }
+    
 }
+
+    private Notificacion construir(Usuario usuario, String mensaje, String tipo, Tarjeta tarjeta) {
+        Notificacion n = new Notificacion();
+        n.setMensaje(mensaje);
+        n.setTipo(tipo);
+        n.setFechaCreacion(LocalDateTime.now());
+        n.setUsuario(usuario);
+        n.setTarjeta(tarjeta);
+        return n;
+    }
+
+    private void enviarAlUsuario(Usuario usuario, Notificacion notificacion) {
+        NotificacionDTO dtoNotificacion = dtoMapper.toNotificacionDTO(notificacion);
+        messagingTemplate.convertAndSendToUser(
+                usuario.getCorreo(),
+                "/queue/notificaciones",
+                dtoNotificacion
+        );
+    }
 
 }
