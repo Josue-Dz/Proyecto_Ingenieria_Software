@@ -3,7 +3,7 @@ package edu.unah.hn.projecto_ingenieria.Entity;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
-
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -16,6 +16,7 @@ import jakarta.persistence.JoinTable;
 import jakarta.persistence.Lob;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -80,6 +81,9 @@ public class Tarjeta {
     )
     private List<Usuario> asignados;
 
+    @OneToMany(mappedBy = "tarjeta",cascade = CascadeType.ALL)
+    private List<Notificacion> notificaciones;
+    
     @ManyToOne
     @JoinColumn(name = "id_backlog")
     private Backlog backlog;
