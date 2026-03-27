@@ -1,7 +1,7 @@
 import apiClient from "../../../shared/api/apiCliente";
 
 export const createBoardRequest = async (projectId, boardData) => {
-    //console.log("Esto va al backend: ", boardData)
+    console.log("Esto va al backend: ", boardData)
     const response = await apiClient.post(`/boards/${projectId}/create`, boardData)
     return response.data;
 }
