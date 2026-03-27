@@ -64,6 +64,9 @@ public class Usuario implements UserDetails {
     @OneToMany(mappedBy = "usuario", fetch = FetchType.EAGER)
     private List<ProyectoUsuario> proyectosUsuario;
 
+    @OneToMany(mappedBy = "usuario", fetch = FetchType.LAZY)
+    private List<Notificacion> notificaciones;
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         if (proyectosUsuario == null)
