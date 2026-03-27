@@ -22,7 +22,6 @@ import edu.unah.hn.projecto_ingenieria.Jwt.JwtService;
 import edu.unah.hn.projecto_ingenieria.Jwt.LoginRequestDTO;
 import edu.unah.hn.projecto_ingenieria.Jwt.UsuarioRegistroDTO;
 import edu.unah.hn.projecto_ingenieria.Repository.UsuarioRepository;
-import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseCookie;
