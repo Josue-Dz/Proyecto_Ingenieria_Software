@@ -8,7 +8,6 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 @Configuration
 public class WebCofig implements WebMvcConfigurer{
     
-    // Uses the Vercel URL from environment variables, or defaults to localhost
     @Value("${FRONTEND_URL:http://localhost:5173}")
     private String frontendUrl;
 
@@ -16,7 +15,7 @@ public class WebCofig implements WebMvcConfigurer{
     public void addCorsMappings(CorsRegistry registry) {
         registry.addMapping("/api/**")
         .allowedOrigins(frontendUrl) 
-        .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS") // OPTIONS is required for pre-flight cross-domain requests
+        .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
         .allowedHeaders("*")
         .allowCredentials(true);
     }

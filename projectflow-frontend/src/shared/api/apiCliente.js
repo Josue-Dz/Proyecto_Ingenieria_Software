@@ -1,8 +1,7 @@
 import axios from "axios"
 
 const apiClient = axios.create({
-    // Use Vite's environment variables to switch between localhost and Azure
-    baseURL: import.meta.env.VITE_API_URL || "http://localhost:8080/api",
+    baseURL: import.meta.env.VITE_PUBLIC_BACKEND_URL,
     withCredentials: true,
     headers: {
         "Content-Type": "application/json"
