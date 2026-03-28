@@ -40,12 +40,14 @@ const BoardsPage = () => {
         <div className="pt-6 pb-14">
 
             {/* Header con título y miembros en la misma línea */}
-                        <div className="flex items-center justify-between mb-6 flex-wrap gap-4">
-                            <h2 className="text-xl font-bold dark:text-white">Tableros del Proyecto</h2>
-                            <MembersSection idProyecto={id} />
-                        </div>
+            <div className="flex items-center justify-between mb-6 flex-wrap gap-4">
+                <h2 className="text-xl font-bold dark:text-white">Tableros del Proyecto</h2>
+            </div>
 
-            <AddButton disabled={loading} setIsModalOpen={setIsModalOpen} textoBoton="Nuevo tablero" />
+            <div className="flex items-center justify-end space-x-3 space-y-3">
+                <MembersSection idProyecto={id} />
+                <AddButton disabled={loading} setIsModalOpen={setIsModalOpen} textoBoton="Nuevo tablero" />
+            </div>
 
             <CreateBoardModal
                 projectId={id}

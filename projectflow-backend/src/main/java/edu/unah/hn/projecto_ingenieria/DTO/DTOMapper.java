@@ -11,6 +11,7 @@ import edu.unah.hn.projecto_ingenieria.Entity.Proyecto;
 import edu.unah.hn.projecto_ingenieria.Entity.Tablero;
 import edu.unah.hn.projecto_ingenieria.Entity.Tarjeta;
 import edu.unah.hn.projecto_ingenieria.Entity.Usuario;
+import edu.unah.hn.projecto_ingenieria.Services.TarjetaService;
 
 /**
  * Utility component responsible for converting entity objects into their
@@ -20,6 +21,8 @@ import edu.unah.hn.projecto_ingenieria.Entity.Usuario;
 @Component
 public class DTOMapper {
 
+    private TarjetaService tarjetaService; //Cambiar luego mas elegante
+
     public ProyectoResponseDTO toProyectoDTO(Proyecto p) {
         if (p == null) {
             return null;
@@ -28,6 +31,7 @@ public class DTOMapper {
                 p.getIdProyecto(),
                 p.getNombreProyecto(),
                 p.getDescripcion(),
+                toColumnaDTO(p.getBacklog(), null, tarjetaService.mapToDTO(p.getBacklog())),
                 p.getFechaInicio(),
                 p.getFechaFin());
     }
@@ -117,6 +121,7 @@ public class DTOMapper {
         dto.setTarjetas(tarjetas);
         return dto;
     }
+
     
     public UsuarioDTO toUsuarioDTO(Usuario usuario){
         UsuarioDTO dto = new UsuarioDTO();

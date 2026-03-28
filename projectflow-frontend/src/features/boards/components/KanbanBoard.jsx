@@ -54,7 +54,6 @@ const KanbanBoard = () => {
             itemsRef.current = updated;
             return updated;
         });
-        console.log("HOLa");
     };
 
     const handleDragEnd = (event) => {

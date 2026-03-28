@@ -147,11 +147,6 @@ public class TarjetaService {
         return tarjetasDTO;
     }
 
-    public TarjetaResponseDTO actualizarTarjeta() {
-
-        return null;
-    }
-
     public void moverTarjeta(Long tarjetaId, Long columnaOrigen, TarjetaRequestDTO tarjetaDto) {
 
         Columna columnaAntigua = columnaRepository.findById(columnaOrigen)
