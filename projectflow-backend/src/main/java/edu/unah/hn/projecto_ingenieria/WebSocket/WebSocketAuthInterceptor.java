@@ -15,8 +15,9 @@ import org.springframework.web.socket.WebSocketHandler;
 import org.springframework.web.socket.server.HandshakeInterceptor;
 
 import edu.unah.hn.projecto_ingenieria.Jwt.JwtService;
-import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.Cookie;
 import lombok.RequiredArgsConstructor;
+
 @Component
 @RequiredArgsConstructor
 public class WebSocketAuthInterceptor implements HandshakeInterceptor {
@@ -29,33 +30,37 @@ public class WebSocketAuthInterceptor implements HandshakeInterceptor {
                                    WebSocketHandler wsHandler, Map<String, Object> attributes) {
 
         if (request instanceof ServletServerHttpRequest servletRequest) {
-            String token = extraerToken(servletRequest.getServletRequest());
             
+            // Lee la cookie 
+            String token = null;
+            Cookie[] cookies = servletRequest.getServletRequest().getCookies();
+            if (cookies != null) {
+                for (Cookie cookie : cookies) {
+                    if ("token".equals(cookie.getName())) {
+                        token = cookie.getValue();
+                        break;
+                    }
+                }
+            }
+
             if (token == null) return false;
 
             try {
-                // Se extrae el username del subject del JWT
-                String username = jwtService.getUsernameFromToken(token);
-                
-                // Se carga el UserDetails para validar
-                UserDetails userDetails = userDetailsService.loadUserByUsername(username);
-                                
+                String email = jwtService.getUsernameFromToken(token);
+                UserDetails userDetails = userDetailsService.loadUserByUsername(email);
+
                 if (!jwtService.isTokenValid(token, userDetails)) return false;
 
                 UsernamePasswordAuthenticationToken auth =
                         new UsernamePasswordAuthenticationToken(
-                                userDetails,
-                                null,
-                                userDetails.getAuthorities()
-                        );
+                                userDetails, null, userDetails.getAuthorities());
 
-                // Se guarda en atributos de sesión WebSocket
+                // Establece el Principal para que convertAndSendToUser funcione
                 attributes.put("user", auth);
                 SecurityContextHolder.getContext().setAuthentication(auth);
                 return true;
 
             } catch (UsernameNotFoundException e) {
-
                 return false;
             }
         }
@@ -65,12 +70,4 @@ public class WebSocketAuthInterceptor implements HandshakeInterceptor {
     @Override
     public void afterHandshake(ServerHttpRequest request, ServerHttpResponse response,
                                WebSocketHandler wsHandler, Exception exception) {}
-
-    private String extraerToken(HttpServletRequest request) {
-        String header = request.getHeader("Authorization");
-        if (header != null && header.startsWith("Bearer ")) {
-            return header.substring(7);
-        }
-        return request.getParameter("token");
-    }
 }

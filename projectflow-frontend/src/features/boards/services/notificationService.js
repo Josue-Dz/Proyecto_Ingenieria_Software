@@ -24,16 +24,15 @@ export const marcarTodasComoLeidasRequest = async () => {
 
 // WebSocket 
 
-let stompClient = null;
-
+ let stompClient = null;
 export const conectarNotificaciones = (onNotificacion) => {
-    const token = localStorage.getItem("token"); // mismo lugar que tu interceptor de axios
-
     stompClient = new Client({
         webSocketFactory: () =>
-            new SockJS(`http://localhost:8080/ws?token=${token}`),
+            new SockJS("http://localhost:8080/ws", null, {
+                transports: ["websocket", "xhr-streaming", "xhr-polling"],
+            }),
 
-        reconnectDelay: 5000,
+        reconnectDelay: 0,
 
         onConnect: () => {
             console.log("WebSocket conectado");
@@ -44,7 +43,6 @@ export const conectarNotificaciones = (onNotificacion) => {
         },
 
         onDisconnect: () => console.log("WebSocket desconectado"),
-
         onStompError: (frame) =>
             console.error("Error STOMP:", frame.headers["message"]),
     });

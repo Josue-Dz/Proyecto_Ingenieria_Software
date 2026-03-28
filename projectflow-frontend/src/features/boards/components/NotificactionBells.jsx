@@ -1,3 +1,4 @@
+
 import { useState, useEffect, useRef } from "react";
 import {getMisNotificacionesRequest, marcarComoLeidaRequest, marcarTodasComoLeidasRequest, conectarNotificaciones, desconectarNotificaciones} from "../services/notificationService";
 
@@ -33,19 +34,19 @@ const NotificationBell = () => {
 
     const noLeidas = notificaciones.filter((n) => !n.leida).length;
 
-    // Carga historial + conecta WebSocket
-    useEffect(() => {
-        getMisNotificacionesRequest()
-            .then(setNotificaciones)
-            .catch(console.error)
-            .finally(() => setLoading(false));
+    //cargar historial + WebSocket
+ useEffect(() => {
+    getMisNotificacionesRequest()
+        .then((data) => setNotificaciones(Array.isArray(data) ? data : []))
+        .catch(console.error)
+        .finally(() => setLoading(false));
 
-        conectarNotificaciones((nueva) => {
-            setNotificaciones((prev) => [nueva, ...prev]);
-        });
+    conectarNotificaciones((nueva) => {
+        setNotificaciones((prev) => [nueva, ...prev]);
+    });
 
-        return () => desconectarNotificaciones();
-    }, []);
+    return () => desconectarNotificaciones();
+}, []);
 
     // Cierra el panel al hacer click fuera
     useEffect(() => {
@@ -232,3 +233,4 @@ const NotificationBell = () => {
 };
 
 export default NotificationBell;
+
