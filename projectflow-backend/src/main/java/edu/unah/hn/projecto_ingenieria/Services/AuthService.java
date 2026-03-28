@@ -101,7 +101,7 @@ public class AuthService {
         return usuarioDTO;
     }
 
-    public void logout(HttpServletResponse response) { // Or whatever your method is named
+    public void logout(HttpServletResponse response) {
         ResponseCookie cookie = ResponseCookie.from("token", "")
                 .httpOnly(true)
                 .secure(true)         // Must match the original cookie's secure flag

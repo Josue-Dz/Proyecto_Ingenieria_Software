@@ -5,10 +5,10 @@ on:
   # Automatically trigger it when detected changes in repo
   push:
     branches: 
-      [ deibi ]
+      [ main ]
     paths:
     - '**'
-    - '.github/workflows/codeflow-api-AutoDeployTrigger-76cb846b-f9b3-4c11-b39d-09013fcc855d.yml'
+    - '.github/workflows/codeflow-api-AutoDeployTrigger-e261e613-5228-4305-8613-5423fb4fa9f0.yml'
 
   # Allow manual trigger 
   workflow_dispatch:      
