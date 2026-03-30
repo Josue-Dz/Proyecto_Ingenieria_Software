@@ -129,6 +129,12 @@ El sistema ahora es una herramienta funcional de gestión. El usuario no solo cr
 * **Carga de Documentación:** Generar los 8 diagramas UML al mismo tiempo que se programaba generó una carga de trabajo pesada a mitad del sprint.
 
 
+## 3. Plan de Mejora y Compromisos para el Sprint #3
+* **Investigación de Librerías:** Para el módulo de métricas, dedicaremos los primeros 2 días a investigar bibliotecas de gráficos.
+* **Refactorización:** Limpiar el código del movimiento de tarjetas para asegurar que sea escalable cuando haya cientos de tareas.
+* **Enfoque en Métricas:** La prioridad del siguiente sprint será cumplir con el requerimiento para la gestion de miembros en el proyecto.
+  
+
 # Acta de Sprint Review – Sprint #3
 
 **Proyecto:** Sistema de Gestión de Proyectos de Software
@@ -190,7 +196,3 @@ El sistema ya permite el trabajo multi-usuario. El "Master Backlog" está operat
 * **Preparación de Entrega:** Dedicar los últimos días a la limpieza de código (Refactorización) y redacción del manual de usuario y manual técnico para la entrega final de la clase.
 
 
-## 3. Plan de Mejora y Compromisos para el Sprint #3
-* **Investigación de Librerías:** Para el módulo de métricas, dedicaremos los primeros 2 días a investigar bibliotecas de gráficos.
-* **Refactorización:** Limpiar el código del movimiento de tarjetas para asegurar que sea escalable cuando haya cientos de tareas.
-* **Enfoque en Métricas:** La prioridad del siguiente sprint será cumplir con el requerimiento del ingeniero sobre la generación de reportes y exportación a PDF.
