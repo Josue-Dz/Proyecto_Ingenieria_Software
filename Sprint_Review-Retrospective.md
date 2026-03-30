@@ -128,6 +128,68 @@ El sistema ahora es una herramienta funcional de gestión. El usuario no solo cr
 * **Complejidad del Drag & Drop:** La lógica de reordenamiento en la base de datos fue más difícil de lo previsto inicialmente.
 * **Carga de Documentación:** Generar los 8 diagramas UML al mismo tiempo que se programaba generó una carga de trabajo pesada a mitad del sprint.
 
+
+# Acta de Sprint Review – Sprint #3
+
+**Proyecto:** Sistema de Gestión de Proyectos de Software
+**Equipo:** CodeFlow
+**Integrantes:** Ronny Posadas, David Parada, José Núñez
+**Fecha:** 14/03/26 – 27/03/26
+
+## 1. Objetivo del Sprint
+Transformar el sistema en una plataforma colaborativa mediante la implementación de un motor de **Notificaciones en Tiempo Real**, gestión de membresías de equipo y la centralización de requerimientos en el **Product Backlog**, culminando con el despliegue del sistema en un entorno de producción.
+
+## 2. Resumen del Sprint (Métricas)
+
+| Métrica | Valor |
+| :--- | :--- |
+| **Historias de Usuario (HU) comprometidas** | 5 |
+| **Tareas Técnicas comprometidas** | 1 (Despliegue Azure) |
+| **Total de elementos terminados** | 5 / 6 |
+| **Porcentaje de cumplimiento** | 83.33% |
+| **Puntos de Historia totales (Fibonacci)** | 21 pts (Completados) |
+| **Estado del Sprint** | En Progreso (1 HU pendiente) |
+
+## 3. Demostración de Logros (Lo que se terminó)
+
+### A. Funcionalidades (Historias de Usuario)
+1. **Notificación de Asignación de Tarea (3 pts):** Sistema de alertas cuando un usuario es designado como responsable de una tarjeta.
+2. **Gestión de Miembros del Equipo (8 pts):** Interfaz para añadir colaboradores a un proyecto con roles específicos (ADMIN, COLABORADOR, LECTOR).
+3. **Notificaciones de Cambios en Tareas (5 pts):** Alertas automáticas al mover tarjetas o modificar fechas límites.
+4. **Gestión del Product Backlog (5 pts):** Implementación de la lista maestra de requerimientos a nivel de proyecto (fuera de los Sprints).
+
+### B. Infraestructura Técnica
+* **Despliegue en Azure:** Configuración exitosa de la infraestructura para el frontend y backend, permitiendo acceso externo al sistema.
+* **Integración de Notificaciones:** Lógica de backend para disparar eventos de alerta ante cambios en la base de datos.
+
+## 4. Estado del Incremento
+El sistema ya permite el trabajo multi-usuario. El "Master Backlog" está operativo para planificar futuros Sprints y las notificaciones aseguran que el equipo esté alineado. **Nota:** La funcionalidad de *Filtrado de Tareas* se transfiere al Sprint #4 por priorizar la estabilidad del despliegue en azure.
+
+---
+
+# Acta de Sprint Retrospective – Sprint #3
+
+## 1. Análisis de Cumplimiento
+* **Tareas completadas:** 5
+* **Tareas pendientes:** 1 (Filtrar tareas en el tablero - 5 pts)
+* **Porcentaje de éxito:** 83.3%
+
+## 2. Feedback del Equipo
+
+### ¿Qué salió bien?
+* **Despliegue Exitoso:** Lograr que la aplicación funcione en Azure da una gran ventaja competitiva para la entrega final.
+* **Módulo de Colaboración:** La lógica de `tbl_proyecto_x_usuarios` funciona correctamente, permitiendo que varios estudiantes trabajen en el mismo proyecto.
+
+### ¿Qué puede mejorar?
+* **Configuración del Entorno Cloud:** El despliegue en Azure tomó más tiempo del planeado debido a configuraciones de variables de entorno y CORS.
+* **Alcance Excesivo:** Se subestimó el esfuerzo de las notificaciones en tiempo real y la parte para Gestionar los miembros en el proyecto, lo que causó el retraso en la funcionalidad de filtrado.
+
+## 3. Plan de Mejora y Compromisos para el Sprint #4 (Cierre)
+* **Finalización Inmediata:** Iniciar el Sprint #4 completando el filtro de tareas pendiente.
+* **Enfoque en Métricas Finales:** Implementar los gráficos de avance (Burn down charts) que solicitó el ingeniero.
+* **Preparación de Entrega:** Dedicar los últimos días a la limpieza de código (Refactorización) y redacción del manual de usuario y manual técnico para la entrega final de la clase.
+
+
 ## 3. Plan de Mejora y Compromisos para el Sprint #3
 * **Investigación de Librerías:** Para el módulo de métricas, dedicaremos los primeros 2 días a investigar bibliotecas de gráficos.
 * **Refactorización:** Limpiar el código del movimiento de tarjetas para asegurar que sea escalable cuando haya cientos de tareas.
