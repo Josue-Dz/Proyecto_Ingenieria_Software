@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
-import { updateTaskRequest } from "../services/boardService";
-import { getMembersRequest } from "../services/MemberService";
+import { updateTaskRequest } from "../../boards/services/boardService";
+import { getMembersRequest } from "../../projects/services/MemberService";
 
 const PRIORITY_OPTIONS = ["BAJA", "MEDIA", "ALTA"];
 

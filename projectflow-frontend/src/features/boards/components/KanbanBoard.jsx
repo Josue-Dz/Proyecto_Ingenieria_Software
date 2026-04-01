@@ -4,10 +4,10 @@ import { DragDropProvider } from '@dnd-kit/react'
 import { move } from "@dnd-kit/helpers"
 import KanbanColumn from './KanbanColumn';
 import { useParams } from 'react-router-dom';
-import TaskDetailModal from './TaskDetailModal';
+import TaskDetailModal from '../../cards/components/TaskDetailModal';
 import { isSortable } from '@dnd-kit/react/sortable';
-import MembersSection from './MembersSection';
-import { getMembersRequest } from '../services/MemberService';
+import MembersSection from '../../projects/components/MembersSection';
+import { getMembersRequest } from '../../projects/services/MemberService';
 import { useAuth } from '../../auth/hooks/useAuth';
 
 const KanbanBoard = () => {

@@ -33,7 +33,7 @@ const Sidebar = ({ isOpen, onToggle }) => {
                             title="Proyectos"
                         >
                             <span className="material-symbols-rounded text-indigo-600 dark:text-[#A3FF12] shrink-0">
-                                view_kanban
+                                folder_open
                             </span>
                             {isOpen && <span className="text-sm font-medium">Proyectos</span>}
                         </NavLink>

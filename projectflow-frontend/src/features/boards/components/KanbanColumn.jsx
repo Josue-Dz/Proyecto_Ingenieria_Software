@@ -1,7 +1,7 @@
 import { useDroppable } from '@dnd-kit/react';
 import { CollisionPriority } from "@dnd-kit/abstract";
-import KanbanCard from './KanbanCard';
-import CreateTaskPopover from './CreateTaskPopover';
+import KanbanCard from '../../cards/components/KanbanCard';
+import CreateTaskPopover from '../../cards/components/CreateTaskPopover';
 
 const KanbanColumn = ({ column, onAddTask, onTaskClick, index, canCreate, canMove }) => {
 
