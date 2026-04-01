@@ -22,6 +22,7 @@ import edu.unah.hn.projecto_ingenieria.Entity.TarjetaXColumna;
 import edu.unah.hn.projecto_ingenieria.Entity.TarjetaXColumnaId;
 import edu.unah.hn.projecto_ingenieria.Entity.Usuario;
 import edu.unah.hn.projecto_ingenieria.Events.TarjetaAsignadaEvent;
+import edu.unah.hn.projecto_ingenieria.Events.TarjetaCreadaEvent;
 import edu.unah.hn.projecto_ingenieria.Events.TarjetaFechaCambioEvent;
 import edu.unah.hn.projecto_ingenieria.Events.TarjetaMovidaEvent;
 import edu.unah.hn.projecto_ingenieria.Repository.ColumnaRepository;
@@ -92,6 +93,9 @@ public class TarjetaService {
         tarjetaXColumna.setPosicion(0);
 
         tarjetaXColumnaRepository.save(tarjetaXColumna);
+
+        // Evento de creacion
+        eventPublisher.publishEvent(new TarjetaCreadaEvent(this, tarjeta, proyecto));
 
         // Publicar evento de asignación si hay usuarios asignados
         if (!usuariosAsignados.isEmpty()) {

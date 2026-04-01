@@ -3,6 +3,7 @@ package edu.unah.hn.projecto_ingenieria.Services;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
@@ -11,7 +12,9 @@ import edu.unah.hn.projecto_ingenieria.DTO.ColumnaDTO;
 import edu.unah.hn.projecto_ingenieria.DTO.DTOMapper;
 import edu.unah.hn.projecto_ingenieria.DTO.TarjetaResponseDTO;
 import edu.unah.hn.projecto_ingenieria.Entity.Columna;
+import edu.unah.hn.projecto_ingenieria.Entity.Proyecto;
 import edu.unah.hn.projecto_ingenieria.Entity.Tablero;
+import edu.unah.hn.projecto_ingenieria.Events.ColumnaCreadaEvent;
 import edu.unah.hn.projecto_ingenieria.Repository.ColumnaRepository;
 import edu.unah.hn.projecto_ingenieria.Repository.TableroRepository;
 import lombok.RequiredArgsConstructor;
@@ -27,6 +30,8 @@ public class ColumnaService {
     private final ColumnaRepository columnaRepository;
 
     private final DTOMapper mapper;
+
+    private final ApplicationEventPublisher eventPublisher;
 
     public ColumnaDTO crearColumna(Long tableroId, ColumnaDTO dto) {
         Tablero tablero = tableroRepository.findById(tableroId)
@@ -44,6 +49,10 @@ public class ColumnaService {
         List<TarjetaResponseDTO> tarjetas = new ArrayList<>();
 
         columnaRepository.save(columna);
+
+        // Publicar evento de creación de columna
+        Proyecto proyecto = tablero.getProyecto();
+        eventPublisher.publishEvent(new ColumnaCreadaEvent(this, columna, proyecto));
         return mapper.toColumnaDTO(columna, tableroId, tarjetas);
     }
 
