@@ -17,10 +17,10 @@ import lombok.RequiredArgsConstructor;
 @RequestMapping("/api/notifications")
 @RequiredArgsConstructor
 public class NotificacionController {
-    
+
     private final NotificacionService notificacionService;
 
-        @GetMapping
+    @GetMapping
     public ResponseEntity<List<NotificacionDTO>> getMisNotificaciones() {
         return ResponseEntity.ok(notificacionService.getMisNotificaciones());
     }

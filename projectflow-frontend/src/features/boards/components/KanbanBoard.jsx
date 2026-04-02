@@ -9,11 +9,15 @@ import { isSortable } from '@dnd-kit/react/sortable';
 import MembersSection from '../../projects/components/MembersSection';
 import { getMembersRequest } from '../../projects/services/MemberService';
 import { useAuth } from '../../auth/hooks/useAuth';
+import MemberAvatar from '../../members/components/MemberAvatar';
+import BoardFilterBar from './BoardFilterBar';
 
 const KanbanBoard = () => {
     const { boardId, id: idProyecto } = useParams();
     const { user } = useAuth();
     const { columns, items, taskMap, setItems, addColumn, addTask, moveTask, updateTask } = useKanban(boardId);
+    const [members, setMembers] = useState([]);
+    const [filters, setFilters] = useState({ prioridad: null, responsableId: null });
 
     const [showAddColumn, setShowAddColumn] = useState(false);
     const [newColumnName, setNewColumnName] = useState("");
@@ -29,14 +33,34 @@ const KanbanBoard = () => {
         if (!idProyecto || !user?.idUsuario) return;
         getMembersRequest(idProyecto)
             .then((members) => {
+                setMembers(members);
                 const me = members.find((m) => Number(m.idUsuario) === Number(user.idUsuario));
                 setUserRol(me?.rol ?? null);
             })
             .catch(console.error);
     }, [idProyecto, user?.idUsuario]);
 
+    const getFilteredTarjetas = (colId) => {
+        const taskIds = items[String(colId)] ?? [];
+        return taskIds
+            .map(id => taskMap[id])
+            .filter(Boolean)
+            .filter(task => {
+                if (filters.prioridad && task.prioridad !== filters.prioridad) return false;
+                if (filters.responsableId) {
+                    const asignados = task.asignados ?? [];
+                    if (!asignados.some(a => Number(a.idUsuario) === Number(filters.responsableId))) return false;
+                }
+                return true;
+            });
+    };
+
+    const hasActiveFilters = filters.prioridad || filters.responsableId;
+
+    const clearFilters = () => setFilters({ prioridad: null, responsableId: null });
+
     const canCreate = userRol === "ADMIN";
-    const canMove   = userRol === "ADMIN" || userRol === "COLABORADOR";
+    const canMove = userRol === "ADMIN" || userRol === "COLABORADOR";
 
     const handleDragStart = (event) => {
         const { source } = event.operation;
@@ -101,6 +125,14 @@ const KanbanBoard = () => {
                 <MembersSection idProyecto={idProyecto} />
             </div>
 
+            <BoardFilterBar 
+                members={members}
+                filters={filters}
+                hasActiveFilters={hasActiveFilters}
+                clearFilters={clearFilters}
+                setFilters={setFilters}
+            />
+
             <DragDropProvider
                 onDragStart={handleDragStart}
                 onDragOver={handleDragOver}
@@ -147,7 +179,7 @@ const KanbanBoard = () => {
                             index={index}
                             column={{
                                 ...col,
-                                tarjetas: (items[String(col.idColumna)] ?? []).map(id => taskMap[id]).filter(Boolean)
+                                tarjetas: getFilteredTarjetas(col.idColumna)
                             }}
                             onAddTask={addTask}
                             onTaskClick={setSelectedTask}
@@ -162,7 +194,7 @@ const KanbanBoard = () => {
                 <TaskDetailModal
                     task={selectedTask}
                     proyectoId={idProyecto}
-                    userRol = {userRol}
+                    userRol={userRol}
                     onClose={() => setSelectedTask(null)}
                     onTaskUpdated={(updated) => {
                         updateTask(updated);
