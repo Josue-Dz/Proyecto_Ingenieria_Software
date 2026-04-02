@@ -10,6 +10,11 @@ export const createProjectRequest = async (projectData) => {
     return response.data;
 }
 
+export const getProjectRequest = async (id) => {
+    const response = await apiClient.get(`/projects/${id}`)
+    return response.data;
+}
+
 export const deleteBoardRequest = async () => {
     return null;
 }

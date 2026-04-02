@@ -13,6 +13,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
+import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -36,6 +37,10 @@ public class Columna {
     private Long idColumna;
     
     private Integer posicion;
+
+    @OneToOne
+    @JoinColumn(name = "id_proyecto")
+    private Proyecto proyecto;
 
     @ManyToOne
     @JoinColumn(name = "id_tablero")

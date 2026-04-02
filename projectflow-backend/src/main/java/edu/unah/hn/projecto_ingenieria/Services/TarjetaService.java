@@ -22,6 +22,7 @@ import edu.unah.hn.projecto_ingenieria.Entity.TarjetaXColumna;
 import edu.unah.hn.projecto_ingenieria.Entity.TarjetaXColumnaId;
 import edu.unah.hn.projecto_ingenieria.Entity.Usuario;
 import edu.unah.hn.projecto_ingenieria.Events.TarjetaAsignadaEvent;
+import edu.unah.hn.projecto_ingenieria.Events.TarjetaCreadaEvent;
 import edu.unah.hn.projecto_ingenieria.Events.TarjetaFechaCambioEvent;
 import edu.unah.hn.projecto_ingenieria.Events.TarjetaMovidaEvent;
 import edu.unah.hn.projecto_ingenieria.Repository.ColumnaRepository;
@@ -93,6 +94,9 @@ public class TarjetaService {
 
         tarjetaXColumnaRepository.save(tarjetaXColumna);
 
+        // Evento de creacion
+        eventPublisher.publishEvent(new TarjetaCreadaEvent(this, tarjeta, proyecto));
+
         // Publicar evento de asignación si hay usuarios asignados
         if (!usuariosAsignados.isEmpty()) {
             eventPublisher.publishEvent(new TarjetaAsignadaEvent(this, tarjeta, usuariosAsignados));
@@ -145,11 +149,6 @@ public class TarjetaService {
         }
 
         return tarjetasDTO;
-    }
-
-    public TarjetaResponseDTO actualizarTarjeta() {
-
-        return null;
     }
 
     public void moverTarjeta(Long tarjetaId, Long columnaOrigen, TarjetaRequestDTO tarjetaDto) {

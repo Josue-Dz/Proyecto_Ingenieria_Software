@@ -33,7 +33,7 @@ const Sidebar = ({ isOpen, onToggle }) => {
                             title="Proyectos"
                         >
                             <span className="material-symbols-rounded text-indigo-600 dark:text-[#A3FF12] shrink-0">
-                                view_kanban
+                                folder_open
                             </span>
                             {isOpen && <span className="text-sm font-medium">Proyectos</span>}
                         </NavLink>
@@ -42,20 +42,19 @@ const Sidebar = ({ isOpen, onToggle }) => {
                     {/* Perfil */}
                     <li>
                         <NavLink
-                            to="/perfil"
-                            className={({ isActive }) =>
-                                `flex items-center gap-3 px-3 py-2 rounded-md transition-colors
-                                ${isActive
-                                    ? "bg-indigo-600/20 dark:bg-[#A3FF12]/20 text-indigo-700 dark:text-[#A3FF12]"
+                            to="/estadísticas"
+                            className={({ isActive }) => `flex items-center gap-3 px-3 py-3 rounded-md transition-colors
+                            ${isActive
+                                    ? "bf-indigo-600/20 dark:bg-[#A3FF12]/20 text-indigo-700 dark:text-[#A3FF12]"
                                     : "hover:bg-indigo-600/15 dark:hover:bg-[#A3FF12]/10 text-gray-700 dark:text-white"
                                 }`
                             }
-                            title="Mi perfil"
+                            title="Estadísticas"
                         >
                             <span className="material-symbols-rounded text-indigo-600 dark:text-[#A3FF12] shrink-0">
-                                person
+                                analytics
                             </span>
-                            {isOpen && <span className="text-sm font-medium">Mi perfil</span>}
+                            <span className="text-sm font-medium">Estadísticas</span>
                         </NavLink>
                     </li>
 

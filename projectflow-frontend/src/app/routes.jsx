@@ -11,7 +11,7 @@ import PublicRoute from './layouts/components/PublicRoute';
 import BoardsPage from '../features/boards/pages/BoardsPage';
 import BoardPage from '../features/boards/pages/BoardPage';
 import KanbanBoard from '../features/boards/components/KanbanBoard';
-import ProfilePage from '../features/boards/pages/ProfilePage';
+import ProfilePage from '../features/profile/pages/ProfilePage';
 
 function AppRoutes() {
     return (

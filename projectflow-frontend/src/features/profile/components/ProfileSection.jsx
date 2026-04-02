@@ -1,49 +1,8 @@
 import { useState, useEffect } from "react";
 import { getMyProfileRequest, updateMyProfileRequest, changeMyPasswordRequest } from "../../auth/services/userService";
+import Field from "./Field";
+import Alert from "../../../shared/components/feedback/Alert";
 
-// Input reutilizable
-const Field = ({ label, name, type = "text", value, onChange, readOnly = false, required = false, placeholder = "" }) => (
-    <div>
-        <label className="text-slate-500 dark:text-white/50 text-xs font-medium block mb-1">
-            {label} {required && <span className="text-indigo-500 dark:text-[#A3FF12]">*</span>}
-            {readOnly && <span className="ml-1 text-slate-400 dark:text-white/30 text-[10px]">(solo lectura)</span>}
-        </label>
-        <input
-            type={type}
-            name={name}
-            value={value}
-            onChange={onChange}
-            readOnly={readOnly}
-            placeholder={placeholder}
-            required={required}
-            className={`w-full rounded-lg px-4 py-2.5 text-sm border transition-colors focus:outline-none
-                ${readOnly
-                    ? "bg-slate-100 dark:bg-white/3 border-slate-200 dark:border-white/8 text-slate-400 dark:text-white/35 cursor-not-allowed"
-                    : "bg-white dark:bg-white/5 border-slate-200 dark:border-white/10 text-slate-800 dark:text-white placeholder-slate-300 dark:placeholder-white/20 focus:border-indigo-400 dark:focus:border-[#A3FF12]/40"
-                }`}
-        />
-    </div>
-);
-
-// Alerta de feedback
-const Alert = ({ type, message }) => {
-    if (!message) return null;
-    const isSuccess = type === "success";
-    return (
-        <p className={`text-xs rounded-lg px-3 py-2 flex items-center gap-1.5 border
-            ${isSuccess
-                ? "text-green-600 dark:text-[#A3FF12] bg-green-50 dark:bg-[#A3FF12]/10 border-green-200 dark:border-[#A3FF12]/20"
-                : "text-red-500 dark:text-red-400 bg-red-50 dark:bg-red-400/10 border-red-200 dark:border-red-400/20"
-            }`}>
-            <span className="material-symbols-rounded text-sm">
-                {isSuccess ? "check_circle" : "error"}
-            </span>
-            {message}
-        </p>
-    );
-};
-
-// Componente principal
 const ProfileSection = () => {
     const [profile, setProfile] = useState(null);
     const [loadingProfile, setLoadingProfile] = useState(true);
