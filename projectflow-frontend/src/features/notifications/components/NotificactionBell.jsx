@@ -36,7 +36,7 @@ function timeAgo(dateStr) {
 const NotificationBell = () => {
     const [open, setOpen] = useState(false);
     const [notificaciones, setNotificaciones] = useState([]);
-    const [loading, setLoading] = useState(false);
+    const [loading, setLoading] = useState(true);
 
     const panelRef = useRef(null);
     const bellRef = useRef(null);
@@ -45,27 +45,31 @@ const NotificationBell = () => {
 
     //Cargar inicial + WebSocket
     useEffect(() => {
-        setLoading(true);
 
-        getMisNotificacionesRequest()
-            .then((data) => {
+        const cargarDatos = async () => {
+            try {
+                // No necesitas setLoading(true) aquí si lo inicializas en true
+                const data = await getMisNotificacionesRequest();
                 setNotificaciones(Array.isArray(data) ? data : []);
                 console.log("Notificaciones cargadas:", data);
-            })
-            .catch(console.error)
-            .finally(() => setLoading(false));
+            } catch (error) {
+                console.error("Error al cargar notificaciones:", error);
+            } finally {
+                setLoading(false);
+            }
+        };
 
-        // WebSocket
+        // 2. Ejecutamos la carga
+        cargarDatos();
+
+        //WebSocket
         conectarNotificaciones((nueva) => {
             setNotificaciones((prev) => {
-                // evitar duplicados
                 if (prev.some(n => n.idNotificacion === nueva.idNotificacion)) {
                     return prev;
                 }
-
                 return [nueva, ...prev].sort(
-                    (a, b) =>
-                        new Date(b.fechaCreacion) - new Date(a.fechaCreacion)
+                    (a, b) => new Date(b.fechaCreacion) - new Date(a.fechaCreacion)
                 );
             });
         });
@@ -73,28 +77,38 @@ const NotificationBell = () => {
         return () => desconectarNotificaciones();
     }, []);
 
-    //Refetch al abrir
+    // Refetch al abrir
     useEffect(() => {
         if (!open) return;
 
-        getMisNotificacionesRequest()
-            .then((data) => {
+        const refetchNotificaciones = async () => {
+            try {
+                const data = await getMisNotificacionesRequest();
+                const nuevasDescargadas = Array.isArray(data) ? data : [];
+
                 setNotificaciones((prev) => {
-                    const nuevas = Array.isArray(data) ? data : [];
+    
+                    const idsExistentes = new Set(prev.map(n => n.idNotificacion));
 
-                    const ids = new Set(prev.map(n => n.idNotificacion));
-
-                    const filtradas = nuevas.filter(
-                        n => !ids.has(n.idNotificacion)
+                    //Solo nos quedamos con lo que no tenemos ya en el estado
+                    const unicas = nuevasDescargadas.filter(
+                        n => !idsExistentes.has(n.idNotificacion)
                     );
 
-                    return [...filtradas, ...prev].sort(
-                        (a, b) =>
-                            new Date(b.fechaCreacion) - new Date(a.fechaCreacion)
+                    // Si no hay nada nuevo, devolvemos el estado previo tal cual
+                    // para evitar un re-render innecesario
+                    if (unicas.length === 0) return prev;
+
+                    return [...unicas, ...prev].sort(
+                        (a, b) => new Date(b.fechaCreacion) - new Date(a.fechaCreacion)
                     );
                 });
-            })
-            .catch(console.error);
+            } catch (error) {
+                console.error("Error en el refetch de notificaciones:", error);
+            }
+        };
+
+        refetchNotificaciones();
     }, [open]);
 
     //cerrar al hacer click fuera
