@@ -73,7 +73,7 @@ public class Tarjeta {
     @JoinColumn(name = "id_columna")
     private Columna columna;
 
-    @ManyToMany
+    @ManyToMany(cascade = CascadeType.ALL)
     @JoinTable(
         name = "tbl_tarjetas_x_usuarios",
         joinColumns = @JoinColumn(name = "id_tarjeta"),
@@ -83,9 +83,6 @@ public class Tarjeta {
 
     @OneToMany(mappedBy = "tarjeta",cascade = CascadeType.ALL)
     private List<Notificacion> notificaciones;
-    
-    @ManyToOne
-    @JoinColumn(name = "id_backlog")
-    private Backlog backlog;
+
 }
 

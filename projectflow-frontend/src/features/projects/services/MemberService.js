@@ -2,6 +2,7 @@ import apiClient from "../../../shared/api/apiCliente";
 
 export const getMembersRequest = async (idProyecto) => {
     const response = await apiClient.get(`/projects/${idProyecto}/members`);
+    console.log("Members response:", response.data);
     return response.data;
 };
 

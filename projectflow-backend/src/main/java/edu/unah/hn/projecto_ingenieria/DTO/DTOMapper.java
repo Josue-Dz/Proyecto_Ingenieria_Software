@@ -24,10 +24,19 @@ public class DTOMapper {
         if (p == null) {
             return null;
         }
+        
+        List<TarjetaResponseDTO> tarjetasDTO = new ArrayList<>();
+        if (p.getBacklog() != null && p.getBacklog().getTarjetas() != null) {
+            for (Tarjeta tarjeta : p.getBacklog().getTarjetas()) {
+                tarjetasDTO.add(toTarjetaDTO(tarjeta));
+            }
+        }
+
         return new ProyectoResponseDTO(
                 p.getIdProyecto(),
                 p.getNombreProyecto(),
                 p.getDescripcion(),
+                toColumnaDTO(p.getBacklog(), null, tarjetasDTO),
                 p.getFechaInicio(),
                 p.getFechaFin());
     }
@@ -66,6 +75,7 @@ public class DTOMapper {
         if (tarjeta.getAsignados() != null && !tarjeta.getAsignados().isEmpty()) {
             for (Usuario usuario : tarjeta.getAsignados()) {
                 UsuarioDTO usuarioDTO = new UsuarioDTO();
+                usuarioDTO.setIdUsuario(usuario.getIdUsuario());
                 usuarioDTO.setNombreCompleto(usuario.getNombre() + " " + usuario.getApellido());
                 usuarioDTO.setCorreo(usuario.getCorreo());
                 usuarioDTO.setIniciales(usuario.obtenerInicialesDeNombre(usuario.getNombre(), usuario.getApellido()));
@@ -117,8 +127,8 @@ public class DTOMapper {
         dto.setTarjetas(tarjetas);
         return dto;
     }
-    
-    public UsuarioDTO toUsuarioDTO(Usuario usuario){
+
+    public UsuarioDTO toUsuarioDTO(Usuario usuario) {
         UsuarioDTO dto = new UsuarioDTO();
 
         dto.setIdUsuario(usuario.getIdUsuario());
@@ -128,7 +138,7 @@ public class DTOMapper {
         dto.setApellido(usuario.getApellido());
         dto.setIniciales(usuario.obtenerInicialesDeNombre(usuario.getNombre(), usuario.getApellido()));
 
-        return dto; 
+        return dto;
     }
 
     public NotificacionDTO toNotificacionDTO(Notificacion nuevaNotificacion) {
@@ -150,5 +160,3 @@ public class DTOMapper {
         return dto;
     }
 }
-
-

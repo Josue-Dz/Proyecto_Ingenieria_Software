@@ -20,6 +20,8 @@ public class ProyectoResponseDTO {
 
     private String descripcion;
 
+    private ColumnaDTO backlog;
+
     private LocalDate fechaInicio;
     
     private LocalDate fechaFin;
