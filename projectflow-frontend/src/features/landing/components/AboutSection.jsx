@@ -7,7 +7,7 @@ const team = [
         github: "https://github.com/Josue-Dz",
     },
     {
-        name: "David Pavada",
+        name: "David Parada",
         role: "Backend Developer",
         initials: "DP",
         github: "https://github.com/DeibiXD",
