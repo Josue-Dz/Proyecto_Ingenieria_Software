@@ -3,7 +3,7 @@ import LogoLight from '../../../assets/LogoLight.png'
 import LogoDark from '../../../assets/LogoDark.png'
 import { useAuth } from '../../../features/auth/hooks/useAuth';
 import { useDarkMode } from '../hooks/useDarkMode';
-import NotificationBell from '../../../features/boards/components/NotificactionBells';
+import NotificationBell from '../../../features/notifications/components/NotificactionBell';
 
 const PrivateNavbar = () => {
     const { user, logout } = useAuth();

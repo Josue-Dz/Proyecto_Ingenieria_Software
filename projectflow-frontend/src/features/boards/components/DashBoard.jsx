@@ -1,12 +1,12 @@
 
 import { useEffect, useState } from "react";
-import { getProjectsRequest } from "../services/projectService";
-import CreateProjectModal from "./CreateProjectModal";
+import { getProjectsRequest } from "../../projects/services/projectService";
+import CreateProjectModal from "../../projects/components/CreateProjectModal";
 import { useNavigate } from "react-router-dom";
 import AddButton from "./AddButton";
-import DeleteProjectModal from "./DeleteProjectModal";
-import EditProjectModal from "./EditProjectModal";
-import ProjectCardMenu from "./ProjectCardMenu";
+import DeleteProjectModal from "../../projects/components/DeleteProjectModal";
+import EditProjectModal from "../../projects/components/EditProjectModal";
+import ProjectCardMenu from "../../projects/components/ProjectCardMenu";
 
 const Dashboard = () => {
     const [projects, setProjects] = useState([]);

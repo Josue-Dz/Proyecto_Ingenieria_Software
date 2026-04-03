@@ -32,7 +32,7 @@ public class Notificacion {
     private String mensaje;
 
     @Column(name = "tipo", nullable = false)
-    private String tipo; // Ej: "ASIGNACION", "MOVIMIENTO", "FECHA_CAMBIO"
+    private String tipo;
 
     @Column(name = "fecha_creacion", nullable = false)
     private LocalDateTime fechaCreacion;
