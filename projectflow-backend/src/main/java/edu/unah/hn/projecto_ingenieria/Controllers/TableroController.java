@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import edu.unah.hn.projecto_ingenieria.DTO.HistorialActividadDTO;
 import edu.unah.hn.projecto_ingenieria.DTO.TableroRequestDTO;
 import edu.unah.hn.projecto_ingenieria.DTO.TableroResponseDTO;
 import edu.unah.hn.projecto_ingenieria.Services.TableroService;
@@ -42,5 +43,9 @@ public class TableroController {
         return ResponseEntity.ok(tableroService.listarTablerosPorProyecto(projectId));
     }
 
+    @GetMapping("/{idTablero}/actividad")
+    public ResponseEntity<List<HistorialActividadDTO>> obtenerHistorialActividad(@PathVariable Long idTablero) {
+        return ResponseEntity.ok(tableroService.obtenerHistorialTablero(idTablero));
+    }
 
 }
