@@ -55,7 +55,6 @@ const NotificationBell = () => {
                     (a, b) => new Date(b.fechaCreacion) - new Date(a.fechaCreacion)
                 )
                 setNotificaciones(ordenadas);
-                console.log("Notificaciones cargadas:", ordenadas);
             } catch (error) {
                 console.error("Error al cargar notificaciones:", error);
             } finally {

@@ -18,7 +18,7 @@ const KanbanBoard = () => {
     const { user } = useAuth();
     const { userRol, members } = useProjectRol(idProyecto, user);
 
-    const [backlog, setBacklog] = useState(null);
+    // const [backlog, setBacklog] = useState(null);
 
     const { columns, items, taskMap, setItems, addColumn, addTask, moveTask, updateTask } = useKanban(boardId);
     const [filters, setFilters] = useState({ prioridad: null, responsableId: null });
@@ -34,13 +34,13 @@ const KanbanBoard = () => {
     const itemsRef = useRef(items);
     const sourceGroupRef = useRef(null);
 
-    useEffect(()=> {
-        const fetchBacklog = async () => {
-            const projectData = await getProjectRequest(idProyecto);
-            setBacklog(projectData.backlog);
-        }
-        fetchBacklog();
-    }, [idProyecto]);
+    // useEffect(()=> {
+    //     const fetchBacklog = async () => {
+    //         const projectData = await getProjectRequest(idProyecto);
+    //         setBacklog(projectData.backlog);
+    //     }
+    //     fetchBacklog();
+    // }, [idProyecto]);
 
 
     const getFilteredTarjetas = (colId) => {

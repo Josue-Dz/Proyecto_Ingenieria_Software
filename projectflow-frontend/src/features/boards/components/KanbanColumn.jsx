@@ -4,7 +4,6 @@ import KanbanCard from '../../cards/components/KanbanCard';
 import CreateTaskPopover from '../../cards/components/CreateTaskPopover';
 
 const KanbanColumn = ({ column, onAddTask, onTaskClick, index, canCreate, canMove }) => {
-console.log("Columna recibida en KanbanColumn:", column);
 
     const { isDropTarget, ref } = useDroppable({
         id: String(column.idColumna),
