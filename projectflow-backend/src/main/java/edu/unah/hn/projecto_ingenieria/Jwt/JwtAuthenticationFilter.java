@@ -6,10 +6,12 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
+import io.jsonwebtoken.ExpiredJwtException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.Cookie;
@@ -48,7 +50,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
         String email = jwtService.getUsernameFromToken(token);
 
-        if (email != null && SecurityContextHolder.getContext().getAuthentication() == null) {
+        try {
+            if (email != null && SecurityContextHolder.getContext().getAuthentication() == null) {
             UserDetails userDetails = this.userDetailsService.loadUserByUsername(email);
 
             if (jwtService.isTokenValid(token, userDetails)) {
@@ -59,7 +62,11 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
                 SecurityContextHolder.getContext().setAuthentication(authToken);
             }
+        }
 
+        } catch (UsernameNotFoundException | ExpiredJwtException e) {
+            // Si el token es inválido o ha expirado, simplemente no autenticamos al usuario
+            // y dejamos que el filtro continúe sin establecer una autenticación en el contexto de seguridad.
         }
 
         filterChain.doFilter(request, response);

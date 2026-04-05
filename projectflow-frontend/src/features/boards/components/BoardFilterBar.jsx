@@ -1,15 +1,15 @@
-import React from 'react'
 import MemberAvatar from '../../members/components/MemberAvatar'
 
 const BoardFilterBar = ({ members, filters, hasActiveFilters, clearFilters, setFilters }) => {
     return (
-        <div>            
+        <div className="flex items-center bg-indigo-200/10 shadow-md dark:bg-black border border-indigo-500/30 dark:border-white/10 rounded-md pl-2 pr-2 ">  
+
             {/* Barra de filtros */}
-            <div className="flex items-center gap-3 py-2 px-1 mb-2 flex-wrap">
+            <div className="flex gap-3 py-2 px-1 flex-wrap">
 
                 {/* Filtro por responsable */}
                 <div className="flex items-center gap-1.5">
-                    <span className="text-xs text-white/30 mr-1">Responsable:</span>
+                    <span className="text-xs dark:text-white/30 mr-1">Responsable:</span>
                     {members.map(member => (
                         <MemberAvatar
                             key={member.idUsuario}
@@ -24,11 +24,11 @@ const BoardFilterBar = ({ members, filters, hasActiveFilters, clearFilters, setF
                 </div>
 
                 {/* Separador */}
-                <div className="w-px h-5 bg-white/10" />
+                <div className="w-px h-8 bg-indigo-500/30 dark:bg-white/10" />
 
                 {/* Filtro por prioridad */}
                 <div className="flex items-center gap-1.5">
-                    <span className="text-xs text-white/30 mr-1">Prioridad:</span>
+                    <span className="text-xs dark:text-white/30 mr-1">Prioridad:</span>
                     {[
                         { value: "ALTA", label: "Alta", class: "text-orange-400 border-orange-500/30 bg-orange-500/15" },
                         { value: "MEDIA", label: "Media", class: "text-yellow-400 border-yellow-500/30 bg-yellow-500/15" },
@@ -54,7 +54,7 @@ const BoardFilterBar = ({ members, filters, hasActiveFilters, clearFilters, setF
                 {hasActiveFilters && (
                     <button
                         onClick={clearFilters}
-                        className="flex items-center gap-1 text-xs text-white/30 hover:text-white/60 transition-colors ml-1"
+                        className="flex items-center gap-1 text-xs hover:text-indigo-600 dark:text-white/30 dark:hover:text-white/60 transition-colors ml-1"
                     >
                         <span className="material-symbols-rounded text-[14px]">close</span>
                         Limpiar

@@ -54,15 +54,30 @@ public class TarjetaService {
 
     public TarjetaResponseDTO crearTarjeta(Long columnaId, TarjetaRequestDTO request) {
 
+        System.out.println("Columna ID recibida: " + columnaId);
+
         Columna columna = columnaRepository.findById(columnaId)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Columna no encontrada"));
 
-        Long tableroId = columna.getTablero().getIdTablero();
+        Long tableroId;
+
+        Proyecto proyecto; 
+        System.out.println("ID del tablero: " );
+        System.out.println(columna.getTablero());
+
+        if (columna.getTablero() != null) {
+
+            tableroId = columna.getTablero().getIdTablero();
+
+            proyecto = proyectoRepository.findByTablero_IdTablero(tableroId)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Proyecto no encontrado"));
+        } else {
+            System.out.println("Entre acá porque el tablero es nulo");
+            proyecto = columna.getProyecto();
+        }
 
         // 1. Validar que sea líder
-        Proyecto proyecto = proyectoRepository.findByTablero_IdTablero(tableroId)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Proyecto no encontrado"));
-
+    
         if (!proyecto.getCreador().getIdUsuario().equals(authService.getUsuarioAutenticado().getIdUsuario())) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Solo el líder puede crear tareas");
         }
@@ -73,7 +88,7 @@ public class TarjetaService {
         tarjeta.setTitulo(request.getTitulo());
         tarjeta.setFechaCreacion(LocalDateTime.now());
         tarjeta.setColumna(columna);
-        tarjeta.setCreador(columna.getTablero().getProyecto().getCreador());
+        tarjeta.setCreador(proyecto.getCreador());
 
         List<Usuario> usuariosAsignados = new ArrayList<>();
         if (request.getUsuariosAsignados() != null && !request.getUsuariosAsignados().isEmpty()) {
