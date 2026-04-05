@@ -1,7 +1,9 @@
 package edu.unah.hn.projecto_ingenieria.Services;
 
 import java.util.ArrayList;
+import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
@@ -10,14 +12,19 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
 import edu.unah.hn.projecto_ingenieria.DTO.ColumnaDTO;
+import edu.unah.hn.projecto_ingenieria.DTO.HistorialActividadDTO;
 import edu.unah.hn.projecto_ingenieria.DTO.TableroRequestDTO;
 import edu.unah.hn.projecto_ingenieria.DTO.TableroResponseDTO;
 import edu.unah.hn.projecto_ingenieria.Entity.Columna;
+import edu.unah.hn.projecto_ingenieria.Entity.Notificacion;
 import edu.unah.hn.projecto_ingenieria.Entity.Proyecto;
 import edu.unah.hn.projecto_ingenieria.Entity.Tablero;
+import edu.unah.hn.projecto_ingenieria.Entity.Tarjeta;
 import edu.unah.hn.projecto_ingenieria.Entity.Usuario;
 import edu.unah.hn.projecto_ingenieria.Repository.ColumnaRepository;
+import edu.unah.hn.projecto_ingenieria.Repository.NotificacionRepository;
 import edu.unah.hn.projecto_ingenieria.Repository.ProyectoRepository;
+import edu.unah.hn.projecto_ingenieria.Repository.ProyectoUsuarioRepository;
 import edu.unah.hn.projecto_ingenieria.Repository.TableroRepository;
 import edu.unah.hn.projecto_ingenieria.Repository.UsuarioRepository;
 import edu.unah.hn.projecto_ingenieria.patterns.factory.ColumnaFactory;
@@ -38,6 +45,12 @@ public class TableroService {
     private final ColumnaService columnaService;
 
     private final ColumnaFactory columnaFactory;
+
+    private final NotificacionRepository notificacionRepository;
+
+    private final ProyectoUsuarioRepository proyectoUsuarioRepository;
+
+    private final AuthService authService;
 
     public TableroResponseDTO crearTablero(Long proyectoId, TableroRequestDTO tablero) {
 
@@ -168,6 +181,68 @@ public class TableroService {
         }
 
         return tablerosDTO;
+    }
+
+    public List<HistorialActividadDTO> obtenerHistorialTablero(Long idTablero) {
+
+        Tablero tablero = tableroRepository.findByIdTablero(idTablero)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Tablero no encontrado"));
+
+        Usuario solicitante = authService.getUsuarioAutenticado();
+        Long idProyecto = tablero.getProyecto().getIdProyecto();
+
+        if (!proyectoUsuarioRepository.existsByUsuarioAndProyecto(solicitante.getIdUsuario(), idProyecto)) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "No tienes acceso a este tablero");
+        }
+
+        List<Notificacion> notificaciones = notificacionRepository.findForHistorialByTablero(idTablero);
+        List<Notificacion> unicasPorAccion = deduplicarNotificacionesPorAccion(notificaciones);
+
+        List<HistorialActividadDTO> resultado = new ArrayList<>();
+        for (Notificacion n : unicasPorAccion) {
+            resultado.add(mapearHistorial(n));
+        }
+        return resultado;
+    }
+
+    private List<Notificacion> deduplicarNotificacionesPorAccion(List<Notificacion> notificaciones) {
+        Set<String> clavesVistas = new LinkedHashSet<>();
+        List<Notificacion> resultado = new ArrayList<>();
+        for (Notificacion n : notificaciones) {
+            Tarjeta tarjeta = n.getTarjeta();
+            if (tarjeta == null) {
+                continue;
+            }
+            String clave = n.getMensaje() + "|" + tarjeta.getIdTarjeta() + "|" + n.getFechaCreacion();
+            if (clavesVistas.add(clave)) {
+                resultado.add(n);
+            }
+        }
+        return resultado;
+    }
+
+    private HistorialActividadDTO mapearHistorial(Notificacion n) {
+        Tarjeta tarjeta = n.getTarjeta();
+        String tituloTarjeta = tarjeta != null ? tarjeta.getTitulo() : null;
+        return new HistorialActividadDTO(
+                resolverUsuarioAccion(n),
+                n.getMensaje(),
+                n.getTipo(),
+                tituloTarjeta,
+                n.getFechaCreacion());
+    }
+
+    private String resolverUsuarioAccion(Notificacion n) {
+        Tarjeta t = n.getTarjeta();
+        if (t != null && t.getCreador() != null) {
+            Usuario c = t.getCreador();
+            return c.getNombre() + " " + c.getApellido();
+        }
+        if (n.getUsuario() != null) {
+            Usuario u = n.getUsuario();
+            return u.getNombre() + " " + u.getApellido();
+        }
+        return "Sistema";
     }
 
     private TableroResponseDTO mapToDTO(Tablero tablero) {
