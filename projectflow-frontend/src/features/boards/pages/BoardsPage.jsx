@@ -38,9 +38,9 @@ const BoardsPage = () => {
                     getProjectRequest(idProyecto)
                 ]);
                 //setUserRol("ADMIN");
-                console.log("Estos son los boards del proyecto: ", boardsData);
-                console.log("PROYECTO: ", projectData);
-                console.log("BACKLOG: ", projectData.backlog.idColumna);
+                // console.log("Estos son los boards del proyecto: ", boardsData);
+                // console.log("PROYECTO: ", projectData);
+                // console.log("BACKLOG: ", projectData.backlog.idColumna);
                 setBoards(boardsData);
                 setBacklog(projectData.backlog);
             } catch (err) {

@@ -22,7 +22,7 @@ const Dashboard = () => {
             try {
                 const data = await getProjectsRequest();
                 setProjects(data);
-                console.log("Estos son los proyectos: ", data)
+                // console.log("Estos son los proyectos: ", data)
             } catch (err) {
                 setError("No se pudieron cargar los proyectos.");
                 console.error(err);
