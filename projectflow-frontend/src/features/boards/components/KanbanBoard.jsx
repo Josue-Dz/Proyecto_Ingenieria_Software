@@ -1,4 +1,4 @@
-import { useRef, useState, useEffect } from 'react';
+import { useRef, useState } from 'react';
 import { useKanban } from '../hooks/useKanban'
 import { DragDropProvider } from '@dnd-kit/react'
 import { move } from "@dnd-kit/helpers"
@@ -11,14 +11,11 @@ import { useAuth } from '../../auth/hooks/useAuth';
 import BoardFilterBar from './BoardFilterBar';
 import AddColumnForm from './AddColumnForm';
 import { useProjectRol } from '../../projects/hooks/useProjectRol';
-import { getProjectRequest } from '../../projects/services/projectService';
 
 const KanbanBoard = () => {
     const { boardId, id: idProyecto } = useParams();
     const { user } = useAuth();
     const { userRol, members } = useProjectRol(idProyecto, user);
-
-    // const [backlog, setBacklog] = useState(null);
 
     const { columns, items, taskMap, setItems, addColumn, addTask, moveTask, updateTask } = useKanban(boardId);
     const [filters, setFilters] = useState({ prioridad: null, responsableId: null });
@@ -33,15 +30,7 @@ const KanbanBoard = () => {
 
     const itemsRef = useRef(items);
     const sourceGroupRef = useRef(null);
-
-    // useEffect(()=> {
-    //     const fetchBacklog = async () => {
-    //         const projectData = await getProjectRequest(idProyecto);
-    //         setBacklog(projectData.backlog);
-    //     }
-    //     fetchBacklog();
-    // }, [idProyecto]);
-
+    const sourceIndexRef = useRef(null);
 
     const getFilteredTarjetas = (colId) => {
         const taskIds = items[String(colId)] ?? [];
@@ -62,6 +51,7 @@ const KanbanBoard = () => {
         const { source } = event.operation;
         if (source) {
             sourceGroupRef.current = source.group;
+            sourceIndexRef.current = source.index;
         }
     };
 
@@ -89,6 +79,7 @@ const KanbanBoard = () => {
         const taskId = source.id;
         const sourceColumnId = Number(sourceGroupRef.current);
         sourceGroupRef.current = null;
+        const initialPosition = sourceIndexRef.current;
 
         let destColumnId = sourceColumnId;
         for (const [colId, taskIds] of Object.entries(itemsRef.current)) {
@@ -99,7 +90,10 @@ const KanbanBoard = () => {
         }
 
         const newPosition = itemsRef.current[String(destColumnId)]?.indexOf(taskId) ?? 0;
-        if (sourceColumnId === destColumnId && source.initialIndex === source.index) return;
+        console.log("SourceColumnId:", sourceColumnId, "DestColumnId:", destColumnId, "Nueva posición:", newPosition)
+        console.log(`SourceInitialIndex: ${initialPosition}, SourceIndex: ${source.index}`)
+        if (sourceColumnId === destColumnId && initialPosition === source.index) return;
+        console.log("Mover taskId:", taskId, "de columna", sourceColumnId, "a columna", destColumnId, "en posición", newPosition);
 
         moveTask(taskId, sourceColumnId, destColumnId, newPosition);
     };
