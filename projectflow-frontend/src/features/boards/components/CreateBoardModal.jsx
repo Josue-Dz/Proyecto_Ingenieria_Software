@@ -2,7 +2,6 @@ import { useState, useEffect } from "react";
 import { createBoardRequest } from "../services/boardService";
 
 const CreateBoardModal = ({ projectId, isOpen, onClose, onBoardCreated }) => {
-    console.log("PROYECTID: ", projectId)
     const [nombre, setNombre] = useState("");
     const [descripcion, setDesc] = useState("");
     const [fechaInicio, setInicio] = useState("");

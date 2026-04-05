@@ -1,37 +1,48 @@
 import { useEffect, useState } from 'react'
-import { getBoardsRequest } from '../services/boardService';
+import { createTaskRequest, getBoardsRequest } from '../services/boardService';
 import { useNavigate, useParams } from 'react-router-dom';
 import CreateBoardModal from '../components/CreateBoardModal';
 import AddButton from '../components/AddButton';
 import MembersSection from '../../projects/components/MembersSection';
-import KanbanColumn from '../components/KanbanColumn'
 import { getProjectRequest } from '../../projects/services/projectService';
 import Backlog from '../../projects/components/ProjectBacklog';
+import { useAuth } from '../../auth/hooks/useAuth';
+import { useProjectRol } from '../../projects/hooks/useProjectRol';
 
 const BoardsPage = () => {
 
-    const { id } = useParams();
+    const { id: idProyecto } = useParams();
+    const { user } = useAuth();
+
+    const { userRol } = useProjectRol(idProyecto, user);
+
     const [boards, setBoards] = useState([]);
-    const[backlog, setBacklog] = useState({});
+    const [backlog, setBacklog] = useState({});
+
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
+
     const [isModalOpen, setIsModalOpen] = useState(false);
     const navigate = useNavigate();
-    console.log("Data de Board: ", boards)
+
+
+    const canCreate = userRol === "ADMIN";
+    const canMove = userRol === "ADMIN" || userRol === "COLABORADOR";
 
     useEffect(() => {
         const fetchBoards = async () => {
             try {
                 //const data = await getBoardsRequest(id);
                 const [boardsData, projectData] = await Promise.all([
-                    getBoardsRequest(id),
-                    getProjectRequest(id)
+                    getBoardsRequest(idProyecto),
+                    getProjectRequest(idProyecto)
                 ]);
-                console.log("Estos son los boards del proyecto: ", boardsData);
-                console.log("PROYECTO: ", projectData);
-                console.log("BACKLOG: ", projectData.backlog.idColumna);
+                //setUserRol("ADMIN");
+                // console.log("Estos son los boards del proyecto: ", boardsData);
+                // console.log("PROYECTO: ", projectData);
+                // console.log("BACKLOG: ", projectData.backlog.idColumna);
                 setBoards(boardsData);
-                setBacklog(projectData.backlog);   
+                setBacklog(projectData.backlog);
             } catch (err) {
                 setError("No se pudieron cargar los tableros");
                 console.error(err);
@@ -40,12 +51,27 @@ const BoardsPage = () => {
             }
         };
         fetchBoards();
-    }, [id]);
+    }, [idProyecto]);
+    
+
+    const handleAddTaskToBacklog = async (columnId, taskData) => {
+        try {
+            const newTask = await createTaskRequest(columnId, taskData);
+
+            setBacklog(prev => ({
+                ...prev,
+                tarjetas: [...(prev.tarjetas || []), newTask]
+            }));
+        } catch (err) {
+            console.error("Error al añadir al backlog:", err);
+        }
+    };
+
 
     const handleClick = (boardId) => {
-        navigate(`/projects/${id}/boards/${boardId}`)
+        navigate(`/projects/${idProyecto}/boards/${boardId}`)
     }
-    
+
     console.log("IDCOLUMNA: ", backlog?.idColumna)
 
     return (
@@ -58,24 +84,26 @@ const BoardsPage = () => {
             </div>
 
             <div className="flex items-center justify-end space-x-3 space-y-3">
-                <MembersSection idProyecto={id} />
+                <MembersSection idProyecto={idProyecto} />
                 <AddButton disabled={loading} setIsModalOpen={setIsModalOpen} textoBoton="Nuevo tablero" />
             </div>
 
             <CreateBoardModal
-                projectId={id}
+                projectId={idProyecto}
                 isOpen={isModalOpen}
                 onClose={() => setIsModalOpen(false)}
                 onBoardCreated={(newBoard) => setBoards(prev => [newBoard, ...prev])}
             />
 
-            <div className="flex gap-6 items-start mt-5">
+            <div className="flex gap-6 items-start mt-5 bg-indigo-200/20 border border-indigo-300/30 rounded-lg p-4">
 
                 {/**Backlog */}
                 <div className="w-80 flex flex-col gap-3">
-                    <Backlog backlog={backlog}/>
+                    <Backlog backlog={backlog} canCreate={canCreate} canMove={canMove} onAddTask={handleAddTaskToBacklog} />
                 </div>
-                
+
+                <div className="w-px h-80 bg-indigo-500 dark:bg-white/10" />
+
                 <div className="flex-1 flex flex-col gap-4">
                     <div className="flex items-center justify-between">
                         <div className="flex items-center gap-2">

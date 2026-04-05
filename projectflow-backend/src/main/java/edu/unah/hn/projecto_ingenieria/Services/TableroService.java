@@ -64,20 +64,7 @@ public class TableroService {
         tableroNuevo.setDescripcionTablero(tablero.getDescripcion());
         Tablero guardado = tableroRepository.save(tableroNuevo);
 
-        //Esta logica sustituye a la logica que esta abajo delegando a una factory la creacion de la estructura de columnas del tablero
         List<Columna> columnas = columnaFactory.crearEstructuraInicial(guardado);
-
-        // // Tablero se crea con 3 columnas por defecto que posteriormente puede modificar el usuario
-        // List<String> columnasPorDefecto = List.of("Pendiente", "En Progreso", "Finalizado");
-        // List<Columna> columnas = new ArrayList<>();
-        // for (int i = 0; i < columnasPorDefecto.size(); i++) {
-        //     Columna columna = new Columna();
-        //     columna.setNombreColumna(columnasPorDefecto.get(i));
-        //     columna.setPosicion(i);
-        //     columna.setTablero(guardado);
-
-        //     columnas.add(columna);
-        // }
 
         guardado.setColumnas(columnaRepository.saveAll(columnas));
 
@@ -99,8 +86,12 @@ public class TableroService {
                 .findByCorreo(correo)
                 .orElseThrow();
 
-        // obtener tablero
+        Proyecto proyecto = proyectoRepository.findByTablero_IdTablero(idTablero).orElseThrow(
+            () -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Proyecto no encontrado")
+        );
 
+
+        // obtener tablero
         Tablero tablero = tableroRepository.findByIdTablero(idTablero)
                 .orElseThrow(() -> new ResponseStatusException(
                         HttpStatus.NOT_FOUND,
@@ -124,8 +115,13 @@ public class TableroService {
 
         // Obtener columnas del tablero
         List<Columna> columnas = columnaRepository.findByTableroIdTableroOrderByPosicionAsc(tablero.getIdTablero());
+        //Agregar el backlog al inicio de la lista de columnas del tablero
+        columnas.add(0, proyecto.getBacklog());
+                
 
+        System.out.println("Se agregó el backlog a la lista de columnas del tablero");
         List<ColumnaDTO> columnasDTO = columnaService.mapToListDTO(columnas);
+        System.out.println("Se agregó el backlog a la lista de columnas del tablero");
 
         // Crear DTO de tablero
         TableroResponseDTO tableroKanban = new TableroResponseDTO();
