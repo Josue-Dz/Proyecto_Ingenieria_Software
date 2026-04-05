@@ -73,6 +73,10 @@ public class Tarjeta {
     @JoinColumn(name = "id_columna")
     private Columna columna;
 
+    @ManyToOne
+    @JoinColumn(name = "id_backlog")
+    private Backlog backlog;
+
     @ManyToMany(cascade = CascadeType.ALL)
     @JoinTable(
         name = "tbl_tarjetas_x_usuarios",

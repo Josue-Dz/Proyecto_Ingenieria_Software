@@ -33,8 +33,7 @@ public class Backlog {
     @JoinColumn(name = "id_proyecto")
     private Proyecto proyecto;
 
-    @OneToMany(cascade = CascadeType.ALL)
-    @JoinColumn(name = "id_tarjeta")
+    @OneToMany(mappedBy = "backlog", cascade = CascadeType.ALL)
     private List<Tarjeta> tarjetas;
 
 }

@@ -1,11 +1,12 @@
 import { DragDropProvider } from "@dnd-kit/react"
 import KanbanColumn from "../../boards/components/KanbanColumn"
 
-const ProjectBacklog = ({ backlog }) => {
+const ProjectBacklog = ({ backlog, canCreate, canMove, onAddTask }) => {
+
     return (
         <>
             <DragDropProvider>
-                <KanbanColumn column={backlog} />
+                <KanbanColumn column={backlog} canCreate={canCreate} canMove={canMove} onAddTask={onAddTask}/>
             </DragDropProvider>
         </>
     )

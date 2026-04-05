@@ -4,57 +4,63 @@
 @custom-variant dark (&:where(.dark, .dark *));
 
 body {
-  /*font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;*/
-  font-family: "Poppins", sans-serif;
+    /*font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;*/
+    font-family: "Poppins", sans-serif;
 }
 
 .material-symbols-rounded {
-  font-family: 'Material Symbols Rounded';
-  font-weight: normal;
-  font-style: normal;
-  font-size: 30px;  /* Preferred icon size */
-  display: inline-block;
-  line-height: 1;
-  text-transform: none;
-  letter-spacing: normal;
-  word-wrap: normal;
-  white-space: nowrap;
-  direction: ltr;
+    font-family: 'Material Symbols Rounded';
+    font-weight: normal;
+    font-style: normal;
+    font-size: 30px;
+    /* Preferred icon size */
+    display: inline-block;
+    line-height: 1;
+    text-transform: none;
+    letter-spacing: normal;
+    word-wrap: normal;
+    white-space: nowrap;
+    direction: ltr;
 }
 
 input:-webkit-autofill {
-  box-shadow: 0 0 0px 1000px #ffffff72 inset !important;
-  -webkit-text-fill-color: black !important;
+    box-shadow: 0 0 0px 1000px #ffffff72 inset !important;
+    -webkit-text-fill-color: black !important;
 }
 
 .dark input:-webkit-autofill {
-  box-shadow: 0 0 0px 1000px #0d0d0d inset !important;
-  -webkit-text-fill-color: #ffffff !important;
+    box-shadow: 0 0 0px 1000px #0d0d0d inset !important;
+    -webkit-text-fill-color: #ffffff !important;
 }
 
-
 :root {
-  --bg-gradient: radial-gradient(125% 125% at 50% 10%, #eef2ff 40%, #c7d2fe 100%);
+    --bg-gradient: radial-gradient(125% 125% at 50% 10%, #eef2ff 40%, #c7d2fe 100%);
+    --scrollbar-bg: radial-gradient(125% 125% at 50% 10%, #eef2ff 40%, #abbbf2 100%);
+    --scrollbar-thumb: radial-gradient(125% 125% at 50% 10%, #eef2ff 40%, #6985f7 100%);
+    --scrollbar-thumb-hover: radial-gradient(125% 125% at 50% 10%, #eef2ff 40%, #6281fd 100%);
 }
 
 .dark {
-  --bg-gradient: radial-gradient(125% 125% at 50% 10%, #000000 40%, #2b0707 100%);
+    --bg-gradient: radial-gradient(125% 125% at 50% 10%, #000000 40%, #2b0707 100%);
+    --scrollbar-bg: radial-gradient(125% 125% at 50% 10%, #000000 40%, #2b0707 100%);
+    --scrollbar-thumb: radial-gradient(125% 125% at 50% 10%, #000000 40%, #8d2020 100%);
+    --scrollbar-thumb-hover: radial-gradient(125% 125% at 50% 10%, #000000 40%, #cc1e1e 100%);
 }
 
 ::-webkit-scrollbar {
-    width: 6px;
-    height: 6px;
+    width: 8px;
+    height: 8px;
 }
 
 ::-webkit-scrollbar-track {
-    background: transparent;
+    background: var(--scrollbar-bg);
 }
 
 ::-webkit-scrollbar-thumb {
-    background: rgba(255, 255, 255, 0.1);
+    background: var(--scrollbar-thumb);
     border-radius: 999px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-    background: rgba(255, 255, 255, 0.2);
+    background: var(--scrollbar-thumb-hover);
 }

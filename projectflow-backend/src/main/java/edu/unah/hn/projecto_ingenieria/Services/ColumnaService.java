@@ -70,7 +70,13 @@ public class ColumnaService {
             columnaDTO.setIdColumna(columna.getIdColumna());
             columnaDTO.setNombreColumna(columna.getNombreColumna());
             columnaDTO.setPosicion(columna.getPosicion());
-            columnaDTO.setIdTablero(columna.getTablero().getIdTablero());
+            
+            if (columna.getTablero() != null) {
+                columnaDTO.setIdTablero(columna.getTablero().getIdTablero());
+            }else{
+                columnaDTO.setIdTablero(null);
+            }
+
             columnaDTO.setTarjetas(tarjetasDTO);
 
             columnasDTO.add(columnaDTO);

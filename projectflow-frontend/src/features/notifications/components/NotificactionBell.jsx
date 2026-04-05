@@ -48,10 +48,14 @@ const NotificationBell = () => {
 
         const cargarDatos = async () => {
             try {
-                // No necesitas setLoading(true) aquí si lo inicializas en true
                 const data = await getMisNotificacionesRequest();
-                setNotificaciones(Array.isArray(data) ? data : []);
-                console.log("Notificaciones cargadas:", data);
+                const lista = Array.isArray(data) ? data : [];
+
+                const ordenadas = lista.sort(
+                    (a, b) => new Date(b.fechaCreacion) - new Date(a.fechaCreacion)
+                )
+                setNotificaciones(ordenadas);
+                console.log("Notificaciones cargadas:", ordenadas);
             } catch (error) {
                 console.error("Error al cargar notificaciones:", error);
             } finally {
@@ -59,7 +63,6 @@ const NotificationBell = () => {
             }
         };
 
-        // 2. Ejecutamos la carga
         cargarDatos();
 
         //WebSocket

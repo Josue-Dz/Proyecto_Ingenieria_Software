@@ -4,6 +4,7 @@ import KanbanCard from '../../cards/components/KanbanCard';
 import CreateTaskPopover from '../../cards/components/CreateTaskPopover';
 
 const KanbanColumn = ({ column, onAddTask, onTaskClick, index, canCreate, canMove }) => {
+console.log("Columna recibida en KanbanColumn:", column);
 
     const { isDropTarget, ref } = useDroppable({
         id: String(column.idColumna),
@@ -32,7 +33,7 @@ const KanbanColumn = ({ column, onAddTask, onTaskClick, index, canCreate, canMov
 
             <div
                 ref={ref}
-                className="flex flex-col gap-2.5 overflow-y-auto max-h-[calc(100vh-260px)] rounded-2xl p-3 bg-slate-200/70 dark:bg-white/3 border border-white/70 dark:border-white/6"
+                className="flex flex-col gap-2.5 overflow-y-auto max-h-115 rounded-2xl p-3 bg-slate-200/70 dark:bg-white/3 border border-white/70 dark:border-white/6"
                 style={style}
             >
                 {/* Crear tarea solo ADMIN */}
