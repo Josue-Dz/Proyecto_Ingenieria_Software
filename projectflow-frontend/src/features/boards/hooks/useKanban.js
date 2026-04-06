@@ -15,6 +15,7 @@ export function useKanban(boardId) {
             try {
                 const data = await getColumnsRequest(boardId);
                 setColumns(data);
+                console.log("Columnas obtenidas: ", data);
                 const newItems = {};
                 const newTaskMap = {};
                 data.forEach(col => {
