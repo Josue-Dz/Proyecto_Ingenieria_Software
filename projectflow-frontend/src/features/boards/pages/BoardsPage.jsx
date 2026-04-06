@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { createTaskRequest, getBoardsRequest, getColumnsRequest } from '../services/boardService';
+import { createTaskRequest, getBoardsRequest } from '../services/boardService';
 import { useNavigate, useParams } from 'react-router-dom';
 import CreateBoardModal from '../components/CreateBoardModal';
 import AddButton from '../components/AddButton';
