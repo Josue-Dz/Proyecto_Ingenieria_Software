@@ -243,8 +243,6 @@ const MembersSection = ({ idProyecto }) => {
     const isAdmin = members.some(
         (m) => Number(m.idUsuario) === Number(user?.idUsuario) && m.rol === "ADMIN"
     );
-
-    console.log("user?.idUsuario:", user?.idUsuario, "members ids:", members.map(m => m.idUsuario), "isAdmin:", isAdmin);
     
     const handleInvite = async (e) => {
         e.preventDefault();
