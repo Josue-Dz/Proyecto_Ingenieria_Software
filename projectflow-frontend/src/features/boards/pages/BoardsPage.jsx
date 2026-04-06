@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { createTaskRequest, getBoardsRequest } from '../services/boardService';
+import { createTaskRequest, getBoardsRequest, getColumnsRequest } from '../services/boardService';
 import { useNavigate, useParams } from 'react-router-dom';
 import CreateBoardModal from '../components/CreateBoardModal';
 import AddButton from '../components/AddButton';
@@ -32,17 +32,16 @@ const BoardsPage = () => {
     useEffect(() => {
         const fetchBoards = async () => {
             try {
-                //const data = await getBoardsRequest(id);
                 const [boardsData, projectData] = await Promise.all([
                     getBoardsRequest(idProyecto),
                     getProjectRequest(idProyecto)
                 ]);
-                //setUserRol("ADMIN");
                 // console.log("Estos son los boards del proyecto: ", boardsData);
                 // console.log("PROYECTO: ", projectData);
                 // console.log("BACKLOG: ", projectData.backlog.idColumna);
                 setBoards(boardsData);
                 setBacklog(projectData.backlog);
+                console.log("BACKLOG: ", projectData.backlog)
             } catch (err) {
                 setError("No se pudieron cargar los tableros");
                 console.error(err);
@@ -71,8 +70,6 @@ const BoardsPage = () => {
     const handleClick = (boardId) => {
         navigate(`/projects/${idProyecto}/boards/${boardId}`)
     }
-
-    console.log("IDCOLUMNA: ", backlog?.idColumna)
 
     return (
 

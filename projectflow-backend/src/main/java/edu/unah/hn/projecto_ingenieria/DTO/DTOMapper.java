@@ -3,6 +3,7 @@ package edu.unah.hn.projecto_ingenieria.DTO;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import edu.unah.hn.projecto_ingenieria.Entity.Columna;
@@ -11,6 +12,7 @@ import edu.unah.hn.projecto_ingenieria.Entity.Proyecto;
 import edu.unah.hn.projecto_ingenieria.Entity.Tablero;
 import edu.unah.hn.projecto_ingenieria.Entity.Tarjeta;
 import edu.unah.hn.projecto_ingenieria.Entity.Usuario;
+import edu.unah.hn.projecto_ingenieria.patterns.facade.ITarjetaService;
 
 /**
  * Utility component responsible for converting entity objects into their
@@ -19,6 +21,8 @@ import edu.unah.hn.projecto_ingenieria.Entity.Usuario;
  */
 @Component
 public class DTOMapper {
+
+    private ITarjetaService tarjetaService;
 
     public ProyectoResponseDTO toProyectoDTO(Proyecto p) {
         if (p == null) {

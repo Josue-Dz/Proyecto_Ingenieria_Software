@@ -70,10 +70,10 @@ public class ColumnaService {
             columnaDTO.setIdColumna(columna.getIdColumna());
             columnaDTO.setNombreColumna(columna.getNombreColumna());
             columnaDTO.setPosicion(columna.getPosicion());
-            
+
             if (columna.getTablero() != null) {
                 columnaDTO.setIdTablero(columna.getTablero().getIdTablero());
-            }else{
+            } else {
                 columnaDTO.setIdTablero(null);
             }
 

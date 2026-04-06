@@ -90,8 +90,6 @@ const KanbanBoard = () => {
         }
 
         const newPosition = itemsRef.current[String(destColumnId)]?.indexOf(taskId) ?? 0;
-        console.log("SourceColumnId:", sourceColumnId, "DestColumnId:", destColumnId, "Nueva posición:", newPosition)
-        console.log(`SourceInitialIndex: ${initialPosition}, SourceIndex: ${source.index}`)
         if (sourceColumnId === destColumnId && initialPosition === source.index) return;
         console.log("Mover taskId:", taskId, "de columna", sourceColumnId, "a columna", destColumnId, "en posición", newPosition);
 

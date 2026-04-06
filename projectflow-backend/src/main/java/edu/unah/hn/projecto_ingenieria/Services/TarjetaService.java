@@ -30,11 +30,12 @@ import edu.unah.hn.projecto_ingenieria.Repository.ProyectoRepository;
 import edu.unah.hn.projecto_ingenieria.Repository.TarjetaRepository;
 import edu.unah.hn.projecto_ingenieria.Repository.TarjetaXColumnaRepository;
 import edu.unah.hn.projecto_ingenieria.Repository.UsuarioRepository;
+import edu.unah.hn.projecto_ingenieria.patterns.facade.ITarjetaService;
 import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor
-public class TarjetaService {
+public class TarjetaService implements ITarjetaService{
 
     private final ColumnaRepository columnaRepository;
 
@@ -52,6 +53,7 @@ public class TarjetaService {
 
     private final ApplicationEventPublisher eventPublisher;
 
+    @Override
     public TarjetaResponseDTO crearTarjeta(Long columnaId, TarjetaRequestDTO request) {
 
         System.out.println("Columna ID recibida: " + columnaId);
@@ -61,8 +63,8 @@ public class TarjetaService {
 
         Long tableroId;
 
-        Proyecto proyecto; 
-        System.out.println("ID del tablero: " );
+        Proyecto proyecto;
+        System.out.println("ID del tablero: ");
         System.out.println(columna.getTablero());
 
         if (columna.getTablero() != null) {
@@ -70,19 +72,15 @@ public class TarjetaService {
             tableroId = columna.getTablero().getIdTablero();
 
             proyecto = proyectoRepository.findByTablero_IdTablero(tableroId)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Proyecto no encontrado"));
+                    .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Proyecto no encontrado"));
         } else {
             System.out.println("Entre acá porque el tablero es nulo");
             proyecto = columna.getProyecto();
         }
 
-        // 1. Validar que sea líder
-    
         if (!proyecto.getCreador().getIdUsuario().equals(authService.getUsuarioAutenticado().getIdUsuario())) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Solo el líder puede crear tareas");
         }
-
-        // tarjetaXColumnaRepository.desplazarTarjetasHaciaAbajo(columnaId);
 
         Tarjeta tarjeta = new Tarjeta();
         tarjeta.setTitulo(request.getTitulo());
@@ -120,6 +118,7 @@ public class TarjetaService {
         return mapper.toTarjetaResponseDTO(tarjeta);
     }
 
+    @Override
     public List<TarjetaResponseDTO> mapToDTO(Columna columna) {
         List<TarjetaXColumna> relaciones = tarjetaXColumnaRepository
                 .findByIdColumnaOrderByPosicionAsc(
@@ -142,23 +141,22 @@ public class TarjetaService {
             tarjetaDTO.setPrioridad(tarjeta.getPrioridad());
 
             tarjetaDTO.setEstado(tarjeta.getEstado());
-            
-                            // Mapear asignados a DTO
-                if (tarjeta.getAsignados() != null) {
-                    List<UsuarioDTO> asignadosDTO = tarjeta.getAsignados().stream()
+
+            // Mapear asignados a DTO
+            if (tarjeta.getAsignados() != null) {
+                List<UsuarioDTO> asignadosDTO = tarjeta.getAsignados().stream()
                         .map(u -> new UsuarioDTO(
-                            u.getIdUsuario(),
-                            u.getNombre(),
-                            u.getApellido(),
-                            u.getNombre() + " " + u.getApellido(),
-                            u.getCorreo(),
-                            u.obtenerInicialesDeNombre(u.getNombre(), u.getApellido())
-                        ))
+                                u.getIdUsuario(),
+                                u.getNombre(),
+                                u.getApellido(),
+                                u.getNombre() + " " + u.getApellido(),
+                                u.getCorreo(),
+                                u.obtenerInicialesDeNombre(u.getNombre(), u.getApellido())))
                         .collect(Collectors.toList());
-                    tarjetaDTO.setAsignados(asignadosDTO);
-                } else {
-                    tarjetaDTO.setAsignados(new ArrayList<>());
-                }
+                tarjetaDTO.setAsignados(asignadosDTO);
+            } else {
+                tarjetaDTO.setAsignados(new ArrayList<>());
+            }
 
             tarjetasDTO.add(tarjetaDTO);
         }
@@ -166,6 +164,7 @@ public class TarjetaService {
         return tarjetasDTO;
     }
 
+    @Override
     public void moverTarjeta(Long tarjetaId, Long columnaOrigen, TarjetaRequestDTO tarjetaDto) {
 
         Columna columnaAntigua = columnaRepository.findById(columnaOrigen)
@@ -213,6 +212,7 @@ public class TarjetaService {
         eventPublisher.publishEvent(new TarjetaMovidaEvent(this, tarjeta, columnaAntigua, columnaNueva));
     }
 
+    @Override
     public TarjetaResponseDTO actualizarInformacionTarjeta(Long tarjetaId, TarjetaRequestDTO request) {
 
         // Buscar la tarjeta
@@ -255,8 +255,9 @@ public class TarjetaService {
         }
 
         if (fechaAntigua != null && !fechaAntigua.equals(request.getFechaLimite()) ||
-            fechaAntigua == null && request.getFechaLimite() != null) {
-            eventPublisher.publishEvent(new TarjetaFechaCambioEvent(this, tarjeta, fechaAntigua, request.getFechaLimite()));
+                fechaAntigua == null && request.getFechaLimite() != null) {
+            eventPublisher
+                    .publishEvent(new TarjetaFechaCambioEvent(this, tarjeta, fechaAntigua, request.getFechaLimite()));
         }
 
         return mapper.toTarjetaDTO(tarjeta);

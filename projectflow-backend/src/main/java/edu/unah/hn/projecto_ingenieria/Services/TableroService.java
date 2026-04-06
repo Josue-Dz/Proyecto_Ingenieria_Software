@@ -86,29 +86,12 @@ public class TableroService {
 
         Long idProyecto = tablero.getProyecto().getIdProyecto();
 
-        // Validar que el usuario pertenece al proyecto
-        // boolean pertenece = proyectoUsuarioRepository
-        // .existsByUsuarioIdUsuarioAndProyectoIdProyecto(
-        // usuario.getIdUsuario(),
-        // idProyecto
-        // );
-
-        // if (!pertenece) {
-        // throw new ResponseStatusException(
-        // HttpStatus.FORBIDDEN,
-        // "El usuario " + correo + " no pertenece al proyecto con id " + idProyecto
-        // );
-        // }
-
         // Obtener columnas del tablero
         List<Columna> columnas = columnaRepository.findByTableroIdTableroOrderByPosicionAsc(tablero.getIdTablero());
         //Agregar el backlog al inicio de la lista de columnas del tablero
         columnas.add(0, proyecto.getBacklog());
                 
-
-        System.out.println("Se agregó el backlog a la lista de columnas del tablero");
         List<ColumnaDTO> columnasDTO = columnaService.mapToListDTO(columnas);
-        System.out.println("Se agregó el backlog a la lista de columnas del tablero");
 
         // Crear DTO de tablero
         TableroResponseDTO tableroKanban = new TableroResponseDTO();
