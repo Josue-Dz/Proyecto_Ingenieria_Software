@@ -6,7 +6,7 @@ const ProjectBacklog = ({ backlog, canCreate, canMove, onAddTask }) => {
     return (
         <>
             <DragDropProvider>
-                <KanbanColumn column={backlog} canCreate={canCreate} canMove={canMove} onAddTask={onAddTask}/>
+                <KanbanColumn column={backlog} index={0} canCreate={canCreate} canMove={canMove} onAddTask={onAddTask}/>
             </DragDropProvider>
         </>
     )
