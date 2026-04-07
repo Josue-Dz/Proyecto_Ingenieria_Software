@@ -30,6 +30,7 @@ import edu.unah.hn.projecto_ingenieria.Events.TarjetaEstadoCambioEvent;
 import edu.unah.hn.projecto_ingenieria.Events.TarjetaFechaCambioEvent;
 import edu.unah.hn.projecto_ingenieria.Events.TarjetaMovidaEvent;
 import edu.unah.hn.projecto_ingenieria.Repository.ColumnaRepository;
+import edu.unah.hn.projecto_ingenieria.Repository.HistorialEstadoTarjetaRepository;
 import edu.unah.hn.projecto_ingenieria.Repository.ProyectoRepository;
 import edu.unah.hn.projecto_ingenieria.Repository.TarjetaRepository;
 import edu.unah.hn.projecto_ingenieria.Repository.TarjetaXColumnaRepository;
@@ -50,6 +51,8 @@ public class TarjetaService implements ITarjetaService{
     private final UsuarioRepository usuarioRepository;
 
     private final TarjetaRepository tarjetaRepository;
+
+    private final HistorialEstadoTarjetaRepository historialEstadoTarjetaRepository;
 
     private final AuthService authService;
 
@@ -220,11 +223,15 @@ public class TarjetaService implements ITarjetaService{
         tarjeta = tarjetaRepository.save(tarjeta);
 
         LocalDateTime ahoraMovimiento = LocalDateTime.now();
-        if (!Objects.equals(estadoAnterior, tarjeta.getEstado())) {
-            Tablero tablero = columnaNueva.getTablero();
-            eventPublisher.publishEvent(new TarjetaEstadoCambioEvent(
-                    this, tarjeta, tablero, estadoAnterior, tarjeta.getEstado(), ahoraMovimiento));
-        }
+        publicarCambioEstadoSiAplica(tarjeta, estadoAnterior, tarjeta.getEstado(), columnaNueva.getTablero(),
+            ahoraMovimiento);
+
+        registrarFinalizacionSiEntraATableroDesdeBacklog(
+            tarjeta,
+            columnaAntigua,
+            columnaNueva,
+            estadoAnterior,
+            ahoraMovimiento);
 
         // Publicar evento de movimiento
         eventPublisher.publishEvent(new TarjetaMovidaEvent(this, tarjeta, columnaAntigua, columnaNueva));
@@ -279,11 +286,8 @@ public class TarjetaService implements ITarjetaService{
                     .publishEvent(new TarjetaFechaCambioEvent(this, tarjeta, fechaAntigua, request.getFechaLimite()));
         }
 
-        if (!Objects.equals(estadoAnterior, tarjeta.getEstado())) {
-            Tablero tablero = tarjeta.getColumna().getTablero();
-            eventPublisher.publishEvent(new TarjetaEstadoCambioEvent(
-                    this, tarjeta, tablero, estadoAnterior, tarjeta.getEstado(), LocalDateTime.now()));
-        }
+        Tablero tableroTarjeta = tarjeta.getColumna() != null ? tarjeta.getColumna().getTablero() : null;
+        publicarCambioEstadoSiAplica(tarjeta, estadoAnterior, tarjeta.getEstado(), tableroTarjeta, LocalDateTime.now());
 
         return mapper.toTarjetaDTO(tarjeta);
     }
@@ -303,6 +307,65 @@ public class TarjetaService implements ITarjetaService{
             return EstadoTarjeta.FINALIZADA;
         }
         return null;
+    }
+
+    private void publicarCambioEstadoSiAplica(
+            Tarjeta tarjeta,
+            EstadoTarjeta estadoAnterior,
+            EstadoTarjeta estadoNuevo,
+            Tablero tablero,
+            LocalDateTime fechaCambio) {
+        if (Objects.equals(estadoAnterior, estadoNuevo)) {
+            return;
+        }
+        // El historial de estado se almacena a nivel de tablero; backlog no tiene tablero.
+        if (tablero == null || tablero.getIdTablero() == null) {
+            return;
+        }
+        eventPublisher.publishEvent(new TarjetaEstadoCambioEvent(
+                this, tarjeta, tablero, estadoAnterior, estadoNuevo, fechaCambio));
+    }
+
+    private void registrarFinalizacionSiEntraATableroDesdeBacklog(
+            Tarjeta tarjeta,
+            Columna columnaOrigen,
+            Columna columnaDestino,
+            EstadoTarjeta estadoAnterior,
+            LocalDateTime fechaCambio) {
+        if (tarjeta == null || tarjeta.getIdTarjeta() == null) {
+            return;
+        }
+        if (columnaOrigen == null || columnaOrigen.getTablero() != null) {
+            return;
+        }
+        if (columnaDestino == null || columnaDestino.getTablero() == null
+                || columnaDestino.getTablero().getIdTablero() == null) {
+            return;
+        }
+        if (tarjeta.getEstado() != EstadoTarjeta.FINALIZADA) {
+            return;
+        }
+        if (!Objects.equals(estadoAnterior, tarjeta.getEstado())) {
+            return;
+        }
+
+        Long idTableroDestino = columnaDestino.getTablero().getIdTablero();
+        boolean yaRegistrada = historialEstadoTarjetaRepository
+                .existsByTarjeta_IdTarjetaAndTablero_IdTableroAndEstadoNuevo(
+                        tarjeta.getIdTarjeta(),
+                        idTableroDestino,
+                        EstadoTarjeta.FINALIZADA);
+        if (yaRegistrada) {
+            return;
+        }
+
+        eventPublisher.publishEvent(new TarjetaEstadoCambioEvent(
+                this,
+                tarjeta,
+                columnaDestino.getTablero(),
+                null,
+                EstadoTarjeta.FINALIZADA,
+                fechaCambio));
     }
 
 }

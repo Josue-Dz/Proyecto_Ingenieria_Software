@@ -14,7 +14,7 @@ public interface NotificacionRepository extends JpaRepository<Notificacion, Long
 
     List<Notificacion> findByUsuario_IdUsuario(@Param("idUsuario") Long idUsuario);
 
-    Long countNoLeidasByUsuario(@Param("idUsuario") Long idUsuario);
+    Long countByUsuario_IdUsuarioAndLeidaFalse(@Param("idUsuario") Long idUsuario);
 
     @Query("""
             SELECT n FROM Notificacion n
