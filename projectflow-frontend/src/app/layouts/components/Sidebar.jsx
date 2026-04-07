@@ -45,7 +45,7 @@ const Sidebar = ({ isOpen, onToggle }) => {
                             to="/estadísticas"
                             className={({ isActive }) => `flex items-center gap-3 px-3 py-3 rounded-md transition-colors
                             ${isActive
-                                    ? "bf-indigo-600/20 dark:bg-[#A3FF12]/20 text-indigo-700 dark:text-[#A3FF12]"
+                                    ? "bg-indigo-600/20 dark:bg-[#A3FF12]/20 text-indigo-700 dark:text-[#A3FF12]"
                                     : "hover:bg-indigo-600/15 dark:hover:bg-[#A3FF12]/10 text-gray-700 dark:text-white"
                                 }`
                             }
@@ -54,7 +54,7 @@ const Sidebar = ({ isOpen, onToggle }) => {
                             <span className="material-symbols-rounded text-indigo-600 dark:text-[#A3FF12] shrink-0">
                                 analytics
                             </span>
-                            <span className="text-sm font-medium">Estadísticas</span>
+                            {isOpen && <span className="text-sm font-medium">Estadísticas</span>}
                         </NavLink>
                     </li>
 

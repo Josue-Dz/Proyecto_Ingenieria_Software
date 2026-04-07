@@ -27,7 +27,7 @@ const PrivateNavbar = () => {
 
                 <div className='p-2'>
                     <button onClick={toggle}>
-                        <span className="material-symbols-rounded dark:text-white">
+                        <span className="material-symbols-rounded dark:text-white dark:hover:bg-white/10 rounded-full hover:bg-indigo-100 transition-colors duration-300 p-2">
                             {isDark ? "light_mode" : "dark_mode"}
                         </span>
                     </button>
@@ -41,7 +41,7 @@ const PrivateNavbar = () => {
                     {/* Burbuja de usuario — ahora es un link a /perfil */}
                     <Link
                         to="/perfil"
-                        className="flex items-center gap-3 rounded-md group"
+                        className="flex items-center px-2 py-1 gap-3 rounded-md group hover:bg-indigo-200/30 transition-colors duration-300"
                         title="Ver mi perfil"
 
                         >

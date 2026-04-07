@@ -161,14 +161,14 @@ const NotificationBell = () => {
                 className="relative p-2 rounded-lg hover:bg-indigo-100 dark:hover:bg-white/10 transition-colors"
                 title="Notificaciones"
             >
-                <span className="material-symbols-rounded text-slate-600 dark:text-white text-[22px]">
+                <span className="material-symbols-rounded text-slate-600 dark:text-white">
                     notifications
                 </span>
 
                 {noLeidas > 0 && (
                     <span className="absolute top-1 right-1 w-4 h-4 rounded-full bg-red-500
                      text-white text-[9px] font-bold flex items-center justify-center">
-                        {noLeidas > 9 ? "9+" : noLeidas}
+                        {noLeidas}
                     </span>
                 )}
             </button>
