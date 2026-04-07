@@ -12,6 +12,7 @@ import BoardsPage from '../features/boards/pages/BoardsPage';
 import BoardPage from '../features/boards/pages/BoardPage';
 import KanbanBoard from '../features/boards/components/KanbanBoard';
 import ProfilePage from '../features/profile/pages/ProfilePage';
+import ReportsPage from '../features/reports/pages/ReportsPage';
 
 function AppRoutes() {
     return (
@@ -27,6 +28,7 @@ function AppRoutes() {
                 <Route path='/dashboard' element={<DashboardPage />} />
                 <Route path='/boards/projects/:id' element={<BoardsPage />}/>
                 <Route path='/projects/:id/boards/:boardId' element={<KanbanBoard />} />
+                <Route path='/projects/:id/boards/:boardId/reportes' element={<ReportsPage />} />
                 <Route path='/boards/:id' element={<BoardPage />}/>
                 <Route path='/perfil' element ={<ProfilePage />}/>
                 <Route />

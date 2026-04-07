@@ -43,9 +43,12 @@ public class ReporteService {
 
         Usuario solicitante = authService.getUsuarioAutenticado();
         Long idProyecto = tablero.getProyecto().getIdProyecto();
-        if (!proyectoUsuarioRepository.existsByUsuarioAndProyecto(solicitante.getIdUsuario(), idProyecto)) {
-            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "No tienes acceso a este tablero");
-        }
+        
+                proyectoUsuarioRepository
+                .findByProyecto_IdProyectoAndUsuario_IdUsuario(idProyecto, solicitante.getIdUsuario())
+                .filter(pu -> pu.getRol().name().equals("ADMIN"))
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.FORBIDDEN,
+                        "Solo el líder puede ver este reporte"));
 
         int totalTareas = (int) tarjetaRepository.countDistinctByTableroIdTablero(idTablero);
 
