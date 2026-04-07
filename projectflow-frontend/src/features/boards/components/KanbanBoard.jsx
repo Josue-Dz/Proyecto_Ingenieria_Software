@@ -1,4 +1,5 @@
 import { useRef, useState } from 'react';
+import { useNavigate} from 'react-router-dom';
 import { useKanban } from '../hooks/useKanban'
 import { DragDropProvider } from '@dnd-kit/react'
 import { move } from "@dnd-kit/helpers"
@@ -32,6 +33,7 @@ const KanbanBoard = () => {
     const itemsRef = useRef(items);
     const sourceGroupRef = useRef(null);
     const sourceIndexRef = useRef(null);
+    const navigate = useNavigate();
 
     const getFilteredTarjetas = (colId) => {
         const taskIds = items[String(colId)] ?? [];
@@ -103,12 +105,16 @@ const KanbanBoard = () => {
             {/* Miembros del proyecto */}
                         <div className="flex items-center justify-end gap-4 py-3 px-1 mb-2">
                 <div className="flex items-center gap-2">
-                    <button className="flex justify-center md:w-12 rounded-md
-                    hover:bg-gray-500/10 p-1 transition-colors">
-                        <span className="material-symbols-rounded text-indigo-600 shrink-0">
-                            analytics
-                        </span>
-                    </button>
+                        
+                <button
+                    onClick={() => navigate(`/projects/${idProyecto}/boards/${boardId}/reportes`)}
+                    className="flex justify-center md:w-12 rounded-md hover:bg-gray-500/10 p-1 transition-colors"
+                    title="Reportes"
+                >
+                    <span className="material-symbols-rounded text-indigo-600 shrink-0">
+                        analytics
+                    </span>
+                </button>
                 </div>
 
                 {/* Actividad */}
