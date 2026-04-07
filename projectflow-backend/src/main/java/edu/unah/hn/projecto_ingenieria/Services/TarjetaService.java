@@ -234,7 +234,7 @@ public class TarjetaService implements ITarjetaService{
     public TarjetaResponseDTO actualizarInformacionTarjeta(Long tarjetaId, TarjetaRequestDTO request) {
 
         // Buscar la tarjeta
-        Tarjeta tarjeta = tarjetaRepository.findById(tarjetaId)
+        Tarjeta tarjeta = tarjetaRepository.findByIdWithRelaciones(tarjetaId)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Tarjeta no encontrada"));
 
         // Almacenar valores antiguos para eventos

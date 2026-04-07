@@ -12,6 +12,7 @@ import edu.unah.hn.projecto_ingenieria.DTO.NotificacionDTO;
 import edu.unah.hn.projecto_ingenieria.Entity.Notificacion;
 import edu.unah.hn.projecto_ingenieria.Entity.Proyecto;
 import edu.unah.hn.projecto_ingenieria.Entity.ProyectoUsuario;
+import edu.unah.hn.projecto_ingenieria.Entity.Tablero;
 import edu.unah.hn.projecto_ingenieria.Entity.Tarjeta;
 import edu.unah.hn.projecto_ingenieria.Entity.Usuario;
 import edu.unah.hn.projecto_ingenieria.Events.ColumnaCreadaEvent;
@@ -40,21 +41,6 @@ public class NotificacionListener {
     private final DTOMapper dtoMapper;
 
     
-  @EventListener
-    public void handleTarjetaAsignada(TarjetaAsignadaEvent event) {
-        Tarjeta tarjeta = event.getTarjeta();
-        for (Usuario usuario : event.getUsuariosAsignados()) {
-            Notificacion notificacion = construir(
-                usuario,
-                "Has sido asignado a la tarjeta: " + tarjeta.getTitulo(),
-                "ASIGNACION",
-                tarjeta
-            );
-            notificacionRepository.save(notificacion);
-            enviarAlUsuario(usuario, notificacion);
-        }
-    }
-
     @EventListener
     public void handleTarjetaMovida(TarjetaMovidaEvent event) {
         Tarjeta tarjeta = event.getTarjeta();
@@ -70,20 +56,6 @@ public class NotificacionListener {
             }
         }
     }
-        @EventListener
-        public void handleTarjetaFechaCambio(TarjetaFechaCambioEvent event) {
-        Tarjeta tarjeta = event.getTarjeta();
-        String mensaje = "La fecha límite de '" + tarjeta.getTitulo() + "' cambió de "
-           + event.getFechaAntigua() + " a " + event.getFechaNueva();
-
-            if (tarjeta.getAsignados() != null) {
-                for (Usuario usuario : tarjeta.getAsignados()) {
-                Notificacion notificacion = construir(usuario, mensaje, "FECHA_CAMBIO", tarjeta);
-                   notificacionRepository.save(notificacion);
-                        enviarAlUsuario(usuario, notificacion);
-                    }
-                }
-            }
 
             @EventListener
     public void handleColumnaCreada(ColumnaCreadaEvent event) {
@@ -130,6 +102,51 @@ public class NotificacionListener {
         notificarATodosLosMiembros(event.getProyecto(), mensaje, "ROL_CAMBIADO");
     }
 
+    @EventListener
+public void handleTarjetaFechaCambio(TarjetaFechaCambioEvent event) {
+    Tarjeta tarjeta = event.getTarjeta();
+
+    Proyecto proyecto = obtenerProyecto(tarjeta);
+    if (proyecto == null) return;
+
+    String fechaAntigua = event.getFechaAntigua() != null
+            ? event.getFechaAntigua().toString() : "sin fecha";
+    String fechaNueva = event.getFechaNueva() != null
+            ? event.getFechaNueva().toString() : "sin fecha";
+
+    String mensaje = "La fecha límite de '" + tarjeta.getTitulo()
+            + "' cambió de " + fechaAntigua + " a " + fechaNueva;
+
+    if (tarjeta.getAsignados() != null && !tarjeta.getAsignados().isEmpty()) {
+        for (Usuario usuario : tarjeta.getAsignados()) {
+            Notificacion notificacion = construir(usuario, mensaje, "FECHA_CAMBIO", tarjeta);
+            notificacionRepository.save(notificacion);
+            enviarAlUsuario(usuario, notificacion);
+        }
+    } else {
+        notificarATodosLosMiembros(proyecto, mensaje, "FECHA_CAMBIO");
+    }
+}
+
+@EventListener
+public void handleTarjetaAsignada(TarjetaAsignadaEvent event) {
+    Tarjeta tarjeta = event.getTarjeta();
+
+    Proyecto proyecto = obtenerProyecto(tarjeta);
+    if (proyecto == null) return;
+
+    for (Usuario usuario : event.getUsuariosAsignados()) {
+        Notificacion notificacion = construir(
+                usuario,
+                "Has sido asignado a la tarjeta: " + tarjeta.getTitulo(),
+                "ASIGNACION",
+                tarjeta
+        );
+        notificacionRepository.save(notificacion);
+        enviarAlUsuario(usuario, notificacion);
+    }
+}
+
     private void notificarATodosLosMiembros(Proyecto proyecto, String mensaje, String tipo) {
 
     List<ProyectoUsuario> miembros = proyectoUsuarioRepository.findByProyecto_IdProyecto(proyecto.getIdProyecto());
@@ -165,5 +182,12 @@ public class NotificacionListener {
                 dtoNotificacion
         );
     }
+
+    private Proyecto obtenerProyecto(Tarjeta tarjeta) {
+    if (tarjeta.getColumna() == null) return null;
+    Tablero tablero = tarjeta.getColumna().getTablero();
+    if (tablero != null) return tablero.getProyecto();
+    return tarjeta.getColumna().getProyecto(); // backlog
+}
 
 }

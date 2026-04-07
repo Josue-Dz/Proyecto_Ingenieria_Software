@@ -6,6 +6,7 @@ import java.util.List;
 import org.springframework.stereotype.Component;
 
 import edu.unah.hn.projecto_ingenieria.Entity.Columna;
+import edu.unah.hn.projecto_ingenieria.Entity.HistorialActividad;
 import edu.unah.hn.projecto_ingenieria.Entity.Notificacion;
 import edu.unah.hn.projecto_ingenieria.Entity.Proyecto;
 import edu.unah.hn.projecto_ingenieria.Entity.Tablero;
@@ -162,4 +163,16 @@ public class DTOMapper {
 
         return dto;
     }
+
+    public HistorialActividadDTO toDTO(HistorialActividad historial) {
+    HistorialActividadDTO dto = new HistorialActividadDTO();
+    dto.setUsuarioAccion(historial.getUsuario().getNombre() + " " + historial.getUsuario().getApellido());
+    dto.setTipo(historial.getTipo());
+    dto.setMensaje(historial.getMensaje());
+    dto.setIdTarjeta(historial.getTarjeta() != null ? historial.getTarjeta().getIdTarjeta() : null);
+    dto.setTituloTarjeta(historial.getTarjeta() != null ? historial.getTarjeta().getTitulo() : null);
+    dto.setFechaCreacion(historial.getFechaCreacion());
+    return dto;
+}
+
 }
