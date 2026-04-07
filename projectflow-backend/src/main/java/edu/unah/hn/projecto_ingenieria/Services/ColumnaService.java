@@ -14,6 +14,7 @@ import edu.unah.hn.projecto_ingenieria.DTO.TarjetaResponseDTO;
 import edu.unah.hn.projecto_ingenieria.Entity.Columna;
 import edu.unah.hn.projecto_ingenieria.Entity.Proyecto;
 import edu.unah.hn.projecto_ingenieria.Entity.Tablero;
+import edu.unah.hn.projecto_ingenieria.Entity.Usuario;
 import edu.unah.hn.projecto_ingenieria.Events.ColumnaCreadaEvent;
 import edu.unah.hn.projecto_ingenieria.Repository.ColumnaRepository;
 import edu.unah.hn.projecto_ingenieria.Repository.TableroRepository;
@@ -52,7 +53,8 @@ public class ColumnaService {
 
         // Publicar evento de creación de columna
         Proyecto proyecto = tablero.getProyecto();
-        eventPublisher.publishEvent(new ColumnaCreadaEvent(this, columna, proyecto));
+        Usuario usuario = proyecto.getCreador(); 
+        eventPublisher.publishEvent(new ColumnaCreadaEvent(this, columna, proyecto, usuario));
         return mapper.toColumnaDTO(columna, tableroId, tarjetas);
     }
 

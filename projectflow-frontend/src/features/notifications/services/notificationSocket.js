@@ -10,7 +10,7 @@ export const conectarNotificaciones = (onNotificacion) => {
         webSocketFactory: () =>
             new SockJS("http://localhost:8080/ws"),
 
-        reconnectDelay: 5000, // 🔥 importante
+        reconnectDelay: 5000,
 
         onConnect: () => {
             console.log("WebSocket conectado");

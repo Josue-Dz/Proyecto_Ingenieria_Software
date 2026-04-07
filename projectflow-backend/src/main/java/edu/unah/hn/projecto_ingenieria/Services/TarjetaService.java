@@ -4,6 +4,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 import org.springframework.context.ApplicationEventPublisher;
@@ -17,12 +18,15 @@ import edu.unah.hn.projecto_ingenieria.DTO.TarjetaResponseDTO;
 import edu.unah.hn.projecto_ingenieria.DTO.UsuarioDTO;
 import edu.unah.hn.projecto_ingenieria.Entity.Columna;
 import edu.unah.hn.projecto_ingenieria.Entity.Proyecto;
+import edu.unah.hn.projecto_ingenieria.Entity.Tablero;
 import edu.unah.hn.projecto_ingenieria.Entity.Tarjeta;
+import edu.unah.hn.projecto_ingenieria.Entity.Tarjeta.EstadoTarjeta;
 import edu.unah.hn.projecto_ingenieria.Entity.TarjetaXColumna;
 import edu.unah.hn.projecto_ingenieria.Entity.TarjetaXColumnaId;
 import edu.unah.hn.projecto_ingenieria.Entity.Usuario;
 import edu.unah.hn.projecto_ingenieria.Events.TarjetaAsignadaEvent;
 import edu.unah.hn.projecto_ingenieria.Events.TarjetaCreadaEvent;
+import edu.unah.hn.projecto_ingenieria.Events.TarjetaEstadoCambioEvent;
 import edu.unah.hn.projecto_ingenieria.Events.TarjetaFechaCambioEvent;
 import edu.unah.hn.projecto_ingenieria.Events.TarjetaMovidaEvent;
 import edu.unah.hn.projecto_ingenieria.Repository.ColumnaRepository;
@@ -176,6 +180,8 @@ public class TarjetaService implements ITarjetaService{
         Tarjeta tarjeta = tarjetaRepository.findById(tarjetaId)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Tarjeta no encontrada"));
 
+        EstadoTarjeta estadoAnterior = tarjeta.getEstado();
+
         TarjetaXColumnaId origenId = new TarjetaXColumnaId(tarjetaId, columnaOrigen);
         tarjetaXColumnaRepository.deleteById(origenId);
 
@@ -204,9 +210,21 @@ public class TarjetaService implements ITarjetaService{
         nueva.setPosicion(tarjetaDto.getNuevaPosicion());
         tarjetaXColumnaRepository.save(nueva);
 
-        // Actualizar la columna de la tarjeta
+        // Actualizar la columna de la tarjeta y alinear estado con columnas Kanban por defecto
         tarjeta.setColumna(columnaNueva);
-        tarjetaRepository.save(tarjeta);
+        EstadoTarjeta inferido = estadoDesdeNombreColumna(columnaNueva.getNombreColumna());
+        if (inferido != null) {
+            tarjeta.setEstado(inferido);
+        }
+
+        tarjeta = tarjetaRepository.save(tarjeta);
+
+        LocalDateTime ahoraMovimiento = LocalDateTime.now();
+        if (!Objects.equals(estadoAnterior, tarjeta.getEstado())) {
+            Tablero tablero = columnaNueva.getTablero();
+            eventPublisher.publishEvent(new TarjetaEstadoCambioEvent(
+                    this, tarjeta, tablero, estadoAnterior, tarjeta.getEstado(), ahoraMovimiento));
+        }
 
         // Publicar evento de movimiento
         eventPublisher.publishEvent(new TarjetaMovidaEvent(this, tarjeta, columnaAntigua, columnaNueva));
@@ -216,11 +234,12 @@ public class TarjetaService implements ITarjetaService{
     public TarjetaResponseDTO actualizarInformacionTarjeta(Long tarjetaId, TarjetaRequestDTO request) {
 
         // Buscar la tarjeta
-        Tarjeta tarjeta = tarjetaRepository.findById(tarjetaId)
+        Tarjeta tarjeta = tarjetaRepository.findByIdWithRelaciones(tarjetaId)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Tarjeta no encontrada"));
 
         // Almacenar valores antiguos para eventos
         LocalDate fechaAntigua = tarjeta.getFechaLimite();
+        EstadoTarjeta estadoAnterior = tarjeta.getEstado();
 
         List<Usuario> usuariosAsignados = new ArrayList<>();
 
@@ -260,7 +279,30 @@ public class TarjetaService implements ITarjetaService{
                     .publishEvent(new TarjetaFechaCambioEvent(this, tarjeta, fechaAntigua, request.getFechaLimite()));
         }
 
+        if (!Objects.equals(estadoAnterior, tarjeta.getEstado())) {
+            Tablero tablero = tarjeta.getColumna().getTablero();
+            eventPublisher.publishEvent(new TarjetaEstadoCambioEvent(
+                    this, tarjeta, tablero, estadoAnterior, tarjeta.getEstado(), LocalDateTime.now()));
+        }
+
         return mapper.toTarjetaDTO(tarjeta);
+    }
+
+    private EstadoTarjeta estadoDesdeNombreColumna(String nombreColumna) {
+        if (nombreColumna == null) {
+            return null;
+        }
+        String n = nombreColumna.trim();
+        if ("Pendiente".equalsIgnoreCase(n)) {
+            return EstadoTarjeta.PENDIENTE;
+        }
+        if ("En Progreso".equalsIgnoreCase(n)) {
+            return EstadoTarjeta.EN_PROGRESO;
+        }
+        if ("Finalizado".equalsIgnoreCase(n)) {
+            return EstadoTarjeta.FINALIZADA;
+        }
+        return null;
     }
 
 }
