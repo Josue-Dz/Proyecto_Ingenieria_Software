@@ -11,6 +11,7 @@ import { useAuth } from '../../auth/hooks/useAuth';
 import BoardFilterBar from './BoardFilterBar';
 import AddColumnForm from './AddColumnForm';
 import { useProjectRol } from '../../projects/hooks/useProjectRol';
+import ActivityPanel from '../../notifications/components/ActivityPanel';
 
 const KanbanBoard = () => {
     const { boardId, id: idProyecto } = useParams();
@@ -100,19 +101,25 @@ const KanbanBoard = () => {
     return (
         <>
             {/* Miembros del proyecto */}
-            <div className="flex items-center justify-end gap-4 py-3 px-1 mb-2">
+                        <div className="flex items-center justify-end gap-4 py-3 px-1 mb-2">
                 <div className="flex items-center gap-2">
-                    <button className="flex justify-center md:w-12 rounded-md hover:bg-gray-500/10 p-1 transition-colors">
-                        <span className="material-symbols-rounded text-indigo-600 shrink-0">analytics</span>
+                    <button className="flex justify-center md:w-12 rounded-md
+                    hover:bg-gray-500/10 p-1 transition-colors">
+                        <span className="material-symbols-rounded text-indigo-600 shrink-0">
+                            analytics
+                        </span>
                     </button>
-                    {/* <span>Estadísticas</span> */}
                 </div>
 
-                <div className="w-px h-10 bg-indigo-500/30"/>
+                {/* Actividad */}
+                <ActivityPanel idProyecto={idProyecto} />
+
+                <div className="w-px h-10 bg-indigo-500/30" />
 
                 <MembersSection idProyecto={idProyecto} />
             </div>
 
+            
 
             <div className="flex items-center justify-between">
 
@@ -170,6 +177,7 @@ const KanbanBoard = () => {
                     }}
                 />
             )}
+
         </>
     );
 };
