@@ -90,7 +90,7 @@ const TaskDetailModal = ({ task, proyectoId, userRol,onClose, onTaskUpdated }) =
         >
             <div className="absolute inset-0 bg-black/30 dark:bg-black/60 backdrop-blur-sm" />
 
-            <div className="relative z-10 w-full max-w-3xl bg-white dark:bg-[#0f0f0f] border border-slate-200 dark:border-white/10 rounded-2xl shadow-2xl overflow-hidden">
+            <div className="relative z-10 w-full max-w-4xl bg-white dark:bg-[#0f0f0f] border border-slate-200 dark:border-white/10 rounded-2xl shadow-2xl overflow-hidden">
 
                 {/* Header */}
                 <div className="flex items-center justify-between px-6 pt-5 pb-4 border-b border-slate-100 dark:border-white/6">

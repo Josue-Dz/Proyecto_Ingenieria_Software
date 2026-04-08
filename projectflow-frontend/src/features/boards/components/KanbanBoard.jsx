@@ -107,32 +107,42 @@ const KanbanBoard = () => {
 
     return (
         <>
-            {/* Miembros del proyecto */}
-                        <div className="flex items-center justify-end gap-4 py-3 px-1 mb-2">
-                <div className="flex items-center gap-2">
-                        
+            <div className="flex justify-between mb-6">
                 <button
-                    onClick={() => navigate(`/projects/${idProyecto}/boards/${boardId}/reportes`)}
-                    className="flex justify-center md:w-12 rounded-md hover:bg-gray-500/10 p-1 transition-colors"
-                    title="Reportes"
+                    onClick={() => { navigate(`/boards/projects/${idProyecto}`) }}
+                    className="flex items-center px-4 py-2 rounded-md p-3 hover:bg-gray-500/10 transition-colors"
                 >
-                    <span className="material-symbols-rounded text-indigo-600 shrink-0">
-                        analytics
+                    <span class="material-symbols-rounded">
+                        keyboard_backspace
                     </span>
-                </button>
-                </div>
+                    <p className="text-sm">Volver al proyecto</p>
+                </button >
 
-                {/* Actividad */}
-                <ActivityPanel idProyecto={idProyecto} />
+                <div className="flex items-center gap-2">
+                    {/* Miembros del proyecto */}
+                    < div className="flex items-center justify-end gap-4 py-3 px-1" >
 
-                <div className="w-px h-10 bg-indigo-500/30" />
+                        <button
+                            onClick={() => navigate(`/projects/${idProyecto}/boards/${boardId}/analytics`)}
+                            className="flex justify-center md:w-12 rounded-md hover:bg-gray-500/10 dark:hover:bg-white/10 p-1 transition-colors"
+                            title="Reportes"
+                        >
+                            <span className="material-symbols-rounded text-indigo-600 dark:text-[#A3FF12] shrink-0">
+                                analytics
+                            </span>
+                        </button>
+                    </div>
+
+                    {/* Actividad */}
+                    <ActivityPanel idProyecto={idProyecto} />
+
+                    <div className="w-px h-10 bg-indigo-500/30" />
+
+                    <MembersSection idProyecto={idProyecto} />
+                </div >
 
                 <MembersSection idProyecto={idProyecto} onMembersChanged={refetchMembers} />
-            </div>
 
-            
-
-            <div className="flex items-center justify-between">
 
                 <AddColumnForm
                     canCreate={canCreate}
@@ -151,6 +161,7 @@ const KanbanBoard = () => {
 
             </div>
 
+
             <DragDropProvider
                 onDragStart={handleDragStart}
                 onDragOver={handleDragOver}
@@ -158,7 +169,7 @@ const KanbanBoard = () => {
             >
 
 
-                <div className="flex gap-4 overflow-x-auto pb-6 items-start">
+                <div className="flex gap-4 overflow-x-auto items-start pt-8">
                     {columns.map((col, index) => (
                         <KanbanColumn
                             key={col.idColumna}
@@ -176,18 +187,20 @@ const KanbanBoard = () => {
                 </div>
             </DragDropProvider>
 
-            {selectedTask && (
-                <TaskDetailModal
-                    task={selectedTask}
-                    proyectoId={idProyecto}
-                    userRol={userRol}
-                    onClose={() => setSelectedTask(null)}
-                    onTaskUpdated={(updated) => {
-                        updateTask(updated);
-                        setSelectedTask(null);
-                    }}
-                />
-            )}
+            {
+                selectedTask && (
+                    <TaskDetailModal
+                        task={selectedTask}
+                        proyectoId={idProyecto}
+                        userRol={userRol}
+                        onClose={() => setSelectedTask(null)}
+                        onTaskUpdated={(updated) => {
+                            updateTask(updated);
+                            setSelectedTask(null);
+                        }}
+                    />
+                )
+            }
 
         </>
     );
