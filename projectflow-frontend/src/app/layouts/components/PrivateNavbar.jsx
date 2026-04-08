@@ -41,7 +41,7 @@ const PrivateNavbar = () => {
                     {/* Burbuja de usuario — ahora es un link a /perfil */}
                     <Link
                         to="/perfil"
-                        className="flex items-center px-2 py-1 gap-3 rounded-md group hover:bg-indigo-200/30 transition-colors duration-300"
+                        className="flex items-center px-2 py-1 gap-3 rounded-md group hover:bg-indigo-200/30 dark:hover:bg-white/10 transition-colors duration-300"
                         title="Ver mi perfil"
 
                         >

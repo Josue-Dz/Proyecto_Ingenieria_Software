@@ -52,7 +52,7 @@ const ActivityPanel = ({ idProyecto }) => {
             {/* Botón */}
             <button
                 onClick={() => setOpen(!open)}
-                className="flex justify-center md:w-12 rounded-md hover:bg-gray-500/10
+                className="flex justify-center md:w-12 rounded-md hover:bg-gray-500/10 dark:hover:bg-white/10
                  p-1 transition-colors"
                 title="Actividad"
             >
@@ -75,7 +75,7 @@ const ActivityPanel = ({ idProyecto }) => {
                         <h3 className="text-slate-800 dark:text-white font-semibold text-sm
                          flex items-center gap-2">
                             <span className="material-symbols-rounded text-slate-400
-                             dark:text-white/40 text-[16px]">history</span>
+                             dark:text-white/40">history</span>
                             Actividad
                         </h3>
                         <button

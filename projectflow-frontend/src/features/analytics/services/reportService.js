@@ -6,3 +6,11 @@ export const getBurndownRequest = async (idTablero, fechaInicio, fechaFin) => {
     });
     return response.data;
 };
+
+export const getUserAnalyticsRequest = async (idTablero) => {
+    const response = await apiClient.get(`/reportes/usuarios`, {
+        params: { idTablero }
+    });
+    console.log("Analíticas de usuario: ", response.data)
+    return response.data;
+}
