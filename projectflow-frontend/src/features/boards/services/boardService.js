@@ -8,7 +8,7 @@ export const createBoardRequest = async (projectId, boardData) => {
 
 export const getBoardsRequest = async (projectId) => {
     const response = await apiClient.get(`/boards/projects/${projectId}`)
-    //console.log("TABLERO: ", response.data)
+    console.log("TABLERO: ", response.data)
     return response.data;
 };
 
