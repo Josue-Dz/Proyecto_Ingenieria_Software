@@ -1,6 +1,5 @@
-import React, { useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import UserAnalytics from './UserAnalytics'
-import { usersMock, tasksMock } from '../hooks/mockData'
 import { useParams } from 'react-router-dom';
 import { getUserAnalyticsRequest } from '../services/reportService';
 
@@ -25,7 +24,7 @@ const UserAnalyticsPage = () => {
     }, [idTablero]);
 
     return (
-        <UserAnalytics users={data} tasks={[]} onBack={() => window.history.back()} />
+        <UserAnalytics users={data} />
     )
 }
 

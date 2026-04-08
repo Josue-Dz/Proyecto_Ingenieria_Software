@@ -5,7 +5,7 @@ import UserRow from "../components/UserRow";
 import KPI from "../components/KPI";
 import { useNavigate, useParams } from "react-router-dom";
 
-const UserAnalytics = ({ tasks = [], users = [], onBack }) => {
+const UserAnalytics = ({ users = [] }) => {
 
     const userStats = users;
     const navigate = useNavigate();
