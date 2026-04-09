@@ -3,7 +3,7 @@ import { createTaskRequest, getBoardsRequest } from '../services/boardService';
 import { useNavigate, useParams } from 'react-router-dom';
 import CreateBoardModal from '../components/CreateBoardModal';
 import AddButton from '../components/AddButton';
-import MembersSection from '../../projects/components/MembersSection';
+import MembersSection from '../../members/components/MembersSection';
 import { getProjectRequest } from '../../projects/services/projectService';
 import Backlog from '../../projects/components/ProjectBacklog';
 import { useAuth } from '../../auth/hooks/useAuth';
