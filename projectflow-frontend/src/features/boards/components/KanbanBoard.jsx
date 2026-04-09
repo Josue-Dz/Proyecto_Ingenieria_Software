@@ -107,7 +107,7 @@ const KanbanBoard = () => {
                     onClick={() => { navigate(`/boards/projects/${idProyecto}`) }}
                     className="flex items-center px-4 py-2 rounded-md p-3 hover:bg-gray-500/10 transition-colors"
                 >
-                    <span class="material-symbols-rounded">
+                    <span className="material-symbols-rounded">
                         keyboard_backspace
                     </span>
                     <p className="text-sm">Volver al proyecto</p>
@@ -117,15 +117,17 @@ const KanbanBoard = () => {
                     {/* Miembros del proyecto */}
                     < div className="flex items-center justify-end gap-4 py-3 px-1" >
 
-                        <button
-                            onClick={() => navigate(`/projects/${idProyecto}/boards/${boardId}/analytics`)}
-                            className="flex justify-center md:w-12 rounded-md hover:bg-gray-500/10 dark:hover:bg-white/10 p-1 transition-colors"
-                            title="Reportes"
-                        >
-                            <span className="material-symbols-rounded text-indigo-600 dark:text-[#A3FF12] shrink-0">
-                                analytics
-                            </span>
-                        </button>
+                        {canCreate && (
+                            <button
+                                onClick={() => navigate(`/projects/${idProyecto}/boards/${boardId}/analytics`)}
+                                className="flex justify-center md:w-12 rounded-md hover:bg-gray-500/10 dark:hover:bg-white/10 p-1 transition-colors"
+                                title="Reportes"
+                            >
+                                <span className="material-symbols-rounded text-indigo-600 dark:text-[#A3FF12] shrink-0">
+                                    analytics
+                                </span>
+                            </button>
+                        )}
                     </div>
 
                     {/* Actividad */}

@@ -2,8 +2,12 @@ import { useDroppable } from '@dnd-kit/react';
 import { CollisionPriority } from "@dnd-kit/abstract";
 import KanbanCard from '../../cards/components/KanbanCard';
 import CreateTaskPopover from '../../cards/components/CreateTaskPopover';
+import { useState } from 'react';
 
 const KanbanColumn = ({ column, onAddTask, onTaskClick, index, canCreate, canMove }) => {
+
+    const [isEditing, setIsEditing] = useState(false);
+    const [newName, setNewName] = useState(column.nombreColumna)
 
     const { isDropTarget, ref } = useDroppable({
         id: String(column.idColumna),
@@ -17,14 +21,39 @@ const KanbanColumn = ({ column, onAddTask, onTaskClick, index, canCreate, canMov
         },
     });
 
+
+
     const style = isDropTarget ? { background: '#00000030' } : undefined;
 
     return (
         <div className="flex flex-col w-76 shrink-0 ">
-            <div className="flex items-center bg-[#1a1d4c] dark:bg-white/3 border dark:border-white/6 rounded-t-xl gap-2 p-2">
-                <span className="text-white text-sm font-semibold tracking-tight">
-                    {column.nombreColumna}
-                </span>
+            <div className="flex items-center bg-[#1a1d4c]/95 dark:bg-white/3 border dark:border-white/6 rounded-t-xl gap-2 p-2">
+                {isEditing ?
+                    (
+                        <input
+                            className="text-white text-sm font-semibold bg-transparent border border-white outline-none"
+                            value={newName}
+                            autoFocus
+                            onChange={(e) => setNewName(e.target.value)}
+                            onBlur={() => {
+                                setIsEditing(false);
+                                console.log("Nuevo nombre: ", newName)
+                            }}
+
+                            onKeyDown={(e) => {
+                                if (e.key == "Enter") {
+                                    setIsEditing(false);
+                                }
+                            }}
+                        />
+                    ) :
+                    (
+                        <span className="text-white text-sm font-semibold tracking-tight"
+                            onClick={() => setIsEditing(true)}
+                        >
+                            {column.nombreColumna}
+                        </span>
+                    )}
                 <span className="text-[0.65rem] font-medium text-white/80 dark:bg-white/5 border dark:border-white/10 rounded-full px-2 py-0.5">
                     {column.tarjetas?.length ?? 0}
                 </span>
@@ -32,7 +61,7 @@ const KanbanColumn = ({ column, onAddTask, onTaskClick, index, canCreate, canMov
 
             <div
                 ref={ref}
-                className="flex flex-col gap-2.5 overflow-y-auto max-h-98 rounded-b-2xl p-3 bg-[#dfeaff]/80 dark:bg-white/3 border border-white/70 dark:border-white/6"
+                className="flex flex-col gap-2.5 overflow-y-auto max-h-98 rounded-b-2xl p-3 bg-[#dfeaff]/85 dark:bg-white/3 border border-slate-300 dark:border-white/6 shadow"
                 style={style}
             >
                 {/* Crear tarea solo ADMIN */}
@@ -51,7 +80,7 @@ const KanbanColumn = ({ column, onAddTask, onTaskClick, index, canCreate, canMov
                     />
                 ))}
             </div>
-        </div>
+        </div >
     );
 };
 

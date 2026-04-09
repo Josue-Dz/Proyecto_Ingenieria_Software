@@ -85,9 +85,9 @@ const Projects = () => {
                     {projects.map((project) => (
                         <div
                             key={project.idProyecto}
-                            className="flex flex-col bg-[#edf4ff] backdrop-blur-md dark:bg-black/60 border
-                                border-gray-500/20 shadow-xl dark:border-white/10 rounded-xl p-5
-                                hover:border-indigo-400 duration-300 transition-all
+                            className="flex flex-col bg-white backdrop-blur-md dark:bg-black/60 border
+                                border-gray-500/20 shadow dark:border-white/10 rounded-xl p-5
+                                hover:border-indigo-400/85 duration-300 transition-all
                                 dark:hover:border-[#A3FF12]/40"
 
                         >

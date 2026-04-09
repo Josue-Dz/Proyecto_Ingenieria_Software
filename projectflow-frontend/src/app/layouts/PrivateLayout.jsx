@@ -24,7 +24,7 @@ const PrivateLayout = () => {
 
                         <Sidebar isOpen={sidebarOpen} onToggle={() => setSidebarOpen(!sidebarOpen)} />
 
-                        <main className={`flex-1 transition-all duration-300 px-4 sm:px-6 md:px-12 pt-22 overflow-x-auto ${sidebarOpen ? "ml-64" : "ml-20"}`}>
+                        <main className={`flex-1 transition-all duration-300 px-4 sm:px-6 md:px-12 pt-22 overflow-x-auto ${sidebarOpen ? "ml-64" : "ml-18"}`}>
                             <Outlet />
                         </main>
 
