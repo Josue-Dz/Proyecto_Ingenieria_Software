@@ -1,12 +1,10 @@
 package edu.unah.hn.projecto_ingenieria.Services;
 
-import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
 import org.springframework.http.HttpStatus;
@@ -106,20 +104,37 @@ public class ReporteService {
             () -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Tablero no encontrado")
         );
 
-        List<ProyectoUsuario> usuarios = proyectoUsuarioRepository.findByProyecto_IdProyecto(tablero.getProyecto().getIdProyecto());
+        List<ProyectoUsuario> usuarios = proyectoUsuarioRepository.findByProyecto_IdProyecto(tablero.getProyecto().getIdProyecto())
+        .stream()
+        .filter(pu -> !pu.getRol().name().equals("LECTOR")) //filtrar para que los miembros Lectores no aparezcan en el reporte
+        .collect(Collectors.toList());
 
         return usuarios.stream().map(usuario -> {
             List<Tarjeta> tarjetas = tarjetaRepository.findByAsignados_IdUsuario(usuario.getUsuario().getIdUsuario());
             
-            int pendientes = (int)tarjetas.stream().filter(t -> t.getEstado().toString().equals("PENDIENTE") && t.getColumna().getTablero().getIdTablero() == idTablero).count();
+                    int pendientes = (int) tarjetas.stream()
+            .filter(t -> t.getColumna() != null && t.getColumna().getTablero() != null) 
+            .filter(t -> t.getEstado().toString().equals("PENDIENTE")
+                && t.getColumna().getTablero().getIdTablero().equals(idTablero))
+            .count();
 
-            int enProgreso = (int)tarjetas.stream().filter(t -> t.getEstado().toString().equals("EN_PROGRESO") && t.getColumna().getTablero().getIdTablero() == idTablero).count();
+        int enProgreso = (int) tarjetas.stream()
+            .filter(t -> t.getColumna() != null && t.getColumna().getTablero() != null)
+            .filter(t -> t.getEstado().toString().equals("EN_PROGRESO")
+                && t.getColumna().getTablero().getIdTablero().equals(idTablero))
+            .count();
 
-            int finalizadas = (int)tarjetas.stream().filter(t -> t.getEstado().toString().equals("FINALIZADA") && t.getColumna().getTablero().getIdTablero() == idTablero).count();
+        int finalizadas = (int) tarjetas.stream()
+            .filter(t -> t.getColumna() != null && t.getColumna().getTablero() != null)
+            .filter(t -> t.getEstado().toString().equals("FINALIZADA")
+                && t.getColumna().getTablero().getIdTablero().equals(idTablero))
+            .count();
 
             int totalAsignadas = pendientes + enProgreso + finalizadas;
 
-            List<Long> tiempos = tarjetas.stream()
+           List<Long> tiempos = tarjetas.stream()
+                .filter(t -> t.getColumna() != null && t.getColumna().getTablero() != null)
+                .filter(t -> t.getColumna().getTablero().getIdTablero().equals(idTablero))
                 .filter(t -> t.getEstado().toString().equals("FINALIZADA"))
                 .filter(t -> t.getFechaCreacion() != null && t.getFechaLimite() != null)
                 .map(t -> ChronoUnit.DAYS.between(t.getFechaCreacion(), t.getFechaLimite().atStartOfDay()))
