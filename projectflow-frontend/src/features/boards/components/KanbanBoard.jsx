@@ -138,11 +138,13 @@ const KanbanBoard = () => {
 
                     <div className="w-px h-10 bg-indigo-500/30" />
 
-                    <MembersSection idProyecto={idProyecto} />
+                    <MembersSection idProyecto={idProyecto} onMembersChanged={refetchMembers} />
                 </div >
 
-                <MembersSection idProyecto={idProyecto} onMembersChanged={refetchMembers} />
+            </div>
 
+
+            <div className="flex items-center justify-between">
 
                 <AddColumnForm
                     canCreate={canCreate}
