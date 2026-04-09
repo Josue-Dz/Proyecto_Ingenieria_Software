@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import {ResponsiveContainer, ComposedChart, Line, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend} from "recharts";
 import { useBurndown } from "../hooks/useBurndown";
+import { exportarReporteRequest } from "../services/reportService";
 
 const ReportePage = () => {
     const { boardId} = useParams();
@@ -11,6 +12,7 @@ const ReportePage = () => {
     const today = new Date().toISOString().split("T")[0];
     const [fechaInicio, setFechaInicio] = useState("");
     const [fechaFin, setFechaFin] = useState(today);
+    const [exportLoading, setExportLoading] = useState(null);
 
     const handleBuscar = () => {
         if (!fechaInicio || !fechaFin) return;
@@ -24,6 +26,29 @@ const ReportePage = () => {
         "Completadas en el día": p.tareasCompletadasEnDia,
         "Restantes": p.tareasRestantes,
     })) ?? [];
+
+    // Función para exportar el reporte
+    const handleExportar = async (formato) => {
+    if (!fechaInicio || !fechaFin) return;
+    setExportLoading(formato);
+    try {
+        const response = await exportarReporteRequest(boardId, formato, fechaInicio, fechaFin);
+
+        // Crear enlace de descarga
+        const url = window.URL.createObjectURL(new Blob([response.data]));
+        const link = document.createElement("a");
+        link.href = url;
+        link.setAttribute("download", `reporte_sprint.${formato === "excel" ? "xlsx" : "pdf"}`);
+        document.body.appendChild(link);
+        link.click();
+        link.remove();
+        window.URL.revokeObjectURL(url);
+    } catch (err) {
+        console.error("Error al exportar:", err);
+    } finally {
+        setExportLoading(null);
+    }
+};
 
     return (
         <div className="min-h-screen bg-slate-50 dark:bg-[#0f0f0f] px-6 py-8">
@@ -152,6 +177,52 @@ const ReportePage = () => {
                             </p>
                         </div>
                     </div>
+
+                    {/* Botones de exportación */}
+                <div className="flex items-center justify-between mb-6">
+                    <h2 className="text-sm font-semibold text-slate-700 dark:text-white">
+                        Exportar reporte
+                    </h2>
+                    <div className="flex gap-2">
+                        <button
+                            onClick={() => handleExportar("pdf")}
+                            disabled={exportLoading !== null}
+                            className="flex items-center gap-2 px-4 py-2 rounded-lg border
+                            border-slate-200 dark:border-white/10 text-slate-600 dark:text-white/70
+                            text-sm hover:bg-slate-50 dark:hover:bg-white/5 transition-colors
+                            disabled:opacity-50 disabled:cursor-not-allowed"
+                        >
+                            {exportLoading === "pdf"
+                                ? <span className="material-symbols-rounded text-sm animate-spin">
+                                    progress_activity
+                                </span>
+                                : <span className="material-symbols-rounded text-sm text-red-500">
+                                    picture_as_pdf
+                                </span>
+                            }
+                            {exportLoading === "pdf" ? "Generando..." : "Exportar PDF"}
+                        </button>
+
+                        <button
+                            onClick={() => handleExportar("excel")}
+                            disabled={exportLoading !== null}
+                            className="flex items-center gap-2 px-4 py-2 rounded-lg border
+                            border-slate-200 dark:border-white/10 text-slate-600 dark:text-white/70
+                            text-sm hover:bg-slate-50 dark:hover:bg-white/5 transition-colors
+                            disabled:opacity-50 disabled:cursor-not-allowed"
+                        >
+                            {exportLoading === "excel"
+                                ? <span className="material-symbols-rounded text-sm animate-spin">
+                                    progress_activity
+                                </span>
+                                : <span className="material-symbols-rounded text-sm text-green-500">
+                                    table_view
+                                </span>
+                            }
+                            {exportLoading === "excel" ? "Generando..." : "Exportar Excel"}
+                        </button>
+                    </div>
+                </div>
 
                     {/* Gráfica */}
                     <div className="bg-white dark:bg-[#1a1a1a] border border-slate-200

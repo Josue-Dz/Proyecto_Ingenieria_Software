@@ -112,29 +112,15 @@ public class ReporteService {
         return usuarios.stream().map(usuario -> {
             List<Tarjeta> tarjetas = tarjetaRepository.findByAsignados_IdUsuario(usuario.getUsuario().getIdUsuario());
             
-                    int pendientes = (int) tarjetas.stream()
-            .filter(t -> t.getColumna() != null && t.getColumna().getTablero() != null) 
-            .filter(t -> t.getEstado().toString().equals("PENDIENTE")
-                && t.getColumna().getTablero().getIdTablero().equals(idTablero))
-            .count();
+            int pendientes = (int)tarjetas.stream().filter(t -> t.getEstado().toString().equals("PENDIENTE") && t.getColumna().getTablero().getIdTablero() == idTablero).count();
 
-        int enProgreso = (int) tarjetas.stream()
-            .filter(t -> t.getColumna() != null && t.getColumna().getTablero() != null)
-            .filter(t -> t.getEstado().toString().equals("EN_PROGRESO")
-                && t.getColumna().getTablero().getIdTablero().equals(idTablero))
-            .count();
+            int enProgreso = (int)tarjetas.stream().filter(t -> t.getEstado().toString().equals("EN_PROGRESO") && t.getColumna().getTablero().getIdTablero() == idTablero).count();
 
-        int finalizadas = (int) tarjetas.stream()
-            .filter(t -> t.getColumna() != null && t.getColumna().getTablero() != null)
-            .filter(t -> t.getEstado().toString().equals("FINALIZADA")
-                && t.getColumna().getTablero().getIdTablero().equals(idTablero))
-            .count();
+            int finalizadas = (int)tarjetas.stream().filter(t -> t.getEstado().toString().equals("FINALIZADA") && t.getColumna().getTablero().getIdTablero() == idTablero).count();
 
             int totalAsignadas = pendientes + enProgreso + finalizadas;
 
-           List<Long> tiempos = tarjetas.stream()
-                .filter(t -> t.getColumna() != null && t.getColumna().getTablero() != null)
-                .filter(t -> t.getColumna().getTablero().getIdTablero().equals(idTablero))
+            List<Long> tiempos = tarjetas.stream()
                 .filter(t -> t.getEstado().toString().equals("FINALIZADA"))
                 .filter(t -> t.getFechaCreacion() != null && t.getFechaLimite() != null)
                 .map(t -> ChronoUnit.DAYS.between(t.getFechaCreacion(), t.getFechaLimite().atStartOfDay()))
@@ -153,8 +139,5 @@ public class ReporteService {
             );
         }).collect(Collectors.toList());
 
-
-        //Usuario solicitante = authService.getUsuarioAutenticado();
     }
-
 }
