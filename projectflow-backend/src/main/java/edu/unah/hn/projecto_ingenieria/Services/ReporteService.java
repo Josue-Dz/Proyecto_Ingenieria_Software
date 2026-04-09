@@ -1,12 +1,10 @@
 package edu.unah.hn.projecto_ingenieria.Services;
 
-import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
 import org.springframework.http.HttpStatus;
@@ -106,7 +104,10 @@ public class ReporteService {
             () -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Tablero no encontrado")
         );
 
-        List<ProyectoUsuario> usuarios = proyectoUsuarioRepository.findByProyecto_IdProyecto(tablero.getProyecto().getIdProyecto());
+        List<ProyectoUsuario> usuarios = proyectoUsuarioRepository.findByProyecto_IdProyecto(tablero.getProyecto().getIdProyecto())
+        .stream()
+        .filter(pu -> !pu.getRol().name().equals("LECTOR")) //filtrar para que los miembros Lectores no aparezcan en el reporte
+        .collect(Collectors.toList());
 
         return usuarios.stream().map(usuario -> {
             List<Tarjeta> tarjetas = tarjetaRepository.findByAsignados_IdUsuario(usuario.getUsuario().getIdUsuario());

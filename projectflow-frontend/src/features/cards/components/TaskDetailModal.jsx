@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { updateTaskRequest } from "../../boards/services/boardService";
-import { getMembersRequest } from "../../projects/services/MemberService";
+import { getMembersRequest } from "../../members/services/MemberService";
 
 const PRIORITY_OPTIONS = ["BAJA", "MEDIA", "ALTA"];
 
@@ -35,12 +35,16 @@ const TaskDetailModal = ({ task, proyectoId, userRol,onClose, onTaskUpdated }) =
     }, [onClose]);
 
     // Cargar miembros del proyecto
-    useEffect(() => {
-        if (!proyectoId) return;
-        getMembersRequest(proyectoId)
-            .then(setMiembros)
-            .catch(console.error);
-    }, [proyectoId]);
+            useEffect(() => {
+            if (!proyectoId) return;
+            getMembersRequest(proyectoId)
+                .then(data => {
+                    // Excluir lectores de la lista de asignables
+                    const asignables = data.filter(m => m.rol !== "LECTOR");
+                    setMiembros(asignables);
+                })
+                .catch(console.error);
+        }, [proyectoId]);
 
     const isAsignado = (correo) => asignados.some(a => a.correo === correo);
 

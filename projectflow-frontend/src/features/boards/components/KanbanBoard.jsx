@@ -1,5 +1,6 @@
 import { useRef, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useMemo } from 'react';
+import { useNavigate} from 'react-router-dom';
 import { useKanban } from '../hooks/useKanban'
 import { DragDropProvider } from '@dnd-kit/react'
 import { move } from "@dnd-kit/helpers"
@@ -7,7 +8,7 @@ import KanbanColumn from './KanbanColumn';
 import { useParams } from 'react-router-dom';
 import TaskDetailModal from '../../cards/components/TaskDetailModal';
 import { isSortable } from '@dnd-kit/react/sortable';
-import MembersSection from '../../projects/components/MembersSection';
+import MembersSection from '../../members/components/MembersSection';
 import { useAuth } from '../../auth/hooks/useAuth';
 import BoardFilterBar from './BoardFilterBar';
 import AddColumnForm from './AddColumnForm';
@@ -17,7 +18,7 @@ import ActivityPanel from '../../notifications/components/ActivityPanel';
 const KanbanBoard = () => {
     const { boardId, id: idProyecto } = useParams();
     const { user } = useAuth();
-    const { userRol, members } = useProjectRol(idProyecto, user);
+    const { userRol, members, refetch:refetchMembers } = useProjectRol(idProyecto, user);
 
     const { columns, items, taskMap, setItems, addColumn, addTask, moveTask, updateTask } = useKanban(boardId);
     const [filters, setFilters] = useState({ prioridad: null, responsableId: null });
@@ -29,6 +30,10 @@ const KanbanBoard = () => {
 
     const hasActiveFilters = filters.prioridad || filters.responsableId;
     const clearFilters = () => setFilters({ prioridad: null, responsableId: null });
+
+    // Filtrar lectores para el filtro de responsables
+    const membersAsignables = useMemo(() => members.filter(m => m.rol !== "LECTOR"),
+    [members] );
 
     const itemsRef = useRef(items);
     const sourceGroupRef = useRef(null);
@@ -133,7 +138,7 @@ const KanbanBoard = () => {
 
                     <div className="w-px h-10 bg-indigo-500/30" />
 
-                    <MembersSection idProyecto={idProyecto} />
+                    <MembersSection idProyecto={idProyecto} onMembersChanged={refetchMembers} />
                 </div >
 
             </div>
@@ -148,7 +153,7 @@ const KanbanBoard = () => {
 
                 {/* Barra de filtros */}
                 <BoardFilterBar
-                    members={members}
+                    members={membersAsignables}
                     filters={filters}
                     hasActiveFilters={hasActiveFilters}
                     clearFilters={clearFilters}
