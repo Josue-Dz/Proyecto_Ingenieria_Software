@@ -49,7 +49,7 @@ public class NotificacionService {
 
         public Long contarNoLeidas() {
             Usuario usuario = getUsuarioAutenticado();
-            return notificacionRepository.countNoLeidasByUsuario(usuario.getIdUsuario());
+            return notificacionRepository.countByUsuario_IdUsuarioAndLeidaFalse(usuario.getIdUsuario());
         }
 
         @Transactional

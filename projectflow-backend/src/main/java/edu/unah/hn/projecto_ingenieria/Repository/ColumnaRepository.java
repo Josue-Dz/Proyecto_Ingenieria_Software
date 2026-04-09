@@ -25,5 +25,9 @@ public interface ColumnaRepository extends JpaRepository<Columna, Long> {
 
     // (Opcional) Listar columnas ordenadas por posición
     List<Columna> findByTablero_IdTableroOrderByPosicionAsc(Long idTablero);
+
+    List<Columna> findByTablero_IdTablero(Long idTablero);
+
+    List<Columna> findByProyecto_IdProyecto(Long idProyecto);
     
 }

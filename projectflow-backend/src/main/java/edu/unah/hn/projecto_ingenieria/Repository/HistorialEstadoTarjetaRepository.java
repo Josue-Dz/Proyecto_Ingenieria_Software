@@ -13,6 +13,11 @@ import edu.unah.hn.projecto_ingenieria.Entity.Tarjeta.EstadoTarjeta;
 @Repository
 public interface HistorialEstadoTarjetaRepository extends JpaRepository<HistorialEstadoTarjeta, Long> {
 
+        boolean existsByTarjeta_IdTarjetaAndTablero_IdTableroAndEstadoNuevo(
+                        Long idTarjeta,
+                        Long idTablero,
+                        EstadoTarjeta estadoNuevo);
+
     @Query("""
             SELECT COUNT(DISTINCT h.tarjeta.idTarjeta)
             FROM HistorialEstadoTarjeta h
