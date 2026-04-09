@@ -2,7 +2,7 @@ import MemberAvatar from '../../members/components/MemberAvatar'
 
 const BoardFilterBar = ({ members, filters, hasActiveFilters, clearFilters, setFilters }) => {
     return (
-        <div className="flex items-center bg-indigo-200/10 shadow-md dark:bg-black border border-indigo-500/30 dark:border-white/10 rounded-md pl-2 pr-2 ">  
+        <div className="flex items-center bg-white shadow-md dark:bg-black border border-[#c5d8ff] dark:border-white/10 rounded-md pl-2 pr-2">  
 
             {/* Barra de filtros */}
             <div className="flex gap-3 py-2 px-1 flex-wrap">
@@ -30,9 +30,9 @@ const BoardFilterBar = ({ members, filters, hasActiveFilters, clearFilters, setF
                 <div className="flex items-center gap-1.5">
                     <span className="text-xs dark:text-white/30 mr-1">Prioridad:</span>
                     {[
-                        { value: "ALTA", label: "Alta", class: "text-orange-400 border-orange-500/30 bg-orange-500/15" },
-                        { value: "MEDIA", label: "Media", class: "text-yellow-400 border-yellow-500/30 bg-yellow-500/15" },
-                        { value: "BAJA", label: "Baja", class: "text-green-400 border-green-500/30 bg-green-500/15" },
+                        { value: "ALTA", label: "Alta", class: "text-orange-500 border-orange-500/30 bg-orange-500/15" },
+                        { value: "MEDIA", label: "Media", class: "text-yellow-500 border-yellow-500/30 bg-yellow-500/15" },
+                        { value: "BAJA", label: "Baja", class: "text-green-500 border-green-500/30 bg-green-500/15" },
                     ].map(p => (
                         <button
                             key={p.value}

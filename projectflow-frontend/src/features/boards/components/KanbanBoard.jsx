@@ -1,4 +1,6 @@
 import { useRef, useState } from 'react';
+import { useMemo } from 'react';
+import { useNavigate} from 'react-router-dom';
 import { useKanban } from '../hooks/useKanban'
 import { DragDropProvider } from '@dnd-kit/react'
 import { move } from "@dnd-kit/helpers"
@@ -6,16 +8,17 @@ import KanbanColumn from './KanbanColumn';
 import { useParams } from 'react-router-dom';
 import TaskDetailModal from '../../cards/components/TaskDetailModal';
 import { isSortable } from '@dnd-kit/react/sortable';
-import MembersSection from '../../projects/components/MembersSection';
+import MembersSection from '../../members/components/MembersSection';
 import { useAuth } from '../../auth/hooks/useAuth';
 import BoardFilterBar from './BoardFilterBar';
 import AddColumnForm from './AddColumnForm';
 import { useProjectRol } from '../../projects/hooks/useProjectRol';
+import ActivityPanel from '../../notifications/components/ActivityPanel';
 
 const KanbanBoard = () => {
     const { boardId, id: idProyecto } = useParams();
     const { user } = useAuth();
-    const { userRol, members } = useProjectRol(idProyecto, user);
+    const { userRol, members, refetch:refetchMembers } = useProjectRol(idProyecto, user);
 
     const { columns, items, taskMap, setItems, addColumn, addTask, moveTask, updateTask } = useKanban(boardId);
     const [filters, setFilters] = useState({ prioridad: null, responsableId: null });
@@ -28,9 +31,14 @@ const KanbanBoard = () => {
     const hasActiveFilters = filters.prioridad || filters.responsableId;
     const clearFilters = () => setFilters({ prioridad: null, responsableId: null });
 
+    // Filtrar lectores para el filtro de responsables
+    const membersAsignables = useMemo(() => members.filter(m => m.rol !== "LECTOR"),
+    [members] );
+
     const itemsRef = useRef(items);
     const sourceGroupRef = useRef(null);
     const sourceIndexRef = useRef(null);
+    const navigate = useNavigate();
 
     const getFilteredTarjetas = (colId) => {
         const taskIds = items[String(colId)] ?? [];
@@ -99,18 +107,40 @@ const KanbanBoard = () => {
 
     return (
         <>
-            {/* Miembros del proyecto */}
-            <div className="flex items-center justify-end gap-4 py-3 px-1 mb-2">
+            <div className="flex justify-between mb-6">
+                <button
+                    onClick={() => { navigate(`/boards/projects/${idProyecto}`) }}
+                    className="flex items-center px-4 py-2 rounded-md p-3 hover:bg-gray-500/10 transition-colors"
+                >
+                    <span class="material-symbols-rounded">
+                        keyboard_backspace
+                    </span>
+                    <p className="text-sm">Volver al proyecto</p>
+                </button >
+
                 <div className="flex items-center gap-2">
-                    <button className="flex justify-center md:w-12 rounded-md hover:bg-gray-500/10 p-1 transition-colors">
-                        <span className="material-symbols-rounded text-indigo-600 shrink-0">analytics</span>
-                    </button>
-                    {/* <span>Estadísticas</span> */}
-                </div>
+                    {/* Miembros del proyecto */}
+                    < div className="flex items-center justify-end gap-4 py-3 px-1" >
 
-                <div className="w-px h-10 bg-indigo-500/30"/>
+                        <button
+                            onClick={() => navigate(`/projects/${idProyecto}/boards/${boardId}/analytics`)}
+                            className="flex justify-center md:w-12 rounded-md hover:bg-gray-500/10 dark:hover:bg-white/10 p-1 transition-colors"
+                            title="Reportes"
+                        >
+                            <span className="material-symbols-rounded text-indigo-600 dark:text-[#A3FF12] shrink-0">
+                                analytics
+                            </span>
+                        </button>
+                    </div>
 
-                <MembersSection idProyecto={idProyecto} />
+                    {/* Actividad */}
+                    <ActivityPanel idProyecto={idProyecto} />
+
+                    <div className="w-px h-10 bg-indigo-500/30" />
+
+                    <MembersSection idProyecto={idProyecto} onMembersChanged={refetchMembers} />
+                </div >
+
             </div>
 
 
@@ -123,7 +153,7 @@ const KanbanBoard = () => {
 
                 {/* Barra de filtros */}
                 <BoardFilterBar
-                    members={members}
+                    members={membersAsignables}
                     filters={filters}
                     hasActiveFilters={hasActiveFilters}
                     clearFilters={clearFilters}
@@ -133,6 +163,7 @@ const KanbanBoard = () => {
 
             </div>
 
+
             <DragDropProvider
                 onDragStart={handleDragStart}
                 onDragOver={handleDragOver}
@@ -140,7 +171,7 @@ const KanbanBoard = () => {
             >
 
 
-                <div className="flex gap-4 overflow-x-auto pb-6 items-start">
+                <div className="flex gap-4 overflow-x-auto items-start pt-8">
                     {columns.map((col, index) => (
                         <KanbanColumn
                             key={col.idColumna}
@@ -158,18 +189,21 @@ const KanbanBoard = () => {
                 </div>
             </DragDropProvider>
 
-            {selectedTask && (
-                <TaskDetailModal
-                    task={selectedTask}
-                    proyectoId={idProyecto}
-                    userRol={userRol}
-                    onClose={() => setSelectedTask(null)}
-                    onTaskUpdated={(updated) => {
-                        updateTask(updated);
-                        setSelectedTask(null);
-                    }}
-                />
-            )}
+            {
+                selectedTask && (
+                    <TaskDetailModal
+                        task={selectedTask}
+                        proyectoId={idProyecto}
+                        userRol={userRol}
+                        onClose={() => setSelectedTask(null)}
+                        onTaskUpdated={(updated) => {
+                            updateTask(updated);
+                            setSelectedTask(null);
+                        }}
+                    />
+                )
+            }
+
         </>
     );
 };

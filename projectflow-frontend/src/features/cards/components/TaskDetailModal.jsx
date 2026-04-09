@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { updateTaskRequest } from "../../boards/services/boardService";
-import { getMembersRequest } from "../../projects/services/MemberService";
+import { getMembersRequest } from "../../members/services/MemberService";
 
 const PRIORITY_OPTIONS = ["BAJA", "MEDIA", "ALTA"];
 
@@ -35,12 +35,16 @@ const TaskDetailModal = ({ task, proyectoId, userRol,onClose, onTaskUpdated }) =
     }, [onClose]);
 
     // Cargar miembros del proyecto
-    useEffect(() => {
-        if (!proyectoId) return;
-        getMembersRequest(proyectoId)
-            .then(setMiembros)
-            .catch(console.error);
-    }, [proyectoId]);
+            useEffect(() => {
+            if (!proyectoId) return;
+            getMembersRequest(proyectoId)
+                .then(data => {
+                    // Excluir lectores de la lista de asignables
+                    const asignables = data.filter(m => m.rol !== "LECTOR");
+                    setMiembros(asignables);
+                })
+                .catch(console.error);
+        }, [proyectoId]);
 
     const isAsignado = (correo) => asignados.some(a => a.correo === correo);
 
@@ -86,7 +90,7 @@ const TaskDetailModal = ({ task, proyectoId, userRol,onClose, onTaskUpdated }) =
         >
             <div className="absolute inset-0 bg-black/30 dark:bg-black/60 backdrop-blur-sm" />
 
-            <div className="relative z-10 w-full max-w-3xl bg-white dark:bg-[#0f0f0f] border border-slate-200 dark:border-white/10 rounded-2xl shadow-2xl overflow-hidden">
+            <div className="relative z-10 w-full max-w-4xl bg-white dark:bg-[#0f0f0f] border border-slate-200 dark:border-white/10 rounded-2xl shadow-2xl overflow-hidden">
 
                 {/* Header */}
                 <div className="flex items-center justify-between px-6 pt-5 pb-4 border-b border-slate-100 dark:border-white/6">

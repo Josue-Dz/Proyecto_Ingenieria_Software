@@ -12,6 +12,9 @@ import BoardsPage from '../features/boards/pages/BoardsPage';
 import BoardPage from '../features/boards/pages/BoardPage';
 import KanbanBoard from '../features/boards/components/KanbanBoard';
 import ProfilePage from '../features/profile/pages/ProfilePage';
+import ReportsPage from '../features/analytics/pages/ReportsPage';
+import ProjectsPage from '../features/projects/pages/ProjectsPage';
+import UserAnalyticsPage from '../features/analytics/pages/UserAnalyticsPage';
 
 function AppRoutes() {
     return (
@@ -25,8 +28,11 @@ function AppRoutes() {
             </Route>
             <Route element={ <PrivateLayout />}>
                 <Route path='/dashboard' element={<DashboardPage />} />
+                <Route path='/projects' element={<ProjectsPage />} />
                 <Route path='/boards/projects/:id' element={<BoardsPage />}/>
                 <Route path='/projects/:id/boards/:boardId' element={<KanbanBoard />} />
+                <Route path='/projects/:id/boards/:boardId/reportes' element={<ReportsPage />} />
+                <Route path='/projects/:id/boards/:boardId/analytics' element={<UserAnalyticsPage />} />
                 <Route path='/boards/:id' element={<BoardPage />}/>
                 <Route path='/perfil' element ={<ProfilePage />}/>
                 <Route />

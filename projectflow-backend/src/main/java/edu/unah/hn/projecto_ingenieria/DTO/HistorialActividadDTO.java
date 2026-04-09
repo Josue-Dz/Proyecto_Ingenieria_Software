@@ -15,9 +15,11 @@ public class HistorialActividadDTO {
 
     private String usuarioAccion;
 
+    private String tipo;
+
     private String mensaje;
 
-    private String tipo;
+    private Long idTarjeta;
 
     private String tituloTarjeta;
 

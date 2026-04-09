@@ -51,9 +51,10 @@ const LoginForm = () => {
                 <button type="submit" className="w-full p-3 text-white bg-indigo-600 dark:bg-[#c81e3a] rounded-xl text-base md:text-lg font-medium hover:opacity-90 transition">Iniciar Sesión</button>
 
                 <div className="flex items-center gap-2 mt-4">
-                    <p>¿No tienes cuenta?
-                        <a href="/signup" className="hover:underline text-sm text-gray-400">
-                            Regístrate aquí
+                              
+                    <p>¿No tienes cuenta?  
+                        <a href="/signup" className="hover:underline p-1 text-sm text-gray-400">
+                        Regístrate aquí
                         </a>
                     </p>
 

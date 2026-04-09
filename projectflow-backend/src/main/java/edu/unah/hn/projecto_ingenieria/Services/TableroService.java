@@ -209,8 +209,9 @@ public class TableroService {
         String tituloTarjeta = tarjeta != null ? tarjeta.getTitulo() : null;
         return new HistorialActividadDTO(
                 resolverUsuarioAccion(n),
-                n.getMensaje(),
                 n.getTipo(),
+                n.getMensaje(),
+                n.getTarjeta() != null ? n.getTarjeta().getIdTarjeta() : null,
                 tituloTarjeta,
                 n.getFechaCreacion());
     }
