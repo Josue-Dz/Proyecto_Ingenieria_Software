@@ -139,8 +139,5 @@ public class ReporteService {
             );
         }).collect(Collectors.toList());
 
-
-        //Usuario solicitante = authService.getUsuarioAutenticado();
     }
-
 }

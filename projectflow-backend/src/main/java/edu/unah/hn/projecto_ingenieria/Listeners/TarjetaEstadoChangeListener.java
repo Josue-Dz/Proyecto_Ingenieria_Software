@@ -16,6 +16,9 @@ public class TarjetaEstadoChangeListener {
 
     @EventListener
     public void onTarjetaEstadoCambio(TarjetaEstadoCambioEvent event) {
+        if (event.getTarjeta() == null || event.getTablero() == null || event.getTablero().getIdTablero() == null) {
+            return;
+        }
         HistorialEstadoTarjeta registro = new HistorialEstadoTarjeta();
         registro.setTarjeta(event.getTarjeta());
         registro.setTablero(event.getTablero());
