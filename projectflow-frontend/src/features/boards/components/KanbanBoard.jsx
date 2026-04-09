@@ -20,7 +20,7 @@ const KanbanBoard = () => {
     const { user } = useAuth();
     const { userRol, members, refetch:refetchMembers } = useProjectRol(idProyecto, user);
 
-    const { columns, items, taskMap, setItems, addColumn, addTask, moveTask, updateTask } = useKanban(boardId);
+    const { columns, items, taskMap, setItems, addColumn, addTask, moveTask, updateTask, updateColumn } = useKanban(boardId);
     const [filters, setFilters] = useState({ prioridad: null, responsableId: null });
 
     const [selectedTask, setSelectedTask] = useState(null);
@@ -186,6 +186,7 @@ const KanbanBoard = () => {
                             onTaskClick={setSelectedTask}
                             canCreate={canCreate}
                             canMove={canMove}
+                            onRenameColumn={updateColumn}
                         />
                     ))}
                 </div>

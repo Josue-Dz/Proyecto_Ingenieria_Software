@@ -38,7 +38,7 @@ const BoardsPage = () => {
                 ]);
                 setBoards(boardsData);
                 setBacklog(projectData.backlog);
-                console.log("BACKLOG: ", projectData.backlog)
+                console.log("BoardsRequest: ", boardsData)
             } catch (err) {
                 setError("No se pudieron cargar los tableros");
                 console.error(err);
@@ -118,24 +118,28 @@ const BoardsPage = () => {
                             <p className="text-gray-400">Parece que aún no tienes ningún tablero</p>
                         )}
 
-                        {!loading && !error && boards.length > 0 && (
-                            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 overflow-y-auto max-h-96 pr-2">
-                                {boards.map((board) => (
-                                    <div key={board.idTablero}
-                                        onClick={() => handleClick(board.idTablero)}
-                                        className="flex flex-col max-h-40 min-h-20 w-full
-                                     bg-indigo-50 backdrop-blur-md dark:text-white dark:bg-black/60 border border-gray-500/20 shadow-md dark:border-white/10 rounded-lg p-5 hover:border-indigo-400 duration-200 transition-all dark:hover:border-[#A3FF12]/40 overflow-hidden">
+                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 overflow-y-auto max-h-96 pr-2 p-4">
+                            {boards.map((board) => (
+                                <div key={board.idTablero}
+                                    onClick={() => handleClick(board.idTablero)}
+                                    className="flex flex-col max-h-40 min-h-20 w-full
+                                        bg-indigo-50 backdrop-blur-md dark:text-white dark:bg-black/60 
+                                        border border-gray-500/20 shadow-md dark:border-white/10 
+                                        rounded-lg p-5 hover:border-indigo-400 duration-200 transition-all 
+                                        dark:hover:border-[#A3FF12]/40 relative">
 
-                                        <h2 className="text-lg font-semibold text-slate-900 dark:text-[#A3FF12] mb-2">
-                                            {board.nombreTablero}
-                                        </h2>
-                                        <p className="text-xs text-slate-400 dark:text-[#A3FF12]/70 line-clamp-3">
-                                            {board.descripcionTablero}
-                                        </p>
-                                    </div>
-                                ))}
-                            </div>
-                        )}
+                                    <h2 className="text-lg font-semibold text-slate-900 dark:text-[#A3FF12] truncate p-2">
+                                        {board.nombreTablero}
+                                    </h2>
+                                    <p className="text-xs text-slate-400 dark:text-[#A3FF12]/70 line-clamp-3 px-2">
+                                        {board.descripcionTablero}
+                                    </p>
+                                    <p className="text-xs text-slate-400 dark:text-[#A3FF12]/70 p-2">
+                                        Duración: {new Date(board?.fechaInicio).toLocaleDateString()} al {new Date(board?.fechaFin).toLocaleDateString()}
+                                    </p>
+                                </div>
+                            ))}
+                        </div>
                     </div>
 
                 </div>

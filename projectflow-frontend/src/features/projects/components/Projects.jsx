@@ -57,7 +57,9 @@ const Projects = () => {
         <div className="pt-6 pb-14">
             <h1 className="text-2xl font-bold dark:text-white mb-6">Mis Proyectos</h1>
 
-            <AddButton disabled={loading} setIsModalOpen={setIsModalOpen} textoBoton="Nuevo proyecto" />
+            <div className="p-4">
+                <AddButton disabled={loading} setIsModalOpen={setIsModalOpen} textoBoton="Nuevo proyecto" />
+            </div>
 
             {loading && (
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -86,7 +88,7 @@ const Projects = () => {
                         <div
                             key={project.idProyecto}
                             className="flex flex-col bg-white backdrop-blur-md dark:bg-black/60 border
-                                border-gray-500/20 shadow dark:border-white/10 rounded-xl p-5
+                                border-gray-500/30 shadow dark:border-white/10 rounded-xl p-5
                                 hover:border-indigo-400/85 duration-300 transition-all
                                 dark:hover:border-[#A3FF12]/40"
 

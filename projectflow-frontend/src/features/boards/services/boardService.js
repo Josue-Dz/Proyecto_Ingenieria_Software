@@ -24,6 +24,13 @@ export const createColumnRequest = async (boardId, nombre) => {
     return response.data;
 };
 
+export const updateColumnRequest = async (columnId, nombre) => {
+    const response = await apiClient.put(`/columns/${columnId}`, {
+        nombreColumna: nombre
+    });
+    return response.data;
+};
+
 export const createTaskRequest = async (columnId, task) => {
     //console.log("Esto tiene task: ", task)
     const response = await apiClient.post(`/tasks/${columnId}`, task);

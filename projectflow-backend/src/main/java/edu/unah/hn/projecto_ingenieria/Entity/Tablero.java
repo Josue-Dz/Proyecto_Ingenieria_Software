@@ -1,5 +1,6 @@
 package edu.unah.hn.projecto_ingenieria.Entity;
 
+import java.time.LocalDate;
 import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
@@ -45,9 +46,11 @@ public class Tablero {
     @JsonBackReference
     private Proyecto proyecto;
 
-    //private LocalDate fechaInicio; revision 
+    @Column(name="fecha_Inicio")
+    private LocalDate fechaInicio;
 
-    //private LocalDate fechaFin;  revision
+    @Column(name="fecha_fin")
+    private LocalDate fechaFin;
 
     @OneToMany(mappedBy = "tablero", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JsonManagedReference

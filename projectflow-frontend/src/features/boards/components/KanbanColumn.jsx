@@ -4,7 +4,7 @@ import KanbanCard from '../../cards/components/KanbanCard';
 import CreateTaskPopover from '../../cards/components/CreateTaskPopover';
 import { useState } from 'react';
 
-const KanbanColumn = ({ column, onAddTask, onTaskClick, index, canCreate, canMove }) => {
+const KanbanColumn = ({ column, onAddTask, onTaskClick, index, canCreate, canMove, onRenameColumn }) => {
 
     const [isEditing, setIsEditing] = useState(false);
     const [newName, setNewName] = useState(column.nombreColumna)
@@ -38,11 +38,22 @@ const KanbanColumn = ({ column, onAddTask, onTaskClick, index, canCreate, canMov
                             onBlur={() => {
                                 setIsEditing(false);
                                 console.log("Nuevo nombre: ", newName)
+                                if (newName !== column.nombreColumna) {
+                                    onRenameColumn(column.idColumna, newName)
+                                }
                             }}
 
                             onKeyDown={(e) => {
                                 if (e.key == "Enter") {
                                     setIsEditing(false);
+                                    if (newName !== column.nombreColumna) {
+                                        onRenameColumn(column.idColumna, newName)
+                                    }
+                                }
+
+                                if (e.key === "Escape") {
+                                    setIsEditing(false);
+                                    setNewName(column.nombreColumna);
                                 }
                             }}
                         />

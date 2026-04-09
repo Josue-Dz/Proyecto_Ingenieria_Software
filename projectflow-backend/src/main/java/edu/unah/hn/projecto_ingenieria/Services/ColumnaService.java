@@ -58,6 +58,19 @@ public class ColumnaService {
         return mapper.toColumnaDTO(columna, tableroId, tarjetas);
     }
 
+    public ColumnaDTO cambiarNombreCol(Long idColumna, ColumnaDTO dto){
+        
+        Columna columna = columnaRepository.findById(idColumna).orElseThrow(
+            () -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Columna no encontrada")
+        );
+
+        columna.setNombreColumna(dto.getNombreColumna());
+        columnaRepository.save(columna);
+
+
+        return mapper.toColumnaDTO(columna, columna.getTablero().getIdTablero(),tarjetaService.mapToDTO(columna));
+    }
+
     public List<ColumnaDTO> mapToListDTO(List<Columna> columnas) {
         List<ColumnaDTO> columnasDTO = new ArrayList<>();
 
