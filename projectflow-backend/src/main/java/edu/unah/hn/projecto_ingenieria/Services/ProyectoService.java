@@ -10,6 +10,7 @@ import org.springframework.web.server.ResponseStatusException;
 
 import edu.unah.hn.projecto_ingenieria.DTO.ProyectoRequestDTO;
 import edu.unah.hn.projecto_ingenieria.DTO.ProyectoResponseDTO;
+import edu.unah.hn.projecto_ingenieria.DTO.ColumnaDTO;
 import edu.unah.hn.projecto_ingenieria.DTO.DTOMapper;
 import edu.unah.hn.projecto_ingenieria.Entity.Columna;
 import edu.unah.hn.projecto_ingenieria.Entity.Proyecto;
@@ -34,6 +35,8 @@ public class ProyectoService implements IProyectoService {
     private final DTOMapper mapper;
 
     private final ColumnaRepository columnaRepository;
+
+    private final ColumnaService columnaService;
 
     @Override
     @Transactional
@@ -88,7 +91,10 @@ public class ProyectoService implements IProyectoService {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "No tienes acceso a este proyecto");
         }
 
-        return mapper.toProyectoDTO(proyecto);
+        ProyectoResponseDTO proyectoResponse = mapper.toProyectoDTO(proyecto);
+        proyectoResponse.setBacklog(columnaService.obtenerBacklog(proyecto));
+
+        return proyectoResponse;
     }
 
     @Override
@@ -156,6 +162,15 @@ public class ProyectoService implements IProyectoService {
         return proyectosUsuario.stream()
                 .map(pu -> mapper.toProyectoDTO(pu.getProyecto()))
                 .collect(Collectors.toList());
+    }
+
+    public ColumnaDTO obtenerBacklog(Long idProyecto) {
+        Proyecto proyecto = proyectoRepository.findById(idProyecto).orElseThrow(
+            () -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Proyecto no encontrado")
+        );
+
+
+        return columnaService.obtenerBacklog(proyecto);
     }
 
 }

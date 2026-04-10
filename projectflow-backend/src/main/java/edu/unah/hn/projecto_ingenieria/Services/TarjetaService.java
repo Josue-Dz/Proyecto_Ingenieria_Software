@@ -18,6 +18,7 @@ import edu.unah.hn.projecto_ingenieria.DTO.TarjetaResponseDTO;
 import edu.unah.hn.projecto_ingenieria.DTO.UsuarioDTO;
 import edu.unah.hn.projecto_ingenieria.Entity.Columna;
 import edu.unah.hn.projecto_ingenieria.Entity.Proyecto;
+import edu.unah.hn.projecto_ingenieria.Entity.SubTarea;
 import edu.unah.hn.projecto_ingenieria.Entity.Tablero;
 import edu.unah.hn.projecto_ingenieria.Entity.Tarjeta;
 import edu.unah.hn.projecto_ingenieria.Entity.Tarjeta.EstadoTarjeta;
@@ -146,6 +147,10 @@ public class TarjetaService implements ITarjetaService{
             tarjetaDTO.setFechaCreacion(tarjeta.getFechaCreacion());
             tarjetaDTO.setFechaLimite(tarjeta.getFechaLimite());
             tarjetaDTO.setPrioridad(tarjeta.getPrioridad());
+            tarjetaDTO.setTotalSubtareas(tarjeta.getSubtareas().size());
+            tarjetaDTO.setSubtareasCompletadas(subtareasCompletadas(tarjeta.getSubtareas()));
+
+
 
             tarjetaDTO.setEstado(tarjeta.getEstado());
 
@@ -366,6 +371,12 @@ public class TarjetaService implements ITarjetaService{
                 null,
                 EstadoTarjeta.FINALIZADA,
                 fechaCambio));
+    }
+
+
+    private int subtareasCompletadas(List<SubTarea> subTareas){
+        int subtareasCompletadas = (int) subTareas.stream().filter(s -> s.isCompletada() == true).count();
+        return subtareasCompletadas;
     }
 
 }

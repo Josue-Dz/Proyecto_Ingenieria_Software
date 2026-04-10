@@ -32,5 +32,9 @@ public class TarjetaResponseDTO {
     private EstadoTarjeta estado;
 
     private List<UsuarioDTO> asignados;
+
+    private int totalSubtareas;
+
+    private int subtareasCompletadas;
 }
 

@@ -81,6 +81,11 @@ public class Tarjeta {
     )
     private List<Usuario> asignados;
 
+    @OneToMany(mappedBy = "tarjeta", cascade = CascadeType.ALL)
+    private List<SubTarea> subtareas;
+
+    private int progreso;
+
     @OneToMany(mappedBy = "tarjeta",cascade = CascadeType.ALL)
     private List<Notificacion> notificaciones;
 

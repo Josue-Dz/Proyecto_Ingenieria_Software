@@ -1,13 +1,13 @@
 import { useEffect, useState } from 'react'
-import { createTaskRequest, getBoardsRequest } from '../services/boardService';
+import { getBoardsRequest } from '../services/boardService';
 import { useNavigate, useParams } from 'react-router-dom';
 import CreateBoardModal from '../components/CreateBoardModal';
 import AddButton from '../components/AddButton';
 import MembersSection from '../../members/components/MembersSection';
 import { getProjectRequest } from '../../projects/services/projectService';
 import Backlog from '../../projects/components/ProjectBacklog';
-import { useAuth } from '../../auth/hooks/useAuth';
 import { useProjectRol } from '../../projects/hooks/useProjectRol';
+import { useAuth } from '../../auth/hooks/useAuth';
 
 const BoardsPage = () => {
 
@@ -36,9 +36,9 @@ const BoardsPage = () => {
                     getBoardsRequest(idProyecto),
                     getProjectRequest(idProyecto)
                 ]);
+
                 setBoards(boardsData);
                 setBacklog(projectData.backlog);
-                console.log("BoardsRequest: ", boardsData)
             } catch (err) {
                 setError("No se pudieron cargar los tableros");
                 console.error(err);
@@ -49,20 +49,7 @@ const BoardsPage = () => {
         fetchBoards();
     }, [idProyecto]);
 
-
-    const handleAddTaskToBacklog = async (columnId, taskData) => {
-        try {
-            const newTask = await createTaskRequest(columnId, taskData);
-
-            setBacklog(prev => ({
-                ...prev,
-                tarjetas: [...(prev.tarjetas || []), newTask]
-            }));
-        } catch (err) {
-            console.error("Error al añadir al backlog:", err);
-        }
-    };
-
+    const formatFecha = (fecha) => fecha?.split("-").reverse().join("/");
 
     const handleClick = (boardId) => {
         navigate(`/projects/${idProyecto}/boards/${boardId}`)
@@ -93,7 +80,7 @@ const BoardsPage = () => {
 
                 {/**Backlog */}
                 <div className="w-80 flex flex-col gap-3">
-                    <Backlog backlog={backlog} canCreate={canCreate} canMove={canMove} onAddTask={handleAddTaskToBacklog} />
+                    <Backlog backlog={backlog} userRol={userRol} canCreate={canCreate} canMove={canMove} />
                 </div>
 
                 <div className="w-px h-110 bg-indigo-500 dark:bg-white/10" />
@@ -135,7 +122,7 @@ const BoardsPage = () => {
                                         {board.descripcionTablero}
                                     </p>
                                     <p className="text-xs text-slate-400 dark:text-[#A3FF12]/70 p-2">
-                                        Duración: {new Date(board?.fechaInicio).toLocaleDateString()} al {new Date(board?.fechaFin).toLocaleDateString()}
+                                        Duración: {formatFecha(board?.fechaInicio)} al {formatFecha(board?.fechaFin)}
                                     </p>
                                 </div>
                             ))}

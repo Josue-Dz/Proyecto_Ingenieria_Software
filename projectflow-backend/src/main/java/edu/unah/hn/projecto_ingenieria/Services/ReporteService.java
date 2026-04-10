@@ -48,8 +48,8 @@ public class ReporteService {
 
         Usuario solicitante = authService.getUsuarioAutenticado();
         Long idProyecto = tablero.getProyecto().getIdProyecto();
-        
-                proyectoUsuarioRepository
+
+        proyectoUsuarioRepository
                 .findByProyecto_IdProyectoAndUsuario_IdUsuario(idProyecto, solicitante.getIdUsuario())
                 .filter(pu -> pu.getRol().name().equals("ADMIN"))
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.FORBIDDEN,
@@ -98,45 +98,55 @@ public class ReporteService {
         return new BurndownResponseDTO(idTablero, fechaInicio, fechaFin, puntos, porcentaje);
     }
 
-    public List<UserReportDTO> obtenerReporteUsuario(Long idTablero){
+    public List<UserReportDTO> obtenerReporteUsuario(Long idTablero) {
 
         Tablero tablero = tableroRepository.findByIdTablero(idTablero).orElseThrow(
-            () -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Tablero no encontrado")
-        );
+                () -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Tablero no encontrado"));
 
-        List<ProyectoUsuario> usuarios = proyectoUsuarioRepository.findByProyecto_IdProyecto(tablero.getProyecto().getIdProyecto())
-        .stream()
-        .filter(pu -> !pu.getRol().name().equals("LECTOR")) //filtrar para que los miembros Lectores no aparezcan en el reporte
-        .collect(Collectors.toList());
+        List<ProyectoUsuario> usuarios = proyectoUsuarioRepository
+                .findByProyecto_IdProyecto(tablero.getProyecto().getIdProyecto())
+                .stream()
+                .filter(pu -> !pu.getRol().name().equals("LECTOR")) // filtrar para que los miembros Lectores no
+                                                                    // aparezcan en el reporte
+                .collect(Collectors.toList());
 
         return usuarios.stream().map(usuario -> {
-            List<Tarjeta> tarjetas = tarjetaRepository.findByAsignados_IdUsuario(usuario.getUsuario().getIdUsuario());
-            
-            int pendientes = (int)tarjetas.stream().filter(t -> t.getEstado().toString().equals("PENDIENTE") && t.getColumna().getTablero().getIdTablero() == idTablero).count();
+            List<Tarjeta> todasLasTarjetas = tarjetaRepository.findByAsignados_IdUsuario(usuario.getUsuario().getIdUsuario());
 
-            int enProgreso = (int)tarjetas.stream().filter(t -> t.getEstado().toString().equals("EN_PROGRESO") && t.getColumna().getTablero().getIdTablero() == idTablero).count();
+            List<Tarjeta> tarjetasDelTablero = todasLasTarjetas.stream()
+                    .filter(t -> t.getColumna() != null)
+                    .filter(t -> t.getColumna().getTablero() != null)
+                    .filter(t -> t.getColumna().getTablero().getIdTablero().equals(idTablero))
+                    .collect(Collectors.toList());
 
-            int finalizadas = (int)tarjetas.stream().filter(t -> t.getEstado().toString().equals("FINALIZADA") && t.getColumna().getTablero().getIdTablero() == idTablero).count();
+            int pendientes = (int) tarjetasDelTablero.stream().filter(t -> t.getEstado().toString().equals("PENDIENTE")
+                    && t.getColumna().getTablero().getIdTablero() == idTablero).count();
+
+            int enProgreso = (int) tarjetasDelTablero.stream().filter(t -> t.getEstado().toString().equals("EN_PROGRESO")
+                    && t.getColumna().getTablero().getIdTablero() == idTablero).count();
+
+            int finalizadas = (int) tarjetasDelTablero.stream().filter(t -> t.getEstado().toString().equals("FINALIZADA")
+                    && t.getColumna().getTablero().getIdTablero() == idTablero).count();
 
             int totalAsignadas = pendientes + enProgreso + finalizadas;
 
-            List<Long> tiempos = tarjetas.stream()
-                .filter(t -> t.getEstado().toString().equals("FINALIZADA"))
-                .filter(t -> t.getFechaCreacion() != null && t.getFechaLimite() != null)
-                .map(t -> ChronoUnit.DAYS.between(t.getFechaCreacion(), t.getFechaLimite().atStartOfDay()))
-                .collect(Collectors.toList());
+            List<Long> tiempos = tarjetasDelTablero.stream()
+                    .filter(t -> t.getEstado().toString().equals("FINALIZADA"))
+                    .filter(t -> t.getFechaCreacion() != null && t.getFechaLimite() != null)
+                    .map(t -> ChronoUnit.DAYS.between(t.getFechaCreacion(), t.getFechaLimite().atStartOfDay()))
+                    .collect(Collectors.toList());
 
             double eficiencia = tiempos.isEmpty() ? 0 : tiempos.stream().mapToLong(Long::longValue).average().orElse(0);
 
             return new UserReportDTO(
-                usuario.getUsuario().getNombre() + " " + usuario.getUsuario().getApellido(),
-                usuario.getUsuario().obtenerInicialesDeNombre(usuario.getUsuario().getNombre(), usuario.getUsuario().getApellido()),
-                pendientes,
-                enProgreso,
-                finalizadas,
-                totalAsignadas,
-                eficiencia
-            );
+                    usuario.getUsuario().getNombre() + " " + usuario.getUsuario().getApellido(),
+                    usuario.getUsuario().obtenerInicialesDeNombre(usuario.getUsuario().getNombre(),
+                            usuario.getUsuario().getApellido()),
+                    pendientes,
+                    enProgreso,
+                    finalizadas,
+                    totalAsignadas,
+                    eficiencia);
         }).collect(Collectors.toList());
 
     }

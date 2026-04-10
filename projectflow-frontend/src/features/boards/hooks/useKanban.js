@@ -10,20 +10,24 @@ export function useKanban(boardId) {
     const [error, setError] = useState(null);
 
     useEffect(() => {
+        
         if (!boardId) return;
+
         const fetchColumns = async () => {
             try {
                 const data = await getColumnsRequest(boardId);
                 setColumns(data);
-                console.log("Columnas obtenidas: ", data);
+
                 const newItems = {};
                 const newTaskMap = {};
+
                 data.forEach(col => {
                     newItems[String(col.idColumna)] = (col.tarjetas ?? []).map(t => t.idTarjeta);
                     (col.tarjetas ?? []).forEach(t => {
                         newTaskMap[t.idTarjeta] = t;
                     });
                 });
+
                 setItems(newItems);
                 setTaskMap(newTaskMap);
             } catch (err) {
@@ -96,5 +100,28 @@ export function useKanban(boardId) {
         setTaskMap(prev => ({ ...prev, [updated.idTarjeta]: updated }));
     };
 
-    return { columns, items, taskMap, setItems, loading, error, addColumn, addTask, moveTask, updateTask, updateColumn};
+    const setBacklogColumn = (backlog) => {
+        if (!backlog) return;
+        const data = [backlog];
+
+        setColumns(data);
+
+        const newItems = {};
+        const newTaskMap = {};
+
+        data.forEach(col => {
+            const colId = String(col.idColumna);
+
+            newItems[colId] = (col.tarjetas ?? []).map(t => t.idTarjeta);
+
+            (col.tarjetas ?? []).forEach(t => {
+                newTaskMap[t.idTarjeta] = t;
+            });
+        });
+
+        setItems(newItems);
+        setTaskMap(newTaskMap);
+    };
+
+    return { columns, items, taskMap, setItems, loading, error, addColumn, addTask, moveTask, updateTask, updateColumn, setBacklogColumn };
 }

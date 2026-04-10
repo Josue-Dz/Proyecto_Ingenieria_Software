@@ -22,7 +22,6 @@ public class ColumnaController {
 
     @PostMapping("/{tableroId}")
     public ResponseEntity<ColumnaDTO> crearColumna(@PathVariable Long tableroId, @RequestBody ColumnaDTO dto){
-        System.out.println("Estoy en crear columna con nombre: " + dto.getNombreColumna());
         return ResponseEntity.status(HttpStatus.CREATED)
             .body(columnaService.crearColumna(tableroId, dto));
     }

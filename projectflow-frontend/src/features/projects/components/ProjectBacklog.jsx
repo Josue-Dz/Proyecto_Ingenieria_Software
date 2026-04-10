@@ -1,12 +1,32 @@
 import { DragDropProvider } from "@dnd-kit/react"
-import KanbanColumn from "../../boards/components/KanbanColumn"
+import { useEffect } from "react"
+import BoardCore from "../../boards/components/BoardCore";
+import { useKanban } from "../../boards/hooks/useKanban";
 
-const ProjectBacklog = ({ backlog, canCreate, canMove, onAddTask }) => {
+const ProjectBacklog = ({ userRol, backlog, canCreate, canMove }) => {
+    const {columns, items, taskMap, setBacklogColumn, updateTask, addTask, setItems,moveTask, updateColumn } = useKanban(null);
+
+    useEffect(() => {
+        if (backlog && backlog.idColumna) {
+            setBacklogColumn(backlog);
+        }
+    }, [backlog]);
+
 
     return (
         <>
             <DragDropProvider>
-                <KanbanColumn column={backlog} index={0} canCreate={canCreate} canMove={canMove} onAddTask={onAddTask}/>
+                <BoardCore columns={columns}
+                    items={items}
+                    userRol={userRol}
+                    taskMap={taskMap}
+                    canCreate={canCreate}
+                    canMove={canMove}
+                    addTask={addTask}
+                    setItems={setItems}
+                    updateTask={updateTask}
+                    updateColumn={updateColumn}
+                    moveTask={moveTask} />
             </DragDropProvider>
         </>
     )

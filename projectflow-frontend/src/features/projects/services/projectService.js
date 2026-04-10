@@ -12,6 +12,7 @@ export const createProjectRequest = async (projectData) => {
 
 export const getProjectRequest = async (id) => {
     const response = await apiClient.get(`/projects/${id}`)
+    //console.log("ProjectRequest:: ", response.data);
     return response.data;
 }
 

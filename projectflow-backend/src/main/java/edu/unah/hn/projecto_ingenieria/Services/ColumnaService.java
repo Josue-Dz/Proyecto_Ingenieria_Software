@@ -53,22 +53,21 @@ public class ColumnaService {
 
         // Publicar evento de creación de columna
         Proyecto proyecto = tablero.getProyecto();
-        Usuario usuario = proyecto.getCreador(); 
+        Usuario usuario = proyecto.getCreador();
         eventPublisher.publishEvent(new ColumnaCreadaEvent(this, columna, proyecto, usuario));
         return mapper.toColumnaDTO(columna, tableroId, tarjetas);
     }
 
-    public ColumnaDTO cambiarNombreCol(Long idColumna, ColumnaDTO dto){
-        
+    public ColumnaDTO cambiarNombreCol(Long idColumna, ColumnaDTO dto) {
+
         Columna columna = columnaRepository.findById(idColumna).orElseThrow(
-            () -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Columna no encontrada")
-        );
+                () -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Columna no encontrada"));
 
         columna.setNombreColumna(dto.getNombreColumna());
         columnaRepository.save(columna);
 
-
-        return mapper.toColumnaDTO(columna, columna.getTablero().getIdTablero(),tarjetaService.mapToDTO(columna));
+        return mapper.toColumnaDTO(columna, (columna.getTablero() != null ? columna.getTablero().getIdTablero() : -1),
+                tarjetaService.mapToDTO(columna));
     }
 
     public List<ColumnaDTO> mapToListDTO(List<Columna> columnas) {
@@ -99,6 +98,14 @@ public class ColumnaService {
 
         return columnasDTO;
 
+    }
+
+    public ColumnaDTO obtenerBacklog(Proyecto proyecto) {
+
+        Columna backlog = proyecto.getBacklog();
+        return mapper.toColumnaDTO(backlog, 
+                (backlog.getTablero() != null ? backlog.getTablero().getIdTablero() : -1),
+                tarjetaService.mapToDTO(backlog));
     }
 
 }

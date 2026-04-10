@@ -11,7 +11,7 @@ const UserAnalytics = ({ users = [] }) => {
 
     const userStats = users;
     const navigate = useNavigate();
-    const { id: idProyecto, boardId, id: idTablero } = useParams();
+    const { id: idProyecto, boardId} = useParams();
     const [exportLoading, setExportLoading] = useState(null);
 
     //KPIs
@@ -38,7 +38,7 @@ const UserAnalytics = ({ users = [] }) => {
         const handleExportar = async (formato) => {
     setExportLoading(formato);
     try {
-        const response = await exportarReporteUsuariosRequest(idTablero, formato);
+        const response = await exportarReporteUsuariosRequest(boardId, formato);
         const url = window.URL.createObjectURL(new Blob([response.data]));
         const link = document.createElement("a");
         link.href = url;

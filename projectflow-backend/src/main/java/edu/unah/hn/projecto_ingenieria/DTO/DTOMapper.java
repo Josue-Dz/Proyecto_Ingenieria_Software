@@ -9,6 +9,7 @@ import edu.unah.hn.projecto_ingenieria.Entity.Columna;
 import edu.unah.hn.projecto_ingenieria.Entity.HistorialActividad;
 import edu.unah.hn.projecto_ingenieria.Entity.Notificacion;
 import edu.unah.hn.projecto_ingenieria.Entity.Proyecto;
+import edu.unah.hn.projecto_ingenieria.Entity.SubTarea;
 import edu.unah.hn.projecto_ingenieria.Entity.Tablero;
 import edu.unah.hn.projecto_ingenieria.Entity.Tarjeta;
 import edu.unah.hn.projecto_ingenieria.Entity.Usuario;
@@ -28,7 +29,7 @@ public class DTOMapper {
         if (p == null) {
             return null;
         }
-        
+
         List<TarjetaResponseDTO> tarjetasDTO = new ArrayList<>();
         if (p.getBacklog() != null && p.getBacklog().getTarjetas() != null) {
             for (Tarjeta tarjeta : p.getBacklog().getTarjetas()) {
@@ -70,6 +71,10 @@ public class DTOMapper {
         dto.setPrioridad(tarjeta.getPrioridad());
         dto.setEstado(tarjeta.getEstado());
         dto.setAsignados(toListUsuarioDTO(tarjeta));
+        dto.setTotalSubtareas(tarjeta.getSubtareas().size());
+        int subtareasCompletadas = (int)tarjeta.getSubtareas().stream().filter(s -> s.isCompletada() == true).count();
+        dto.setSubtareasCompletadas(subtareasCompletadas);
+    
         return dto;
     }
 
@@ -165,14 +170,15 @@ public class DTOMapper {
     }
 
     public HistorialActividadDTO toDTO(HistorialActividad historial) {
-    HistorialActividadDTO dto = new HistorialActividadDTO();
-    dto.setUsuarioAccion(historial.getUsuario().getNombre() + " " + historial.getUsuario().getApellido());
-    dto.setTipo(historial.getTipo());
-    dto.setMensaje(historial.getMensaje());
-    dto.setIdTarjeta(historial.getTarjeta() != null ? historial.getTarjeta().getIdTarjeta() : null);
-    dto.setTituloTarjeta(historial.getTarjeta() != null ? historial.getTarjeta().getTitulo() : null);
-    dto.setFechaCreacion(historial.getFechaCreacion());
-    return dto;
-}
+        HistorialActividadDTO dto = new HistorialActividadDTO();
+        dto.setUsuarioAccion(historial.getUsuario().getNombre() + " " + historial.getUsuario().getApellido());
+        dto.setTipo(historial.getTipo());
+        dto.setMensaje(historial.getMensaje());
+        dto.setIdTarjeta(historial.getTarjeta() != null ? historial.getTarjeta().getIdTarjeta() : null);
+        dto.setTituloTarjeta(historial.getTarjeta() != null ? historial.getTarjeta().getTitulo() : null);
+        dto.setFechaCreacion(historial.getFechaCreacion());
+
+        return dto;
+    }
 
 }

@@ -158,7 +158,7 @@ const NotificationBell = () => {
             {/* Botón campana */}
             <button
                 onClick={() => setOpen(!open)}
-                className="relative p-2 rounded-lg hover:bg-indigo-100 dark:hover:bg-white/10 transition-colors"
+                className="relative p-2 rounded-lg hover:bg-indigo-100 dark:hover:bg-white/10 transition-colors cursor-pointer"
                 title="Notificaciones"
             >
                 <span className="material-symbols-rounded text-slate-600 dark:text-white">

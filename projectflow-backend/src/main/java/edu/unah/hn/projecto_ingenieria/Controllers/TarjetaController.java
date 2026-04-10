@@ -24,8 +24,6 @@ public class TarjetaController {
     @PostMapping("/{columnaId}")
     public ResponseEntity<TarjetaResponseDTO> crearTarjeta(@PathVariable Long columnaId,
             @RequestBody TarjetaRequestDTO tarjetaRequest) {
-
-        System.out.println("Estoy en el endpoint crear tarjeta: " + columnaId + tarjetaRequest.getTitulo());
         return ResponseEntity.ok(tarjetaService.crearTarjeta(columnaId, tarjetaRequest));
     }
 
@@ -33,8 +31,6 @@ public class TarjetaController {
     public ResponseEntity<Void> moverTarjeta(@PathVariable Long tarjetaId,
             @RequestParam Long columnaOrigenId,
             @RequestBody TarjetaRequestDTO tarjetaDto) {
-        System.out.println(
-                "Estoy en el metodo mover tarjeta y esto tiene tarjeta DTO: " + tarjetaDto.getColumnaDestinoId());
         tarjetaService.moverTarjeta(tarjetaId, columnaOrigenId, tarjetaDto);
         return ResponseEntity.ok().build();
     }
@@ -42,7 +38,6 @@ public class TarjetaController {
     @PutMapping("/{tarjetaId}")
     public ResponseEntity<TarjetaResponseDTO> actualizarInfoTarjeta(@PathVariable Long tarjetaId,
             @RequestBody TarjetaRequestDTO request) {
-                System.out.println("Estoy en el endpoint actualizar tarjeta: " + tarjetaId + request.toString());
         return ResponseEntity.ok(tarjetaService.actualizarInformacionTarjeta(tarjetaId, request));
     }
 }
