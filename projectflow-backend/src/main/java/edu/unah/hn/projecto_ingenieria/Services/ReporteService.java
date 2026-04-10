@@ -5,9 +5,11 @@ import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.stream.Collectors;
 
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -34,6 +36,7 @@ public class ReporteService {
     private final TarjetaRepository tarjetaRepository;
     private final HistorialEstadoTarjetaRepository historialEstadoTarjetaRepository;
     private final AuthService authService;
+    private final ExportacionReporteService exportacionReporteService;
 
     public BurndownResponseDTO obtenerBurndownPorTablero(Long idTablero, LocalDate fechaInicio, LocalDate fechaFin) {
         if (fechaInicio == null || fechaFin == null) {
@@ -140,4 +143,53 @@ public class ReporteService {
         }).collect(Collectors.toList());
 
     }
+
+        
+
+    public byte[] exportarBurndown(Long idTablero, String formato, LocalDate fechaInicio, LocalDate fechaFin) {
+        BurndownResponseDTO data = obtenerBurndownPorTablero(idTablero, fechaInicio, fechaFin);
+
+        Tablero tablero = tableroRepository.findByIdTablero(idTablero)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Tablero no encontrado"));
+        String nombreProyecto = tablero.getProyecto().getNombreProyecto();
+
+        return switch (formato.toLowerCase(Locale.ROOT)) {
+            case "excel" -> exportacionReporteService.generarExcel(data, nombreProyecto);
+            case "pdf"   -> exportacionReporteService.generarPDF(data, nombreProyecto);
+            default      -> throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
+                    "Formato no soportado. Use 'pdf' o 'excel'");
+        };
+    }
+
+    public byte[] exportarUsuarios(Long idTablero, String formato) {
+        List<UserReportDTO> usuarios = obtenerReporteUsuario(idTablero);
+
+        Tablero tablero = tableroRepository.findByIdTablero(idTablero)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Tablero no encontrado"));
+        String nombreProyecto = tablero.getProyecto().getNombreProyecto();
+
+        return switch (formato.toLowerCase(Locale.ROOT)) {
+            case "excel" -> exportacionReporteService.generarExcelUsuarios(usuarios, nombreProyecto);
+            case "pdf"   -> exportacionReporteService.generarPDFUsuarios(usuarios, nombreProyecto);
+            default      -> throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
+                    "Formato no soportado. Use 'pdf' o 'excel'");
+        };
+    }
+
+    public String resolverNombreArchivo(Long idTablero, String tipo, String formato) {
+        Tablero tablero = tableroRepository.findByIdTablero(idTablero)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Tablero no encontrado"));
+        String nombre = tablero.getProyecto().getNombreProyecto().replace(" ", "_");
+        String extension = formato.equalsIgnoreCase("excel") ? "xlsx" : "pdf";
+        return "reporte_" + tipo + "_" + nombre + "." + extension;
+    }
+
+   
+
+    public MediaType resolverContentType(String formato) {
+        return formato.equalsIgnoreCase("excel")
+                ? MediaType.parseMediaType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
+                : MediaType.APPLICATION_PDF;
+    }
+
 }
