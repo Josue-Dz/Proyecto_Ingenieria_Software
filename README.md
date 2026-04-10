@@ -1,4 +1,4 @@
-# 🚀 CodeFlow: Sistema de Gestión de Proyectos Académicos
+#  CodeFlow: Sistema de Gestión de Proyectos Académicos
 
 [![Java](https://img.shields.io/badge/Java-17-orange?style=for-the-badge&logo=java)](https://www.oracle.com/java/)
 [![Spring Boot](https://img.shields.io/badge/Spring_Boot-4.0.4-brightgreen?style=for-the-badge&logo=springboot)](https://spring.io/projects/spring-boot)
