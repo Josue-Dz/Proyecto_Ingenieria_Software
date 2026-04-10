@@ -2,19 +2,19 @@
 const team = [
     {
         name: "Ronny Posadas",
-        role: "Full Stack Developer",
+        role: "Full Stack Developer & UI/UX Designer",
         initials: "RP",
         github: "https://github.com/Josue-Dz",
     },
     {
         name: "David Parada",
-        role: "Backend Developer",
+        role: "Backend Developer & DevOps Engineer",
         initials: "DP",
         github: "https://github.com/DeibiXD",
     },
     {
         name: "Jose Daniel Nuñez",
-        role: "Full Stack Developer",
+        role: "Software Architect, Full Stack Developer & Technical Documentation Lead",
         initials: "JDN",
         github: "https://github.com/jdnunez-10",
     },
