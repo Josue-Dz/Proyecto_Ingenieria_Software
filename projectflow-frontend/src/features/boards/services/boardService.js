@@ -1,26 +1,33 @@
 import apiClient from "../../../shared/api/apiCliente";
 
 export const createBoardRequest = async (projectId, boardData) => {
-    console.log("Esto va al backend: ", boardData)
+    //console.log("Esto va al backend: ", boardData)
     const response = await apiClient.post(`/boards/${projectId}/create`, boardData)
     return response.data;
 }
 
 export const getBoardsRequest = async (projectId) => {
     const response = await apiClient.get(`/boards/projects/${projectId}`)
-    console.log("TABLERO: ", response.data)
+    //console.log("TABLERO: ", response.data)
     return response.data;
 };
 
 export const getColumnsRequest = async (boardId) => {
     const response = await apiClient.get(`/boards/${boardId}`);
-    console.log("Columnas: ", response.data)
+    //console.log("Columnas: ", response.data)
     return response.data.columnas;
 };
 
 export const createColumnRequest = async (boardId, nombre) => {
     //console.log("Crear Columna: ", boardId, nombre)
     const response = await apiClient.post(`/columns/${boardId}`, { nombreColumna: nombre });
+    return response.data;
+};
+
+export const updateColumnRequest = async (columnId, nombre) => {
+    const response = await apiClient.put(`/columns/${columnId}`, {
+        nombreColumna: nombre
+    });
     return response.data;
 };
 

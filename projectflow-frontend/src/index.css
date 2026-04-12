@@ -32,7 +32,7 @@ input:-webkit-autofill {
 }
 
 :root {
-    --bg-gradient: radial-gradient(125% 125% at 50% 10%, #eef2ff 40%, #c7d2fe 100%);
+    --bg-gradient: radial-gradient(125% 125% at 50% 10%, #eef2ff 45%, #c7d2fe 100%);
     --scrollbar-bg: radial-gradient(125% 125% at 50% 10%, #eef2ff 40%, #abbbf2 100%);
     --scrollbar-thumb: radial-gradient(125% 125% at 50% 10%, #eef2ff 40%, #6985f7 100%);
     --scrollbar-thumb-hover: radial-gradient(125% 125% at 50% 10%, #eef2ff 40%, #6281fd 100%);

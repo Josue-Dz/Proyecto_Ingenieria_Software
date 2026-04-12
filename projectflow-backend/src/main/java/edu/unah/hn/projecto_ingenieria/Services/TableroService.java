@@ -38,8 +38,6 @@ public class TableroService {
 
     private final ProyectoRepository proyectoRepository;
 
-    private final UsuarioRepository usuarioRepository;
-
     private final TableroRepository tableroRepository;
 
     private final ColumnaService columnaService;
@@ -62,6 +60,8 @@ public class TableroService {
         tableroNuevo.setNombreTablero(tablero.getNombre());
         tableroNuevo.setProyecto(proyecto);
         tableroNuevo.setDescripcionTablero(tablero.getDescripcion());
+        tableroNuevo.setFechaInicio(tablero.getFechaInicio());
+        tableroNuevo.setFechaFin(tablero.getFechaFin());
         Tablero guardado = tableroRepository.save(tableroNuevo);
 
         List<Columna> columnas = columnaFactory.crearEstructuraInicial(guardado);
@@ -74,17 +74,6 @@ public class TableroService {
     }
 
     public TableroResponseDTO obtenerTablero(Long idTablero) {
-
-        // Obtener usuario autenticado
-        Authentication auth = SecurityContextHolder
-                .getContext()
-                .getAuthentication();
-
-        String correo = auth.getName();
-
-        Usuario usuario = usuarioRepository
-                .findByCorreo(correo)
-                .orElseThrow();
 
         Proyecto proyecto = proyectoRepository.findByTablero_IdTablero(idTablero).orElseThrow(
             () -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Proyecto no encontrado")
@@ -114,6 +103,10 @@ public class TableroService {
         tableroKanban.setDescripcionTablero(tablero.getDescripcionTablero());
         tableroKanban.setIdProyecto(idProyecto);
         tableroKanban.setColumnas(columnasDTO);
+        tableroKanban.setFechaInicio(tablero.getFechaInicio());
+        tableroKanban.setFechaFin(tablero.getFechaFin());
+
+        System.out.println("Tablero: " + tableroKanban.getFechaInicio());
 
         return tableroKanban;
     }
@@ -125,25 +118,6 @@ public class TableroService {
                 .getContext()
                 .getAuthentication();
 
-        String correo = auth.getName();
-
-        Usuario usuario = usuarioRepository
-                .findByCorreo(correo)
-                .orElseThrow();
-
-        // Validar que el usuario pertenece al proyecto
-        // boolean pertenece = proyectoUsuarioRepository
-        // .existsByUsuarioIdUsuarioAndProyectoIdProyecto(
-        // usuario.getIdUsuario(),
-        // idProyecto
-        // );
-
-        // if (!pertenece) {
-        // throw new ResponseStatusException(
-        // HttpStatus.FORBIDDEN,
-        // "El usuario " + correo + " no pertenece al proyecto con id " + idProyecto
-        // );
-        // }
 
         // Obtener tableros del proyecto
         List<Tablero> tableros = tableroRepository.findByProyectoIdProyectoOrderByIdTableroAsc(idProyecto);
@@ -159,6 +133,8 @@ public class TableroService {
             dto.setIdProyecto(idProyecto);
             dto.setDescripcionTablero(tablero.getDescripcionTablero());
             dto.setNombreTablero(tablero.getNombreTablero());
+            dto.setFechaInicio(tablero.getFechaInicio());
+            dto.setFechaFin(tablero.getFechaFin());
 
             tablerosDTO.add(dto);
         }
@@ -232,7 +208,7 @@ public class TableroService {
     private TableroResponseDTO mapToDTO(Tablero tablero) {
         return new TableroResponseDTO(tablero.getIdTablero(), tablero.getProyecto().getIdProyecto(),
                 tablero.getNombreTablero(), tablero.getDescripcionTablero(),
-                columnaService.mapToListDTO(tablero.getColumnas()));
+                columnaService.mapToListDTO(tablero.getColumnas()), tablero.getFechaInicio(), tablero.getFechaFin());
     }
 
 }

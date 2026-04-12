@@ -1,7 +1,5 @@
 package edu.unah.hn.projecto_ingenieria.DTO;
 
-import java.time.LocalDate;
-
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -11,17 +9,8 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class ProyectoResponseDTO {
-    
-    private Long idProyecto;
-
-    private String nombreProyecto;
+public class CrearSubtareaRequest {
 
     private String descripcion;
 
-    private ColumnaDTO backlog;
-
-    private LocalDate fechaInicio;
-    
-    private LocalDate fechaFin;
 }

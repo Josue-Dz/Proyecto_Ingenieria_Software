@@ -1,29 +1,33 @@
-import { useEffect, useState } from "react";
-import { createColumnRequest, createTaskRequest, getColumnsRequest, moveTaskRequest } from "../services/boardService";
+import { useCallback, useEffect, useState } from "react";
+import { createColumnRequest, createTaskRequest, getColumnsRequest, moveTaskRequest, updateColumnRequest } from "../services/boardService";
 
 export function useKanban(boardId) {
     const [columns, setColumns] = useState([]);
     const [items, setItems] = useState({});
-    const [taskMap, setTaskMap] = useState({}); 
+    const [taskMap, setTaskMap] = useState({});
     //const [proyectoId, setProyectoId] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
 
     useEffect(() => {
+
         if (!boardId) return;
+
         const fetchColumns = async () => {
             try {
                 const data = await getColumnsRequest(boardId);
                 setColumns(data);
-                console.log("Columnas obtenidas: ", data);
+
                 const newItems = {};
                 const newTaskMap = {};
+
                 data.forEach(col => {
                     newItems[String(col.idColumna)] = (col.tarjetas ?? []).map(t => t.idTarjeta);
                     (col.tarjetas ?? []).forEach(t => {
                         newTaskMap[t.idTarjeta] = t;
                     });
                 });
+
                 setItems(newItems);
                 setTaskMap(newTaskMap);
             } catch (err) {
@@ -44,6 +48,22 @@ export function useKanban(boardId) {
             setItems(prev => ({ ...prev, [id]: [] }));
         } catch (err) {
             console.error("Error al crear columna:", err);
+        }
+    };
+
+    const updateColumn = async (columnId, newName) => {
+        try {
+            await updateColumnRequest(columnId, newName);
+
+            setColumns(prev =>
+                prev.map(col =>
+                    col.idColumna === columnId
+                        ? { ...col, nombreColumna: newName }
+                        : col
+                )
+            );
+        } catch (err) {
+            console.error("Error al actualizar columna:", err);
         }
     };
 
@@ -80,5 +100,25 @@ export function useKanban(boardId) {
         setTaskMap(prev => ({ ...prev, [updated.idTarjeta]: updated }));
     };
 
-    return { columns, items, taskMap, setItems, loading, error, addColumn, addTask, moveTask, updateTask };
+    const setBacklogColumn = useCallback((backlog) => {
+        if (!backlog) return;
+
+        const data = [backlog];
+        const newItems = {};
+        const newTaskMap = {};
+
+        data.forEach(col => {
+            const colId = String(col.idColumna);
+            newItems[colId] = (col.tarjetas ?? []).map(t => t.idTarjeta);
+            (col.tarjetas ?? []).forEach(t => {
+                newTaskMap[t.idTarjeta] = t;
+            });
+        });
+
+        setColumns(data);
+        setItems(newItems);
+        setTaskMap(newTaskMap);
+    }, []);
+
+    return { columns, items, taskMap, setItems, loading, error, addColumn, addTask, moveTask, updateTask, updateColumn, setBacklogColumn };
 }

@@ -1,7 +1,7 @@
 
 const AddButton = ({ textoBoton, setIsModalOpen, loading }) => {
   return (
-    <div className="flex justify-end">
+    <div className="flex justify-end w-full sm:w-auto">
         <button 
         disabled={loading}
         onClick={() => setIsModalOpen(true)}

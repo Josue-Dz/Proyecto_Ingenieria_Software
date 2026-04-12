@@ -163,11 +163,11 @@ const NotificationBell = () => {
             {/*Botón campana*/}
             <button
                 onClick={() => setOpen(!open)}
-                className="relative p-2 rounded-lg hover:bg-indigo-100
-                 dark:hover:bg-white/10 transition-colors"
+                className="relative items p-2 rounded-lg hover:bg-indigo-100
+                 dark:hover:bg-white/10 transition-colors cursor-pointer"
                 title="Notificaciones"
             >
-                <span className="material-symbols-rounded text-slate-600 dark:text-white">
+                <span className="material-symbols-rounded dark:text-white">
                     notifications
                 </span>
                 {noLeidas > 0 && (
@@ -243,7 +243,6 @@ const NotificationBell = () => {
                             </div>
                         )}
 
-                        {/* Empty state — diferente mensaje según el filtro */}
                         {!loading && notificacionesFiltradas.length === 0 && (
                             <div className="flex flex-col items-center justify-center
                              py-10 gap-2">
@@ -251,12 +250,13 @@ const NotificationBell = () => {
                                  dark:text-white/20 text-4xl">
                                     {soloNoLeidas ? "done_all" : "notifications_off"}
                                 </span>
+
                                 <p className="text-slate-400 dark:text-white/30 text-xs">
                                     {soloNoLeidas
                                         ? "Todo al día, sin pendientes"
                                         : "Sin notificaciones"}
                                 </p>
-                                {/* Sino hay leidas, ofrecer ver todas */}
+
                                 {soloNoLeidas && notificaciones.length > 0 && (
                                     <button
                                         onClick={() => setSoloNoLeidas(false)}

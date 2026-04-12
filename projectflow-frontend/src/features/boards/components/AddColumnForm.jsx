@@ -44,7 +44,7 @@ const AddColumnForm = ({ canCreate, addColumn }) => {
                         </form>
                     ) : (
                         <button onClick={() => setShowAddColumn(true)}
-                            className="flex items-center gap-2 px-4 py-2 rounded-xl border border-dashed border-slate-500 dark:border-white/15 dark:text-white/30 text-sm dark:hover:border-white/25 dark:hover:text-white/50 dark:hover:bg-white/3 transition-colors">
+                            className="flex items-center gap-2 px-4 py-2 rounded-xl border border-dashed border-slate-500 dark:border-white/15 dark:text-white/30 text-sm dark:hover:border-white/25 dark:hover:text-white/50 dark:hover:bg-white/3 transition-colors hover:bg-indigo-500/30 shadow">
                             <span className="material-symbols-rounded text-[18px]">add</span>
                             Nueva Columna
                         </button>
