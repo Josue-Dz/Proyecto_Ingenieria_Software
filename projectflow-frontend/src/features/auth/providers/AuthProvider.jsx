@@ -15,7 +15,7 @@ export function AuthProvider({ children }) {
         try {
             const data = await verifySessionRequest();
             setUser(data);
-        } catch (err){
+        } catch{
             setUser(null);
         } finally {
             setLoading(false);
