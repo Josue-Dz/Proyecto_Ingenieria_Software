@@ -18,8 +18,6 @@ const UserAnalytics = ({ users = [] }) => {
     const { taskMap } = useKanban(boardId);
     const tasks = Object.values(taskMap);
 
-
-    //KPIs
     const totalUsers = users.length;
     const totalTasks = tasks.filter(t => t.asignados && t.asignados.length > 0).length;
     const totalDone = tasks.filter(t => t.estado === "FINALIZADA").length;
@@ -132,11 +130,10 @@ const UserAnalytics = ({ users = [] }) => {
                     <button
                         onClick={() => navigate(`/projects/${idProyecto}/boards/${boardId}/reportes`)}
                         className="flex justify-center md:w-12 rounded-md hover:bg-gray-500/10
-                dark:hover:bg-white/10 p-1 transition-colors"
+                            dark:hover:bg-white/10 p-1 transition-colors"
                         title="Progreso Sprint"
                     >
-                        <span className="material-symbols-rounded text-indigo-600
-                dark:text-[#A3FF12] shrink-0">analytics</span>
+                        <span className="material-symbols-rounded text-indigo-600 dark:text-[#A3FF12] shrink-0">analytics</span>
                     </button>
                 </div>
             </div>

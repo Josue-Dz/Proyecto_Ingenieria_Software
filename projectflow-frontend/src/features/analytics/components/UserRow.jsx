@@ -30,16 +30,13 @@ const UserRow = ({ user, totalTask }) => {
                 </div>
             </div>
 
-            {/* Asignadas */}
+
             <div className="text-center font-bold">{user.totalAsignadas}</div>
 
-            {/* Pendientes */}
             <ProgressBar value={user.pendientes} displayValue={getPorcentaje(user.pendientes)} color="yellow" />
 
-            {/* En proceso */}
             <ProgressBar value={user.enProgreso} displayValue={getPorcentaje(user.enProgreso)} color="blue" />
 
-            {/* Finalizadas */}
             <ProgressBar value={user.finalizadas} displayValue={getPorcentaje(user.finalizadas)} color="green" />
 
             {/* Eficiencia */}
