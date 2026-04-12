@@ -1,6 +1,9 @@
 package edu.unah.hn.projecto_ingenieria.Controllers;
 
+import java.util.List;
+
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -39,5 +42,10 @@ public class TarjetaController {
     public ResponseEntity<TarjetaResponseDTO> actualizarInfoTarjeta(@PathVariable Long tarjetaId,
             @RequestBody TarjetaRequestDTO request) {
         return ResponseEntity.ok(tarjetaService.actualizarInformacionTarjeta(tarjetaId, request));
+    }
+
+    @GetMapping("/mis-tareas")
+    public ResponseEntity<List<TarjetaResponseDTO>> misTareas() {
+        return ResponseEntity.ok(tarjetaService.obtenerTarjetasAsignadas());
     }
 }

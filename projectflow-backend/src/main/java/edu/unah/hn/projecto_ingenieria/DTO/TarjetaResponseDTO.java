@@ -36,5 +36,9 @@ public class TarjetaResponseDTO {
     private int totalSubtareas;
 
     private int subtareasCompletadas;
+
+    private String nombreProyecto;
+
+    private LocalDate fechaFinalizada;
 }
 

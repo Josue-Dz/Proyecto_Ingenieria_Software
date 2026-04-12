@@ -10,7 +10,7 @@ const ProjectBacklog = ({ userRol, backlog, canCreate, canMove }) => {
         if (backlog && backlog.idColumna) {
             setBacklogColumn(backlog);
         }
-    }, [backlog]);
+    }, [backlog, setBacklogColumn]);
 
 
     return (

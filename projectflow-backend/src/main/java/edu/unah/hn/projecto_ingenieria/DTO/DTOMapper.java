@@ -9,11 +9,9 @@ import edu.unah.hn.projecto_ingenieria.Entity.Columna;
 import edu.unah.hn.projecto_ingenieria.Entity.HistorialActividad;
 import edu.unah.hn.projecto_ingenieria.Entity.Notificacion;
 import edu.unah.hn.projecto_ingenieria.Entity.Proyecto;
-import edu.unah.hn.projecto_ingenieria.Entity.SubTarea;
 import edu.unah.hn.projecto_ingenieria.Entity.Tablero;
 import edu.unah.hn.projecto_ingenieria.Entity.Tarjeta;
 import edu.unah.hn.projecto_ingenieria.Entity.Usuario;
-import edu.unah.hn.projecto_ingenieria.patterns.facade.ITarjetaService;
 
 /**
  * Utility component responsible for converting entity objects into their
@@ -22,8 +20,6 @@ import edu.unah.hn.projecto_ingenieria.patterns.facade.ITarjetaService;
  */
 @Component
 public class DTOMapper {
-
-    private ITarjetaService tarjetaService;
 
     public ProyectoResponseDTO toProyectoDTO(Proyecto p) {
         if (p == null) {
@@ -72,9 +68,16 @@ public class DTOMapper {
         dto.setEstado(tarjeta.getEstado());
         dto.setAsignados(toListUsuarioDTO(tarjeta));
         dto.setTotalSubtareas(tarjeta.getSubtareas().size());
-        int subtareasCompletadas = (int)tarjeta.getSubtareas().stream().filter(s -> s.isCompletada() == true).count();
+        int subtareasCompletadas = (int) tarjeta.getSubtareas().stream().filter(s -> s.isCompletada() == true).count();
+        dto.setFechaFinalizada(tarjeta.getFechaFinalizada());
+        dto.setNombreProyecto(
+                tarjeta.getColumna() != null &&
+                        tarjeta.getColumna().getTablero() != null &&
+                        tarjeta.getColumna().getTablero().getProyecto() != null
+                                ? tarjeta.getColumna().getTablero().getProyecto().getNombreProyecto()
+                                : null);
         dto.setSubtareasCompletadas(subtareasCompletadas);
-    
+
         return dto;
     }
 

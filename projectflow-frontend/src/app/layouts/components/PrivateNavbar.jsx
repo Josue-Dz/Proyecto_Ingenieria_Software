@@ -77,7 +77,7 @@ const PrivateNavbar = ({ onLogoHover, isMobile }) => {
                         </span>
                     </button>
 
-                    <NotificationBell isMobile={isMobile}/>
+                    <NotificationBell />
 
                     <div ref={menuRef} className="relative">
                         <button

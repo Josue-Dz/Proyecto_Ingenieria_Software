@@ -13,7 +13,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import edu.unah.hn.projecto_ingenieria.DTO.CrearSubtareaRequest;
-import edu.unah.hn.projecto_ingenieria.DTO.SubtareaRequest;
 import edu.unah.hn.projecto_ingenieria.DTO.SubtareaResponse;
 import edu.unah.hn.projecto_ingenieria.Services.SubtareaService;
 import lombok.RequiredArgsConstructor;
@@ -27,8 +26,6 @@ public class SubtareaController {
 
     @PostMapping("/create/{idTarjeta}")
      public ResponseEntity<SubtareaResponse> createSubtask(@PathVariable Long idTarjeta, @RequestBody CrearSubtareaRequest request){
-        System.out.println("REQUEST: " + request);
-        System.out.println("TARJETAID CREATE: " + idTarjeta);
         SubtareaResponse created = subtareaService.crearSubTarea(idTarjeta, request.getDescripcion());
         return ResponseEntity.status(HttpStatus.CREATED).body(created);
     }

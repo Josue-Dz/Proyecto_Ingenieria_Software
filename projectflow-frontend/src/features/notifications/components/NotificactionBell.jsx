@@ -33,7 +33,7 @@ function timeAgo(dateStr) {
     return `Hace ${days} d`;
 }
 
-const NotificationBell = ({ isMobile }) => {
+const NotificationBell = () => {
     const [open, setOpen] = useState(false);
     const [notificaciones, setNotificaciones] = useState([]);
     const [loading, setLoading] = useState(true);

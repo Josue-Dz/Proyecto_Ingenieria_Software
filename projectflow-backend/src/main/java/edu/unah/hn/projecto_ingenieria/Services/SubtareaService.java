@@ -7,7 +7,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
-import edu.unah.hn.projecto_ingenieria.DTO.SubtareaRequest;
 import edu.unah.hn.projecto_ingenieria.DTO.SubtareaResponse;
 import edu.unah.hn.projecto_ingenieria.Entity.SubTarea;
 import edu.unah.hn.projecto_ingenieria.Entity.Tarjeta;
@@ -22,8 +21,6 @@ public class SubtareaService {
     private final SubtareaRepository subtareaRepository;
 
     private final TarjetaRepository tarjetaRepository;
-
-    private final TarjetaService tarjetaService;
 
     public SubtareaResponse crearSubTarea(Long idTarjeta, String descripcion) {
 
