@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { createColumnRequest, createTaskRequest, getColumnsRequest, moveTaskRequest, updateColumnRequest } from "../services/boardService";
 
 export function useKanban(boardId) {
@@ -10,7 +10,7 @@ export function useKanban(boardId) {
     const [error, setError] = useState(null);
 
     useEffect(() => {
-        
+
         if (!boardId) return;
 
         const fetchColumns = async () => {
@@ -100,28 +100,25 @@ export function useKanban(boardId) {
         setTaskMap(prev => ({ ...prev, [updated.idTarjeta]: updated }));
     };
 
-    const setBacklogColumn = (backlog) => {
+    const setBacklogColumn = useCallback((backlog) => {
         if (!backlog) return;
+
         const data = [backlog];
-
-        setColumns(data);
-
         const newItems = {};
         const newTaskMap = {};
 
         data.forEach(col => {
             const colId = String(col.idColumna);
-
             newItems[colId] = (col.tarjetas ?? []).map(t => t.idTarjeta);
-
             (col.tarjetas ?? []).forEach(t => {
                 newTaskMap[t.idTarjeta] = t;
             });
         });
 
+        setColumns(data);
         setItems(newItems);
         setTaskMap(newTaskMap);
-    };
+    }, []);
 
     return { columns, items, taskMap, setItems, loading, error, addColumn, addTask, moveTask, updateTask, updateColumn, setBacklogColumn };
 }

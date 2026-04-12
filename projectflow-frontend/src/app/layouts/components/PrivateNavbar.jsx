@@ -6,11 +6,11 @@ import { useDarkMode } from '../hooks/useDarkMode';
 import NotificationBell from '../../../features/notifications/components/NotificactionBell';
 import { useEffect, useRef, useState } from 'react';
 
-const statusColor = {
-    online: "bg-green-500",
-    offline: "bg-gray-400",
-    idle: "bg-yellow-400"
-};
+// const statusColor = {
+//     online: "bg-green-500",
+//     offline: "bg-gray-400",
+//     idle: "bg-yellow-400"
+// };
 
 const PrivateNavbar = ({ onLogoHover, isMobile }) => {
     const { user, logout } = useAuth();

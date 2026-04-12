@@ -12,7 +12,7 @@ const MONTHS = ["ene", "feb", "mar", "abr", "may", "jun", "jul", "ago", "sep", "
 function formatDate(dateStr) {
     if (!dateStr) return null;
 
-    const [month, day] = dateStr.split("-");
+    const [, month, day] = dateStr.split("-");
 
     return `${Number(day)} ${MONTHS[Number(month) - 1]}`;
 }

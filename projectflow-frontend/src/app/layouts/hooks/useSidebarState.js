@@ -1,40 +1,32 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 
 export function useSidebarState() {
-    const mediaQuery = window.matchMedia("(max-width: 768px)");
-    const timeoutRef = useRef(null);
-    const [isMobile, setIsMobile] = useState(mediaQuery.matches);
-    const [collapsed, setCollapsed] = useState(
-        localStorage.getItem("sidebar") === "true"
+    const [isMobile, setIsMobile] = useState(
+        () => window.matchMedia("(max-width: 768px)").matches
+    );
+    
+    const [isCollapsedStored, setIsCollapsedStored] = useState(
+        () => localStorage.getItem("sidebar") === "true"
     );
 
+    // 1. Escuchar el cambio de pantalla
     useEffect(() => {
+        const mediaQuery = window.matchMedia("(max-width: 768px)");
         const handleChange = (e) => setIsMobile(e.matches);
+        
         mediaQuery.addEventListener("change", handleChange);
         return () => mediaQuery.removeEventListener("change", handleChange);
     }, []);
 
-    useEffect(() => {
-        clearTimeout(timeoutRef.current);
-        if (!isMobile) setCollapsed(false);
-    }, [isMobile]);
+
+    const collapsed = isMobile ? isCollapsedStored : false;
 
     useEffect(() => {
         localStorage.setItem("sidebar", collapsed);
     }, [collapsed]);
 
-    const open = () => {
-        clearTimeout(timeoutRef.current);
-        setCollapsed(true);
-    };
-
-    const close = () => {
-        if (isMobile) {
-            setCollapsed(false);
-        } else {
-            timeoutRef.current = setTimeout(() => setCollapsed(false), 300);
-        }
-    };
+    const open = () => setIsCollapsedStored(true);
+    const close = () => setIsCollapsedStored(false);
 
     return { collapsed, open, close, isMobile };
 }
