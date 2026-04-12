@@ -82,9 +82,11 @@ const CreateProjectModal = ({ isOpen, onClose, onProjectCreated }) => {
                             onChange={handleChange}
                             required
                             placeholder="Ej. Sistema de inventario"
-                            className="w-full dark:bg-white/5 border dark:border-white/10 rounded-lg px-4 py-2.5
-                             dark:text-white text-sm dark:placeholder-white/25 focus:outline-none
-                              dark:focus:border-[#A3FF12]/50 dark:focus:bg-white/8 transition-colors"
+                            className="w-full bg-white border border-gray-300 rounded-lg px-4 py-2.5
+                                text-gray-800 text-sm placeholder-gray-400 shadow-sm
+                                focus:outline-none focus:ring-2 focus:ring-indigo-500/30 focus:border-indigo-500
+                                transition-all dark:bg-white/5 dark:border-white/10 dark:text-white
+                                dark:placeholder-white/25 dark:focus:border-[#A3FF12]/50 dark:focus:ring-[#A3FF12]/20"
                         />
                     </div>
 
@@ -99,9 +101,11 @@ const CreateProjectModal = ({ isOpen, onClose, onProjectCreated }) => {
                             onChange={handleChange}
                             rows={3}
                             placeholder="¿De qué trata este proyecto?"
-                            className="w-full dark:bg-white/5 border dark:border-white/10 rounded-lg px-4 py-2.5
-                             dark:text-white text-sm dark:placeholder-white/25 focus:outline-none
-                              dark:focus:border-[#A3FF12]/50 dark:focus:bg-white/8 transition-colors resize-none"
+                            className="w-full bg-white border border-gray-300 rounded-lg px-4 py-2.5
+                                text-gray-800 text-sm placeholder-gray-400
+                                shadow-sm resize-none
+                                focus:outline-none focus:ring-2 focus:ring-indigo-500/30 focus:border-indigo-500
+                                transition-all dark:bg-white/5 dark:border-white/10 dark:text-white dark:placeholder-white/25 dark:focus:border-[#A3FF12]/50 dark:focus:ring-[#A3FF12]/20"
                         />
                     </div>
 
@@ -119,10 +123,11 @@ const CreateProjectModal = ({ isOpen, onClose, onProjectCreated }) => {
                                 onChange={handleChange}
                                 required
                                 min={new Date().toISOString().split('T')[0]} // No se permite fechas pasadas
-                                className="w-full dark:bg-white/5 border dark:border-white/10 rounded-lg px-3 py-2.5
-                                 dark:text-white text-sm focus:outline-none
-                                  dark:focus:border-[#A3FF12]/50 transition-colors 
-                                dark:scheme-dark"
+                                className="w-full bg-white border border-gray-300 rounded-lg px-4 py-2.5
+                                    text-gray-800 text-sm placeholder-gray-400
+                                    shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500/30 focus:border-indigo-500
+                                    transition-alldark:bg-white/5 dark:border-white/10 dark:text-white
+                                    dark:placeholder-white/25 dark:focus:border-[#A3FF12]/50 dark:focus:ring-[#A3FF12]/20"
                             />
                         </div>
                         <div>
@@ -136,10 +141,10 @@ const CreateProjectModal = ({ isOpen, onClose, onProjectCreated }) => {
                                 onChange={handleChange}
                                 required
                                 min={form.fechaInicio} // La fecha fin no puede ser anterior a la fecha inicio
-                                className="w-full dark:bg-white/5 border dark:border-white/10 rounded-lg px-3 py-2.5
-                                 dark:text-white text-sm focus:outline-none
-                                  dark:focus:border-[#A3FF12]/50 transition-colors 
-                                dark:scheme-dark"
+                                className="w-full bg-white border border-gray-300 rounded-lg px-4 py-2.5
+                                    text-gray-800 text-sm placeholder-gray-400
+                                    shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500/30 focus:border-indigo-500
+                                    transition-all dark:bg-white/5 dark:border-white/10 dark:text-white dark:placeholder-white/25 dark:focus:border-[#A3FF12]/50 dark:focus:ring-[#A3FF12]/20"
                             />
                         </div>
                     </div>
@@ -167,10 +172,10 @@ const CreateProjectModal = ({ isOpen, onClose, onProjectCreated }) => {
                             type="submit"
                             disabled={loading}
                             className="flex-1 flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-indigo-600
-                             hover:bg-indigo-700 border
-                             text-white dark:bg-[#A3FF12]/15
-                             dark:border-[#A3FF12]/30 dark:text-[#A3FF12] text-sm font-semibold
-                             dark:hover:bg-[#A3FF12]/25 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                                hover:bg-indigo-700 border
+                                text-white dark:bg-[#A3FF12]/15
+                                dark:border-[#A3FF12]/30 dark:text-[#A3FF12] text-sm font-semibold
+                                dark:hover:bg-[#A3FF12]/25 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                         >
                             {loading ? (
                                 <>
