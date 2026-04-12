@@ -231,7 +231,7 @@ const TaskDetailModal = ({ task, proyectoId, userRol, onClose, onTaskUpdated }) 
                         </div>
 
                         {/*Barra de porcentaje */}
-                        <div className="flex flex-col gap-1">
+                        {subtareas.length > 0 && <div className="flex flex-col gap-1">
                             <div className="flex justify-between text-[11px] text-slate-400">
                                 <span>Progreso</span>
                                 <span>{progreso}%</span>
@@ -248,7 +248,7 @@ const TaskDetailModal = ({ task, proyectoId, userRol, onClose, onTaskUpdated }) 
                                     style={{ width: `${progreso}%` }}
                                 />
                             </div>
-                        </div>
+                        </div>}
 
                         {/*Checklist */}
                         <div className="flex flex-col gap-2">

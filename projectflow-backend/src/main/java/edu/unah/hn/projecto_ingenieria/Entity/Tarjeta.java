@@ -59,6 +59,9 @@ public class Tarjeta {
     @Column(name = "fecha_limite")
     private LocalDate fechaLimite;
 
+    @Column(name = "fecha_finalizada")
+    private LocalDate fechaFinalizada;  //agregue este campo para poder medir la eficiencia
+
     @Enumerated(EnumType.STRING)
     private Prioridad prioridad;
 
@@ -84,7 +87,7 @@ public class Tarjeta {
     @OneToMany(mappedBy = "tarjeta", cascade = CascadeType.ALL)
     private List<SubTarea> subtareas;
 
-    private int progreso;
+    private int progreso;   //Se añadió para registrar el progreso de la checklist con las subtareas
 
     @OneToMany(mappedBy = "tarjeta",cascade = CascadeType.ALL)
     private List<Notificacion> notificaciones;

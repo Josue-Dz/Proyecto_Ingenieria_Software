@@ -26,8 +26,8 @@ const KanbanColumn = ({ column, onAddTask, onTaskClick, index, canCreate, canMov
     const style = isDropTarget ? { background: '#00000030' } : undefined;
 
     return (
-        <div className="flex flex-col w-76 shrink-0 ">
-            <div className="flex items-center bg-[#1a1d4c]/95 dark:bg-white/3 border dark:border-white/6 rounded-t-xl gap-2 p-2">
+        <div className="flex flex-col min-w-70 max-w-70 sm:min-w-[320px] sm:max-w-[320px] shrink-0 snap-start">
+            <div className="flex items-center gap-2 p-2 bg-[#1a1d4c]/95 dark:bg-[#121212] border dark:border-white/6 rounded-t-xl">
                 {isEditing ?
                     (
                         <input
@@ -72,7 +72,7 @@ const KanbanColumn = ({ column, onAddTask, onTaskClick, index, canCreate, canMov
 
             <div
                 ref={ref}
-                className="flex flex-col gap-2.5 overflow-y-auto max-h-98 rounded-b-2xl p-3 bg-[#dfeaff]/85 dark:bg-white/3 border border-slate-300 dark:border-white/6 shadow"
+                className="flex flex-col gap-2.5 overflow-y-auto max-h-98 rounded-b-2xl p-3 bg-[#dfeaff]/60 dark:bg-[#121212] border border-slate-300 dark:border-white/6 shadow"
                 style={style}
             >
                 {/* Crear tarea solo ADMIN */}

@@ -49,7 +49,7 @@ const KanbanBoard = () => {
 
     return (
         <>
-            <div className="flex justify-between mb-6">
+            <div className="flex justify-between mb-5">
                 <button
                     onClick={() => { navigate(`/boards/projects/${idProyecto}`) }}
                     className="flex items-center px-4 py-2 rounded-md p-3 hover:bg-gray-500/10 transition-colors"
@@ -88,7 +88,7 @@ const KanbanBoard = () => {
             </div>
 
 
-            <div className="flex items-center justify-between">
+            <div className="flex items-center justify-between pb-6">
 
                 <AddColumnForm
                     canCreate={canCreate}

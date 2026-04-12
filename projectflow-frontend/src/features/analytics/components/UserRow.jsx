@@ -3,15 +3,19 @@ import MiniChart from "./MiniChart";
 import ProgressBar from "./ProgressBar";
 
 const UserRow = ({ user, totalTask }) => {
-    console.log("Usuario: ",user)
-
 
     const porcentaje = totalTask
         ? ((user.finalizadas / totalTask) * 100).toFixed(0)
         : 0;
 
+    const getPorcentaje = (cantidad) => {
+        return user.totalAsignadas > 0
+            ? (cantidad / user.totalAsignadas)
+            : 0;
+    };
+
     return (
-        <div className="grid grid-cols-7 items-center p-4 border-t hover:bg-indigo-300/10">
+        <div className="grid grid-cols-7 gap-6 items-center p-4 border-t hover:bg-indigo-300/10">
 
             {/* Usuario */}
             <div className="flex items-center gap-3">
@@ -30,22 +34,22 @@ const UserRow = ({ user, totalTask }) => {
             <div className="text-center font-bold">{user.totalAsignadas}</div>
 
             {/* Pendientes */}
-            <ProgressBar value={user.pendientes} color="yellow" />
+            <ProgressBar value={user.pendientes} displayValue={getPorcentaje(user.pendientes)} color="yellow" />
 
             {/* En proceso */}
-            <ProgressBar value={user.enProgreso} color="blue" />
+            <ProgressBar value={user.enProgreso} displayValue={getPorcentaje(user.enProgreso)} color="blue" />
 
             {/* Finalizadas */}
-            <ProgressBar value={user.finalizadas} color="green" />
+            <ProgressBar value={user.finalizadas} displayValue={getPorcentaje(user.finalizadas)} color="green" />
 
             {/* Eficiencia */}
             <div className="flex items-center gap-2 p-1">
 
-                <CircularProgress porcentaje={porcentaje} />
+                <CircularProgress porcentaje={porcentaje} />  {/*Modificar esto no esta bien*/}
 
-                <MiniChart user={user}/>
+                <MiniChart user={user} efficiency={porcentaje} />
 
-            </div>
+            </div> 
 
             {/* Botón */}
             <button className="text-sm bg-gray-100 px-3 py-1 rounded">

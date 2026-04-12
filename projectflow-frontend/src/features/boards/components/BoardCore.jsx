@@ -78,7 +78,7 @@ const BoardCore = ({ userRol, columns, items, taskMap, setItems, moveTask, updat
             >
 
 
-                <div className="flex gap-4 overflow-x-auto items-start pt-8">
+                <div className="flex gap-4 overflow-x-auto items-start pb-4 snap-x snap-mandatory scroll-smooth">
                     {columns.map((col, index) => (
                         <KanbanColumn
                             key={col.idColumna}

@@ -54,15 +54,15 @@ const Projects = () => {
     };
 
     return (
-        <div className="pt-6 pb-14">
-            <h1 className="text-2xl font-bold dark:text-white mb-6">Mis Proyectos</h1>
+        <div className="px-4 sm:px-6 lg:px-8 pt-6 pb-14">
+            <h1 className="text-xl sm:text-2xl font-bold dark:text-white mb-6">Mis Proyectos</h1>
 
-            <div className="p-4">
+            <div className="flex justify-end mb-4">
                 <AddButton disabled={loading} setIsModalOpen={setIsModalOpen} textoBoton="Nuevo proyecto" />
             </div>
 
             {loading && (
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4 sm:gap-6">
                     {[1, 2, 3].map(i => (
                         <div key={i} className="bg-black/60 border border-white/10 rounded-lg p-5 animate-pulse">
                             <div className="w-2/3 h-4 rounded bg-white/10 mb-3" />
@@ -94,8 +94,7 @@ const Projects = () => {
 
                         >
                             <div className="flex items-start justify-between mb-2">
-                                <h2 className="text-lg font-semibold text-slate-900 dark:text-[#A3FF12] 
-                                    leading-tight pr-2">
+                                <h2 className="text-base sm:text-lg font-semibold leading-snug dark:text-[#A3FF12] pr-2">
                                     {project.nombreProyecto}
                                 </h2>
                                 <ProjectCardMenu
@@ -104,23 +103,25 @@ const Projects = () => {
                                 />
                             </div>
 
-                            <p className="text-slate-600 dark:text-gray-300 text-sm line-clamp-3 grow mb-4">
+                            <p className="text-sm line-clamp-2 sm:line-clamp-3 text-slate-600 dark:text-gray-300 grow mb-4">
                                 {project?.descripcion}
                             </p>
+
                             <p className="text-xs text-slate-500 dark:text-gray-500 mb-4">
                                 Fecha: {new Date(project?.fechaInicio).toLocaleDateString()}
                             </p>
-                            <button
-                                className=" w-1/3 border border-indigo-200 bg-indigo-50
+
+                            <div className="mt-auto flex justify-end">
+                                <button
+                                    className="w-full sm:w-auto border p-2 border-indigo-200 bg-indigo-50
                                  text-indigo-600 hover:bg-indigo-100 hover:border-indigo-300
                                   dark:bg-[#A3FF12]/20 dark:border-[#A3FF12]/40 dark:text-white py-2 rounded-lg
                                    dark:hover:bg-[#A3FF12]/30 transition-all duration-200 ease-in-out"
-                                onClick={() => handleClick(project.idProyecto)}
-                            >
-                                Ver Panel
-                            </button>
-
-
+                                    onClick={() => handleClick(project.idProyecto)}
+                                >
+                                    Ver Panel
+                                </button>
+                            </div>
                         </div>
                     ))}
                 </div>

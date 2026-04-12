@@ -57,14 +57,14 @@ const BoardsPage = () => {
 
     return (
 
-        <div className="pt-6">
+        <div className="pt-6 w-full h-full">
 
             {/* Header con título y miembros en la misma línea */}
-            <div className="flex items-center justify-between mb-2 flex-wrap gap-4">
-                <h2 className="text-xl font-bold dark:text-white">Tableros del Proyecto</h2>
+            <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between mb-2">
+                <h2 className="ext-lg sm:text-xl font-bold dark:text-white">Tableros del Proyecto</h2>
             </div>
 
-            <div className="flex items-center justify-end space-x-3">
+            <div className="flex flex-wrap items-center justify-end gap-2 sm:gap-3">
                 <MembersSection idProyecto={idProyecto} />
                 <AddButton disabled={loading} setIsModalOpen={setIsModalOpen} textoBoton="Nuevo tablero" />
             </div>
@@ -76,14 +76,13 @@ const BoardsPage = () => {
                 onBoardCreated={(newBoard) => setBoards(prev => [newBoard, ...prev])}
             />
 
-            <div className="flex gap-6 items-start mt-4 bg-indigo-200/20 border border-indigo-300/30 rounded-lg p-4 overflow-x-auto">
+            <div className="grid grid-cols-1 lg:grid-cols-[320px_1fr] gap-4 lg:gap-6 mt-4 bg-indigo-200/20 dark:bg-white/5 border border-indigo-300/30 dark:border-white/10 rounded-xl p-3 sm:p-4 w-full">
 
                 {/**Backlog */}
-                <div className="w-80 flex flex-col gap-3">
+                <div className="w-full lg:w-[320px] flex flex-col gap-3">
                     <Backlog backlog={backlog} userRol={userRol} canCreate={canCreate} canMove={canMove} />
                 </div>
 
-                <div className="w-px h-110 bg-indigo-500 dark:bg-white/10" />
 
                 <div className="flex-1 flex flex-col gap-4">
                     <div className="flex items-center justify-between">
@@ -105,7 +104,8 @@ const BoardsPage = () => {
                             <p className="text-gray-400">Parece que aún no tienes ningún tablero</p>
                         )}
 
-                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 overflow-y-auto max-h-96 pr-2 p-4">
+                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 max-h-125 
+                                    lg:max-h-96 overflow-y-auto pr-2">
                             {boards.map((board) => (
                                 <div key={board.idTablero}
                                     onClick={() => handleClick(board.idTablero)}

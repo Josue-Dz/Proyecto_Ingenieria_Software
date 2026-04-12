@@ -5,9 +5,11 @@ import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.stream.Collectors;
 
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -34,6 +36,7 @@ public class ReporteService {
     private final TarjetaRepository tarjetaRepository;
     private final HistorialEstadoTarjetaRepository historialEstadoTarjetaRepository;
     private final AuthService authService;
+    private final ExportacionReporteService exportacionReporteService;
 
     public BurndownResponseDTO obtenerBurndownPorTablero(Long idTablero, LocalDate fechaInicio, LocalDate fechaFin) {
         if (fechaInicio == null || fechaFin == null) {
@@ -103,12 +106,14 @@ public class ReporteService {
         Tablero tablero = tableroRepository.findByIdTablero(idTablero).orElseThrow(
                 () -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Tablero no encontrado"));
 
+
         List<ProyectoUsuario> usuarios = proyectoUsuarioRepository
                 .findByProyecto_IdProyecto(tablero.getProyecto().getIdProyecto())
                 .stream()
                 .filter(pu -> !pu.getRol().name().equals("LECTOR")) // filtrar para que los miembros Lectores no
                                                                     // aparezcan en el reporte
                 .collect(Collectors.toList());
+
 
         return usuarios.stream().map(usuario -> {
             List<Tarjeta> todasLasTarjetas = tarjetaRepository.findByAsignados_IdUsuario(usuario.getUsuario().getIdUsuario());
@@ -132,8 +137,8 @@ public class ReporteService {
 
             List<Long> tiempos = tarjetasDelTablero.stream()
                     .filter(t -> t.getEstado().toString().equals("FINALIZADA"))
-                    .filter(t -> t.getFechaCreacion() != null && t.getFechaLimite() != null)
-                    .map(t -> ChronoUnit.DAYS.between(t.getFechaCreacion(), t.getFechaLimite().atStartOfDay()))
+                    .filter(t -> t.getFechaCreacion() != null && t.getFechaFinalizada() != null)
+                    .map(t -> ChronoUnit.DAYS.between(t.getFechaCreacion(), t.getFechaFinalizada().atStartOfDay()))
                     .collect(Collectors.toList());
 
             double eficiencia = tiempos.isEmpty() ? 0 : tiempos.stream().mapToLong(Long::longValue).average().orElse(0);
@@ -150,4 +155,52 @@ public class ReporteService {
         }).collect(Collectors.toList());
 
     }
+
+        
+    public byte[] exportarBurndown(Long idTablero, String formato, LocalDate fechaInicio, LocalDate fechaFin) {
+        BurndownResponseDTO data = obtenerBurndownPorTablero(idTablero, fechaInicio, fechaFin);
+
+        Tablero tablero = tableroRepository.findByIdTablero(idTablero)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Tablero no encontrado"));
+        String nombreProyecto = tablero.getProyecto().getNombreProyecto();
+
+        return switch (formato.toLowerCase(Locale.ROOT)) {
+            case "excel" -> exportacionReporteService.generarExcel(data, nombreProyecto);
+            case "pdf"   -> exportacionReporteService.generarPDF(data, nombreProyecto);
+            default      -> throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
+                    "Formato no soportado. Use 'pdf' o 'excel'");
+        };
+    }
+
+    public byte[] exportarUsuarios(Long idTablero, String formato) {
+        List<UserReportDTO> usuarios = obtenerReporteUsuario(idTablero);
+
+        Tablero tablero = tableroRepository.findByIdTablero(idTablero)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Tablero no encontrado"));
+        String nombreProyecto = tablero.getProyecto().getNombreProyecto();
+
+        return switch (formato.toLowerCase(Locale.ROOT)) {
+            case "excel" -> exportacionReporteService.generarExcelUsuarios(usuarios, nombreProyecto);
+            case "pdf"   -> exportacionReporteService.generarPDFUsuarios(usuarios, nombreProyecto);
+            default      -> throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
+                    "Formato no soportado. Use 'pdf' o 'excel'");
+        };
+    }
+
+    public String resolverNombreArchivo(Long idTablero, String tipo, String formato) {
+        Tablero tablero = tableroRepository.findByIdTablero(idTablero)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Tablero no encontrado"));
+        String nombre = tablero.getProyecto().getNombreProyecto().replace(" ", "_");
+        String extension = formato.equalsIgnoreCase("excel") ? "xlsx" : "pdf";
+        return "reporte_" + tipo + "_" + nombre + "." + extension;
+    }
+
+   
+
+    public MediaType resolverContentType(String formato) {
+        return formato.equalsIgnoreCase("excel")
+                ? MediaType.parseMediaType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
+                : MediaType.APPLICATION_PDF;
+    }
+
 }

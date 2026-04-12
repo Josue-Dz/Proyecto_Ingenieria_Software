@@ -42,9 +42,9 @@ const MembersSection = ({ idProyecto, onMembersChanged }) => {
         <button
             onClick={() => setShowInviteForm(!showInviteForm)}
             className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg
-             bg-indigo-600 dark:bg-[#A3FF12]/15 border border-indigo-600
+             bg-[#2E36C1] dark:bg-[#A3FF12]/15 border border-indigo-600
              dark:border-[#A3FF12]/30 text-white dark:text-[#A3FF12] text-xs
-             font-semibold hover:bg-indigo-700 dark:hover:bg-[#A3FF12]/25
+             font-semibold hover:bg-[#414DEA] dark:hover:bg-[#A3FF12]/25
              transition-colors"
         >
             <span className="material-symbols-rounded text-sm">person_add</span>
