@@ -37,7 +37,7 @@ const PrivateNavbar = ({ onLogoHover, isMobile }) => {
     }, []);
 
     return (
-        <nav className="fixed top-0 w-full z-30 bg-indigo-50/70 dark:bg-black/70 backdrop-blur-sm border-b dark:border-white/10 border-indigo-600/20">
+        <nav className="fixed top-0 w-full z-30 bg-white dark:bg-black/70 backdrop-blur-sm border-b dark:border-white/10 border-indigo-600/20">
 
             <div className="flex items-center justify-between px-4 py-2 dark:text-white">
 
@@ -62,7 +62,7 @@ const PrivateNavbar = ({ onLogoHover, isMobile }) => {
                             alt="Logo"
                         />
                         <h1 className="text-base sm:text-lg font-semibold">
-                            Dashboard
+                            PumaTask
                         </h1>
                     </div>
                 </div>

@@ -32,12 +32,12 @@ const Navbar = () => {
     }
 
     return (
-        <nav className='fixed top-0 left-0 w-full z-30 bg-indigo-50/70 border-indigo-600/15 dark:bg-black/70 backdrop-blur-sm border-b dark:border-white/10'>
+        <nav className='fixed top-0 left-0 w-full z-30 bg-white border-indigo-600/15 dark:bg-black/70 backdrop-blur-sm border-b dark:border-white/10'>
             <div className='flex justify-between items-center px-4 md:px-12 py-3'>
 
                 <div>
                     <img src={isDark ? LogoDark : LogoLight} alt='Logo de la aplicación'
-                        className='w-16' />
+                        className='w-14' />
                 </div>
 
                 <button onClick={toggleMenu} className='md:hidden dark:text-white'>
@@ -76,7 +76,7 @@ const Navbar = () => {
 
                 <div className='p-2'>
                     <button onClick={toggle}>
-                        <span className="material-symbols-rounded dark:text-white">
+                        <span className="material-symbols-rounded rounded-full p-1.5 dark:text-white hover:bg-indigo-100 dark:hover:bg-white/10 transition">
                             {isDark ? "light_mode" : "dark_mode"}
                         </span>
                     </button>

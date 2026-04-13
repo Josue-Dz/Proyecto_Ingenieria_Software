@@ -15,43 +15,51 @@ const UserRow = ({ user, totalTask }) => {
     };
 
     return (
-        <div className="grid grid-cols-7 gap-6 items-center p-4 border-t hover:bg-indigo-300/10">
+        <div className="grid grid-cols-7 gap-6 items-center p-4 border-t border-slate-200 dark:border-white/10 hover:bg-indigo-50 dark:hover:bg-white/5 transition-colors">
 
-            {/* Usuario */}
             <div className="flex items-center gap-3">
-                <button className="text-xs font-bold w-10 aspect-square flex items-center justify-center rounded-full transition-all"
+                <button
+                    className="text-xs font-bold w-10 aspect-square flex items-center justify-center rounded-full text-white"
                     style={{ background: "linear-gradient(135deg, #6366f1, #8b5cf6)" }}
                 >
                     {user.iniciales}
                 </button>
                 <div>
-                    <p className="font-semibold text-xs sm:text-base md:text-lg">{user.nombre}</p>
-                    <p className="text-xs sm:text-sm text-gray-500">Miembro del equipo</p>
+                    <p className="font-semibold text-xs sm:text-base md:text-lg text-slate-800 dark:text-white">
+                        {user.nombre}
+                    </p>
+                    <p className="text-xs sm:text-sm text-slate-500 dark:text-white/40">
+                        Miembro del equipo
+                    </p>
                 </div>
             </div>
 
+            <div className="text-center font-bold text-slate-700 dark:text-white/80">
+                {user.totalAsignadas}
+            </div>
 
-            <div className="text-center font-bold">{user.totalAsignadas}</div>
+            <ProgressBar
+                value={user.pendientes}
+                displayValue={getPorcentaje(user.pendientes)}
+                color="yellow"
+            />
 
-            <ProgressBar value={user.pendientes} displayValue={getPorcentaje(user.pendientes)} color="yellow" />
+            <ProgressBar
+                value={user.enProgreso}
+                displayValue={getPorcentaje(user.enProgreso)}
+                color="blue"
+            />
 
-            <ProgressBar value={user.enProgreso} displayValue={getPorcentaje(user.enProgreso)} color="blue" />
+            <ProgressBar
+                value={user.finalizadas}
+                displayValue={getPorcentaje(user.finalizadas)}
+                color="green"
+            />
 
-            <ProgressBar value={user.finalizadas} displayValue={getPorcentaje(user.finalizadas)} color="green" />
-
-            {/* Eficiencia */}
             <div className="flex items-center gap-2 p-1">
-
-                <CircularProgress porcentaje={porcentaje} />  {/*Modificar esto no esta bien*/}
-
+                <CircularProgress porcentaje={porcentaje} />
                 <MiniChart user={user} efficiency={porcentaje} />
-
-            </div> 
-
-            {/* Botón */}
-            <button className="text-sm bg-gray-100 px-3 py-1 rounded">
-                Ver más
-            </button>
+            </div>
 
         </div>
     );

@@ -250,37 +250,55 @@ const TaskDetailModal = ({ task, proyectoId, userRol, onClose, onTaskUpdated }) 
                             </div>
                         </div>}
 
-                        {/*Checklist */}
-                        <div className="flex flex-col gap-2">
-                            <label className="text-xs text-slate-400 uppercase">Checklist</label>
+                        <div className="flex flex-col gap-3">
+                            <label className="text-xs text-slate-400 dark:text-white/40 uppercase tracking-wider">
+                                Checklist
+                            </label>
 
                             {subtareas.length === 0 && (
-                                <p className="text-xs text-slate-400">
+                                <p className="text-xs text-slate-400 dark:text-white/25">
                                     No hay subtareas aún
                                 </p>
                             )}
 
                             {subtareas.map(st => (
-                                <div key={st.idSubtarea} className="flex items-center gap-2">
+                                <div
+                                    key={st.idSubtarea}
+                                    className="flex items-center gap-2.5 px-2 py-1.5 rounded-lg 
+                                    hover:bg-slate-100 dark:hover:bg-white/5 transition-colors"
+                                >
                                     <input
                                         type="checkbox"
                                         checked={st.completada}
                                         onChange={() => toggleSubtask(st.idSubtarea)}
+                                        className="w-4 h-4 rounded border border-slate-300 dark:border-white/20 bg-white dark:bg-white/5 text-indigo-600 dark:text-[#A3FF12] focus:ring-2 focus:ring-indigo-500/30 dark:focus:ring-[#A3FF12]/30 transition-colors"
                                     />
-                                    <span className={`text-sm ${st.completada ? "line-through opacity-50" : ""}`}>
+
+                                    <span
+                                        className={`text-sm transition-colors
+                                        text-slate-700 dark:text-white/80
+                                        ${st.completada ? "line-through opacity-40" : ""}`}
+                                    >
                                         {st.descripcion}
                                     </span>
                                 </div>
                             ))}
 
+                            {/* INPUT NUEVA SUBTAREA */}
                             <div className="flex gap-2 mt-2">
                                 <input
                                     value={nuevaSubtarea}
                                     onChange={e => setNuevaSubtarea(e.target.value)}
                                     placeholder="Nueva subtarea..."
-                                    className="flex-1 text-sm px-2 py-1 rounded border"
+                                    className="flex-1 text-sm px-3 py-2 rounded-xl bg-slate-50 dark:bg-white/5 border 
+                                    border-slate-200 dark:border-white/10 text-slate-700 dark:text-white placeholder-slate-400 dark:placeholder-white/30 focus:outline-none focus:ring-2 focus:ring-indigo-500/30 dark:focus:ring-[#A3FF12]/30 focus:border-indigo-400 dark:focus:border-[#A3FF12]/40 transition-colors"
                                 />
-                                <button onClick={handleAddSubtask}>
+
+                                <button
+                                    onClick={handleAddSubtask}
+                                    className="px-3 rounded-xl bg-indigo-600 hover:bg-indigo-500 dark:bg-[#A3FF12]/15 
+                                    dark:text-[#A3FF12] dark:border dark:border-[#A3FF12]/30 text-white text-sm font-mediumtransition-colors"
+                                >
                                     +
                                 </button>
                             </div>

@@ -6,7 +6,7 @@ const PublicRoute = ({ children }) => {
 
     if (loading) return null;
 
-    return user ? <Navigate to="/dashboard" /> : children;
+    return user ? <Navigate to="/projects" /> : children;
 };
 
 export default PublicRoute
