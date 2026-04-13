@@ -30,8 +30,6 @@ const UserAnalytics = ({ users = [] }) => {
         (users.reduce((acumulador, user) => acumulador + user.eficiencia, 0) / users.length).toFixed(1)
         : (0)
 
-
-    // Función para exportar reporte de usuarios
     const handleExportar = async (formato) => {
         setExportLoading(formato);
         try {
@@ -54,7 +52,7 @@ const UserAnalytics = ({ users = [] }) => {
     const CustomTooltip = ({ active, payload, label }) => {
         if (active && payload && payload.length) {
             return (
-                <div className="bg-white p-3 rounded-lg shadow border text-xs">
+                <div className="bg-white dark:bg-[#111] p-3 rounded-lg shadow border border-slate-200 dark:border-white/10 text-xs text-slate-700 dark:text-white/70">
                     <p className="font-semibold mb-1">{label}</p>
                     {payload.map((item, i) => (
                         <p key={i} style={{ color: item.color }}>
@@ -68,13 +66,12 @@ const UserAnalytics = ({ users = [] }) => {
     };
 
     return (
-
         <>
             <div className="flex justify-between mb-4">
                 <div className="flex items-center">
                     <button
                         onClick={() => navigate(`/projects/${idProyecto}/boards/${boardId}`)}
-                        className="flex items-center hover:bg-indigo-500/10 px-4 py-2 rounded-lg gap-2"
+                        className="flex items-center hover:bg-indigo-500/10 px-4 py-2 rounded-lg gap-2 text-slate-700 dark:text-white/80"
                     >
                         <span className="material-symbols-rounded">keyboard_backspace</span>
                         <p>Volver al tablero</p>
@@ -82,7 +79,6 @@ const UserAnalytics = ({ users = [] }) => {
                 </div>
 
                 <div className="flex items-center gap-2">
-                    {/* Botones exportación — solo aparecen si hay datos*/}
                     {users.length > 0 && (
                         <>
                             <button
@@ -90,17 +86,13 @@ const UserAnalytics = ({ users = [] }) => {
                                 disabled={exportLoading !== null}
                                 className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg
                                 border border-slate-200 dark:border-white/10 text-slate-600
-                               dark:text-white/70 text-sm hover:bg-slate-50
-                               dark:hover:bg-white/5 transition-colors
+                                dark:text-white/70 text-sm hover:bg-slate-50
+                                dark:hover:bg-white/5 transition-colors
                                 disabled:opacity-50 disabled:cursor-not-allowed"
                             >
                                 {exportLoading === "pdf"
-                                    ? <span className="material-symbols-rounded text-sm animate-spin">
-                                        progress_activity
-                                    </span>
-                                    : <span className="material-symbols-rounded text-sm text-red-500">
-                                        picture_as_pdf
-                                    </span>
+                                    ? <span className="material-symbols-rounded text-sm animate-spin">progress_activity</span>
+                                    : <span className="material-symbols-rounded text-sm text-red-500">picture_as_pdf</span>
                                 }
                                 {exportLoading === "pdf" ? "Generando..." : "PDF"}
                             </button>
@@ -115,12 +107,8 @@ const UserAnalytics = ({ users = [] }) => {
                                 disabled:opacity-50 disabled:cursor-not-allowed"
                             >
                                 {exportLoading === "excel"
-                                    ? <span className="material-symbols-rounded text-sm animate-spin">
-                                        progress_activity
-                                    </span>
-                                    : <span className="material-symbols-rounded text-sm text-green-500">
-                                        table_view
-                                    </span>
+                                    ? <span className="material-symbols-rounded text-sm animate-spin">progress_activity</span>
+                                    : <span className="material-symbols-rounded text-sm text-green-500">table_view</span>
                                 }
                                 {exportLoading === "excel" ? "Generando..." : "Excel"}
                             </button>
@@ -129,8 +117,7 @@ const UserAnalytics = ({ users = [] }) => {
 
                     <button
                         onClick={() => navigate(`/projects/${idProyecto}/boards/${boardId}/reportes`)}
-                        className="flex justify-center md:w-12 rounded-md hover:bg-gray-500/10
-                            dark:hover:bg-white/10 p-1 transition-colors"
+                        className="flex justify-center md:w-12 rounded-md hover:bg-gray-200 dark:hover:bg-white/10 p-1 transition-colors"
                         title="Progreso Sprint"
                     >
                         <span className="material-symbols-rounded text-indigo-600 dark:text-[#A3FF12] shrink-0">analytics</span>
@@ -138,37 +125,30 @@ const UserAnalytics = ({ users = [] }) => {
                 </div>
             </div>
 
-            <div className="p-6 bg-gray-50 min-h-screen rounded-md">
+            <div className="p-6 min-h-screen rounded-md bg-transparent">
 
-                {/* HEADER */}
                 <div className="flex justify-between mb-6">
-                    <h2 className="text-2xl font-bold">
+                    <h2 className="text-2xl font-bold text-slate-800 dark:text-white">
                         Vista de Carga de Trabajo y Eficiencia del Equipo
                     </h2>
                 </div>
 
-                {/* KPIs */}
                 <div className="grid grid-cols-4 gap-4 mb-6">
-
                     <KPI title="Total de Miembros" value={totalUsers} />
                     <KPI title="Total de Tareas" value={totalTasks} />
                     <KPI title="Tasa de Finalización" value={`${porcentajeDone}%`} />
                     <KPI title="Eficiencia Promedio" value={`${avgEfficiency} días`} />
-
                 </div>
 
-                {/* TABLA */}
-                <div className="bg-white rounded-xl shadow overflow-hidden">
+                <div className="bg-white dark:bg-[#111] rounded-xl shadow border border-slate-200 dark:border-white/10 overflow-hidden">
 
-                    {/* HEADER TABLA */}
-                    <div className="grid grid-cols-7 p-4 bg-gray-100 text-sm font-semibold">
+                    <div className="grid grid-cols-7 p-4 bg-slate-100 dark:bg-white/5 text-sm font-semibold text-slate-700 dark:text-white/70">
                         <div>Miembro</div>
                         <div className="text-center">Asignadas</div>
                         <div>Pendientes</div>
                         <div>En Progreso</div>
                         <div>Finalizadas</div>
                         <div>Eficiencia</div>
-                        <div>Detalle</div>
                     </div>
 
                     {userStats.map(user => (
@@ -177,63 +157,36 @@ const UserAnalytics = ({ users = [] }) => {
 
                 </div>
 
-                {/* GRÁFICO GENERAL */}
-                <div className="bg-white/80 backdrop-blur p-6 rounded-2xl shadow-sm mt-6 border border-gray-100">
-                    <h3 className="font-semibold mb-4 text-gray-700">
+                <div className="bg-white dark:bg-[#111] p-6 rounded-2xl shadow-sm mt-6 border border-slate-200 dark:border-white/10">
+                    <h3 className="font-semibold mb-4 text-slate-700 dark:text-white/70">
                         Tareas por Estado
                     </h3>
 
                     <ResponsiveContainer width="100%" height={300}>
                         <BarChart data={userStats} barGap={6}>
-
-                            {/* grid suave */}
-                            <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" />
-
+                            <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" />
                             <XAxis
                                 dataKey="nombre"
                                 tick={{ fontSize: 12, fill: "#64748b" }}
                                 axisLine={false}
                                 tickLine={false}
                             />
-
                             <YAxis
                                 tick={{ fontSize: 12, fill: "#64748b" }}
                                 axisLine={false}
                                 tickLine={false}
                             />
-
                             <Tooltip content={<CustomTooltip />} />
-
-                            <Legend
-                                wrapperStyle={{ fontSize: "12px" }}
-                            />
-
-                            {/* barras con estilo */}
-                            <Bar
-                                dataKey="pendientes"
-                                fill="#facc15"
-                                radius={[6, 6, 0, 0]}
-                            />
-
-                            <Bar
-                                dataKey="enProgreso"
-                                fill="#3b82f6"
-                                radius={[6, 6, 0, 0]}
-                            />
-
-                            <Bar
-                                dataKey="finalizadas"
-                                fill="#22c55e"
-                                radius={[6, 6, 0, 0]}
-                            />
-
+                            <Legend wrapperStyle={{ fontSize: "12px" }} />
+                            <Bar dataKey="pendientes" fill="#facc15" radius={[6, 6, 0, 0]} />
+                            <Bar dataKey="enProgreso" fill="#3b82f6" radius={[6, 6, 0, 0]} />
+                            <Bar dataKey="finalizadas" fill="#22c55e" radius={[6, 6, 0, 0]} />
                         </BarChart>
                     </ResponsiveContainer>
                 </div>
 
             </div>
         </>
-
     );
 };
 

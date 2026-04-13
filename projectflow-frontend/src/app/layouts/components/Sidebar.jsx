@@ -15,7 +15,7 @@ const Sidebar = ({ collapsed = false, onMouseLeave, isMobile, onMouseEnter }) =>
                 onMouseEnter={!isMobile ? onMouseEnter : undefined}
                 onMouseLeave={!isMobile ? onMouseLeave : undefined}
                 className={`fixed left-0 top-16 h-[calc(100vh-64px)]
-                        w-72 z-50 bg-white/90 dark:bg-black/90 backdrop-blur-md
+                        w-72 z-50 bg-white dark:bg-black/90 backdrop-blur-md
                         border-r border-t border-indigo-600/20 dark:border-white/10 transition-all duration-300 ease-out
                         ${collapsed ? "translate-x-0 opacity-100" : "-translate-x-full opacity-0"}
                   `}

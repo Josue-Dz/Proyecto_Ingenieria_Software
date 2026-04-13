@@ -52,7 +52,7 @@ const KanbanBoard = () => {
             <div className="flex justify-between mb-5">
                 <button
                     onClick={() => { navigate(`/boards/projects/${idProyecto}`) }}
-                    className="flex items-center px-4 py-2 rounded-md p-3 hover:bg-gray-500/10 transition-colors"
+                    className="flex items-center dark:text-white px-4 py-2 rounded-md p-3 hover:bg-gray-500/20 transition-colors"
                 >
                     <span className="material-symbols-rounded">
                         keyboard_backspace

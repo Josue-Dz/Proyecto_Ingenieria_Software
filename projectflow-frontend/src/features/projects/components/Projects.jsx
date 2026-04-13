@@ -88,8 +88,8 @@ const Projects = () => {
                         <div
                             key={project.idProyecto}
                             className="flex flex-col bg-white backdrop-blur-md dark:bg-black/60 border
-                                border-gray-500/30 shadow dark:border-white/10 rounded-xl p-5
-                                hover:border-indigo-400/85 duration-300 transition-all
+                                border-slate-200 shadow-sm hover:shadow-md dark:border-white/10 rounded-xl p-5
+                                hover:border-indigo-300/70 duration-300 transition-all
                                 dark:hover:border-[#A3FF12]/40"
 
                         >
@@ -113,10 +113,10 @@ const Projects = () => {
 
                             <div className="mt-auto flex justify-end">
                                 <button
-                                    className="w-full sm:w-auto border p-2 border-indigo-200 bg-indigo-50
-                                 text-indigo-600 hover:bg-indigo-100 hover:border-indigo-300
+                                    className="w-full sm:w-auto border p-2 border-[#6684fb]/30 bg-indigo-50
+                                 text-[#4b65d9] hover:text-slate-700 hover:bg-[#6684fb]/10
                                   dark:bg-[#A3FF12]/20 dark:border-[#A3FF12]/40 dark:text-white py-2 rounded-lg
-                                   dark:hover:bg-[#A3FF12]/30 transition-all duration-200 ease-in-out"
+                                   dark:hover:bg-[#A3FF12]/30 transition-all duration-200 ease-in-out cursor-pointer"
                                     onClick={() => handleClick(project.idProyecto)}
                                 >
                                     Ver Panel

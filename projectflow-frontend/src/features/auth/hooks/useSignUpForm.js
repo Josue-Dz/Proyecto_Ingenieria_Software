@@ -88,7 +88,7 @@ export const useSignUpForm = () => {
                 password: form.password,
             });
             setSuccess(true);
-            setTimeout(() => navigate("/dashboard"), 1500);
+            setTimeout(() => navigate("/projects"), 1500);
         } catch(err) {
            const mensaje = err?.response?.data?.message ?? "";
         if (mensaje.toLowerCase().includes("duplicate") ||

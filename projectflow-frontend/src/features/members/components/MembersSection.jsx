@@ -41,13 +41,13 @@ const MembersSection = ({ idProyecto, onMembersChanged }) => {
         <div className="relative" ref={inviteButtonRef}>
         <button
             onClick={() => setShowInviteForm(!showInviteForm)}
-            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg
-             bg-[#2E36C1] dark:bg-[#A3FF12]/15 border border-indigo-600
-             dark:border-[#A3FF12]/30 text-white dark:text-[#A3FF12] text-xs
-             font-semibold hover:bg-[#414DEA] dark:hover:bg-[#A3FF12]/25
+            className="flex items-center gap-1.5 px-3 sm:px-4 py-1.5 h-10 rounded-xl
+             dark:bg-[#A3FF12]/15 border border-[#daddec]
+             dark:border-[#A3FF12]/30 text-black dark:text-[#A3FF12] text-xs
+             font-semibold hover:bg-[#daddec] dark:hover:bg-[#A3FF12]/25
              transition-colors"
         >
-            <span className="material-symbols-rounded text-sm">person_add</span>
+            <span className="material-symbols-rounded text-sm mr-2">person_add</span>
             Invitar
         </button>
 
