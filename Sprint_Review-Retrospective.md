@@ -192,6 +192,71 @@ El sistema ya permite el trabajo multi-usuario. El "Master Backlog" está operat
 
 ## 3. Plan de Mejora y Compromisos para el Sprint #4 (Cierre)
 * **Finalización Inmediata:** Iniciar el Sprint #4 completando el filtro de tareas pendiente.
+  
+
+* # Acta de Sprint Review – Sprint #4 (Cierre de Proyecto)
+
+**Proyecto:** Sistema de Gestión de Proyectos de Software
+**Equipo:** CodeFlow
+**Integrantes:** Ronny Posadas, David Parada, José Núñez
+**Fecha:** 29/03/26 – 11/04/26
+
+## 1. Objetivo del Sprint
+Culminar el desarrollo del sistema mediante la integración de la **Planificación Ágil desde el Backlog**, la implementación de un motor de **Analítica de Datos** (Métricas y Reportes) y la formalización de la documentación técnica y de usuario para la entrega final del periodo académico.
+
+## 2. Resumen del Sprint (Métricas)
+
+| Métrica | Valor |
+| :--- | :--- |
+| **Historias de Usuario (HU) comprometidas** | 8 |
+| **Tareas Técnicas comprometidas** | 2 (Manual Técnico y Usuario) |
+| **Total de elementos terminados** | 10/ 10 |
+| **Porcentaje de cumplimiento** | 100% |
+| **Puntos de Historia totales (Fibonacci)** | 42 pts |
+| **Estado del Sprint** |  Completado - Entrega Final |
+
+
+## 3. Demostración de Logros (Lo que se terminó)
+
+### A. Funcionalidades (Historias de Usuario)
+1. **Planificación de Sprint (8 pts):** Lógica para asignar Historias de Usuario desde el Product Backlog global hacia tableros de Sprints específicos.
+2. **Filtrar tareas en el tablero (5 pts):** Buscador funcional y filtros por prioridad y responsable para mejorar la navegabilidad.
+3.**Subtareas por tarjeta (3pts):**Despliegue de subtareas en cada tarjeta.
+3. **Historial de Actividad (3 pts):** Registro de auditoría que muestra quién realizo cada acción dentro del tablero y cuándo.
+4. **Reporte de Progreso por Sprint (5 pts):** Visualización de avance mediante gráficos de barras y estados.
+5. **Métricas de Rendimiento por Usuario (5 pts):** Gráficas que muestran la carga de trabajo y productividad individual de los miembros.
+6. **Exportación de Datos (8 pts):** Generación de archivos en formato PDF/Excel con el resumen del estado del proyecto.
+
+### B. Documentación y Calidad Técnica
+* **Manual Técnico:** Documento exhaustivo con arquitectura en capas, diagramas UML, DER v5.0 e instrucciones de despliegue con Docker.
+* **Manual de Usuario:** Guía visual paso a paso para que los estudiantes de la UNAH puedan utilizar la herramienta sin curva de aprendizaje previa.
+
+## 4. Estado del Incremento
+El sistema ha alcanzado el estado de **Producto Terminado (Done)**. Se han integrado todas las capas de la arquitectura N-Tier, desde la persistencia en MySQL hasta la visualización reactiva en React 19. El sistema es totalmente operativo en la nube y localmente.
+
+---
+
+# Acta de Sprint Retrospective – Sprint #4
+
+## 1. Análisis de Cumplimiento
+* **Tareas completadas:** 10
+* **Tareas pendientes:** 0
+* **Éxito del Proyecto:** Se cumplió con la totalidad de los requerimientos solicitados por el ingeniero, incluyendo la gestión de deuda técnica del Sprint anterior.
+
+## 2. Feedback del Equipo
+
+### ¿Qué salió bien?
+* **Cierre Documental:** La elaboración simultánea de los manuales y las métricas permitió que el equipo tuviera una visión amplia del sistema antes de la defensa.
+* **Lógica del Backlog:** La implementación de la HU de "Asignación desde Backlog" cerró el ciclo de metodologías ágiles que el sistema prometía.
+* **Visualización de Datos:** El uso de Recharts para las métricas de usuario dio un valor agregado profesional al tablero.
+
+### ¿Qué fue difícil?
+* **Carga de Trabajo:** Este último sprint fue el más denso en puntos Fibonacci (39 pts), exigiendo jornadas de trabajo más intensas para no dejar tareas pendientes.
+* **Lógica de Exportación:** Configurar las librerías para que el diseño de los reportes PDF se viera igual de bien que la interfaz web fue un reto técnico considerable.
+
+## 3. Conclusión del Proyecto CodeFlow
+El equipo concluye este proyecto habiendo superado los retos de infraestructura (Azure/WSL/Docker) y desarrollo. El Sistema de Gestión de Proyectos de Software queda listo para su presentación final, posicionándose como una herramienta viable para su uso en la facultad de ingeniería.
+
 * **Enfoque en Métricas Finales:** Implementar los gráficos de avance (Burn down charts) que solicitó el ingeniero.
 * **Preparación de Entrega:** Dedicar los últimos días a la limpieza de código (Refactorización) y redacción del manual de usuario y manual técnico para la entrega final de la clase.
 
