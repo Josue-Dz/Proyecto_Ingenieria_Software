@@ -274,6 +274,18 @@ public class TarjetaService implements ITarjetaService {
         tarjeta.setFechaLimite(request.getFechaLimite());
         tarjeta.setPrioridad(request.getPrioridad());
         tarjeta.setEstado(request.getEstado());
+        tarjeta.setEstado(request.getEstado());
+
+        if (request.getEstado() == EstadoTarjeta.FINALIZADA
+                && estadoAnterior != EstadoTarjeta.FINALIZADA) {
+
+            tarjeta.setFechaFinalizada(LocalDate.now());
+
+        } else if (request.getEstado() != EstadoTarjeta.FINALIZADA
+                && estadoAnterior == EstadoTarjeta.FINALIZADA) {
+
+            tarjeta.setFechaFinalizada(null);
+        }
         tarjeta.setAsignados(usuariosAsignados);
 
         // Guardar

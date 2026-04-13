@@ -26,7 +26,6 @@ import edu.unah.hn.projecto_ingenieria.Repository.NotificacionRepository;
 import edu.unah.hn.projecto_ingenieria.Repository.ProyectoRepository;
 import edu.unah.hn.projecto_ingenieria.Repository.ProyectoUsuarioRepository;
 import edu.unah.hn.projecto_ingenieria.Repository.TableroRepository;
-import edu.unah.hn.projecto_ingenieria.Repository.UsuarioRepository;
 import edu.unah.hn.projecto_ingenieria.patterns.factory.ColumnaFactory;
 import lombok.RequiredArgsConstructor;
 
@@ -112,12 +111,6 @@ public class TableroService {
     }
 
     public List<TableroResponseDTO> listarTablerosPorProyecto(Long idProyecto) {
-
-        // Obtener usuario autenticado
-        Authentication auth = SecurityContextHolder
-                .getContext()
-                .getAuthentication();
-
 
         // Obtener tableros del proyecto
         List<Tablero> tableros = tableroRepository.findByProyectoIdProyectoOrderByIdTableroAsc(idProyecto);
