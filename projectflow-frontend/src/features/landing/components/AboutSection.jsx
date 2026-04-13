@@ -14,7 +14,7 @@ const team = [
     },
     {
         name: "Jose Daniel Nuñez",
-        role: "Software Architect, Full Stack Developer & Technical Documentation Lead",
+        role: "Software Architect, Full Stack Developer",
         initials: "JDN",
         github: "https://github.com/jdnunez-10",
     },
