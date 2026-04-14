@@ -52,9 +52,11 @@ public class HistorialActividadListener {
         Tarjeta t = event.getTarjeta();
         String columnaOrigen = event.getColumnaAntigua().getNombreColumna();
         String columnaDestino = event.getColumnaNueva().getNombreColumna();
-        Tablero tablero = event.getColumnaNueva().getTablero(); 
+        Tablero tablero = event.getColumnaNueva().getTablero();
+        Proyecto proyecto = event.getColumnaNueva().getProyecto();
+         
         historialService.registrar(
-            t.getCreador(), tablero.getProyecto(), tablero, t,
+            t.getCreador(), tablero != null ? tablero.getProyecto() : proyecto, tablero, t,
             "TARJETA_MOVIDA",
             t.getCreador().getNombre() + " movió '" + t.getTitulo()
                 + "' de '" + columnaOrigen + "' a '" + columnaDestino + "'"

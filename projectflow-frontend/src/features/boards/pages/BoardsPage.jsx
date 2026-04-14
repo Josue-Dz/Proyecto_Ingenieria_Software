@@ -1,13 +1,13 @@
 import { useEffect, useState } from 'react'
-import { createTaskRequest, getBoardsRequest } from '../services/boardService';
+import { getBoardsRequest } from '../services/boardService';
 import { useNavigate, useParams } from 'react-router-dom';
 import CreateBoardModal from '../components/CreateBoardModal';
 import AddButton from '../components/AddButton';
 import MembersSection from '../../members/components/MembersSection';
 import { getProjectRequest } from '../../projects/services/projectService';
 import Backlog from '../../projects/components/ProjectBacklog';
-import { useAuth } from '../../auth/hooks/useAuth';
 import { useProjectRol } from '../../projects/hooks/useProjectRol';
+import { useAuth } from '../../auth/hooks/useAuth';
 
 const BoardsPage = () => {
 
@@ -25,7 +25,6 @@ const BoardsPage = () => {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const navigate = useNavigate();
 
-
     const canCreate = userRol === "ADMIN";
     const canMove = userRol === "ADMIN" || userRol === "COLABORADOR";
 
@@ -36,9 +35,9 @@ const BoardsPage = () => {
                     getBoardsRequest(idProyecto),
                     getProjectRequest(idProyecto)
                 ]);
+
                 setBoards(boardsData);
                 setBacklog(projectData.backlog);
-                console.log("BACKLOG: ", projectData.backlog)
             } catch (err) {
                 setError("No se pudieron cargar los tableros");
                 console.error(err);
@@ -49,20 +48,7 @@ const BoardsPage = () => {
         fetchBoards();
     }, [idProyecto]);
 
-
-    const handleAddTaskToBacklog = async (columnId, taskData) => {
-        try {
-            const newTask = await createTaskRequest(columnId, taskData);
-
-            setBacklog(prev => ({
-                ...prev,
-                tarjetas: [...(prev.tarjetas || []), newTask]
-            }));
-        } catch (err) {
-            console.error("Error al añadir al backlog:", err);
-        }
-    };
-
+    const formatFecha = (fecha) => fecha?.split("-").reverse().join("/");
 
     const handleClick = (boardId) => {
         navigate(`/projects/${idProyecto}/boards/${boardId}`)
@@ -70,16 +56,29 @@ const BoardsPage = () => {
 
     return (
 
-        <div className="pt-6">
+        <div className="pt-6 w-full h-full">
 
-            {/* Header con título y miembros en la misma línea */}
-            <div className="flex items-center justify-between mb-2 flex-wrap gap-4">
-                <h2 className="text-xl font-bold dark:text-white">Tableros del Proyecto</h2>
-            </div>
+            <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between mb-3">
 
-            <div className="flex items-center justify-end space-x-3">
-                <MembersSection idProyecto={idProyecto} />
-                <AddButton disabled={loading} setIsModalOpen={setIsModalOpen} textoBoton="Nuevo tablero" />
+                <div className="flex items-center gap-3">
+                    <button
+                        onClick={() => navigate("/projects")}
+                        className="p-2 rounded-lg hover:bg-slate-200 dark:hover:bg-white/10 transition-colors"
+                    >
+                        <span className="material-symbols-rounded text-slate-600 dark:text-white/60">
+                            arrow_back
+                        </span>
+                    </button>
+
+                    <h2 className="text-lg sm:text-xl font-bold text-slate-800 dark:text-white">
+                        Tableros del Proyecto
+                    </h2>
+                </div>
+
+                <div className="flex flex-wrap items-center gap-2 sm:gap-3">
+                    <MembersSection idProyecto={idProyecto} />
+                    <AddButton disabled={loading} setIsModalOpen={setIsModalOpen} textoBoton="Nuevo tablero" />
+                </div>
             </div>
 
             <CreateBoardModal
@@ -89,21 +88,22 @@ const BoardsPage = () => {
                 onBoardCreated={(newBoard) => setBoards(prev => [newBoard, ...prev])}
             />
 
-            <div className="flex gap-6 items-start mt-4 bg-indigo-200/20 border border-indigo-300/30 rounded-lg p-4 overflow-x-auto">
+            <div className="grid grid-cols-1 lg:grid-cols-[320px_1fr] gap-4 lg:gap-6 mt-4 dark:bg-transparent border border-slate-200 dark:border-white/10 rounded-xl p-3 sm:p-4 w-full">
 
-                {/**Backlog */}
-                <div className="w-80 flex flex-col gap-3">
-                    <Backlog backlog={backlog} canCreate={canCreate} canMove={canMove} onAddTask={handleAddTaskToBacklog} />
+                <div className="w-full lg:w-[320px] flex flex-col gap-3">
+                    <Backlog backlog={backlog} userRol={userRol} canCreate={canCreate} canMove={canMove} />
                 </div>
-
-                <div className="w-px h-110 bg-indigo-500 dark:bg-white/10" />
 
                 <div className="flex-1 flex flex-col gap-4">
                     <div className="flex items-center justify-between">
                         <div className="flex items-center gap-2">
-                            <span className="material-symbols-rounded text-indigo-500 dark:text-[#A3FF12]">view_kanban</span>
-                            <h3 className="text-sm font-semibold text-slate-700 dark:text-white">Sprints</h3>
-                            <span className="text-[0.65rem] font-medium dark:text-white/30 dark:bg-white/5 border dark:border-white/10 rounded-full px-2 py-0.5">
+                            <span className="material-symbols-rounded text-indigo-600 dark:text-[#A3FF12]">
+                                view_kanban
+                            </span>
+                            <h3 className="text-sm font-semibold text-slate-700 dark:text-white">
+                                Sprints
+                            </h3>
+                            <span className="text-[0.65rem] font-medium text-slate-600 dark:text-white/30 bg-slate-100 dark:bg-white/5 border border-slate-200 dark:border-white/10 rounded-full px-2 py-0.5">
                                 {boards.length}
                             </span>
                         </div>
@@ -111,31 +111,44 @@ const BoardsPage = () => {
 
                     <div>
                         {!loading && error && (
-                            <p className="text-red-400/70 text-sm">{error}</p>
+                            <p className="text-red-500 text-sm">{error}</p>
                         )}
 
                         {!loading && !error && boards.length === 0 && (
-                            <p className="text-gray-400">Parece que aún no tienes ningún tablero</p>
+                            <p className="text-slate-400 dark:text-white/40">
+                                Parece que aún no tienes ningún tablero
+                            </p>
                         )}
 
-                        {!loading && !error && boards.length > 0 && (
-                            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 overflow-y-auto max-h-96 pr-2">
-                                {boards.map((board) => (
-                                    <div key={board.idTablero}
-                                        onClick={() => handleClick(board.idTablero)}
-                                        className="flex flex-col max-h-40 min-h-20 w-full
-                                     bg-indigo-50 backdrop-blur-md dark:text-white dark:bg-black/60 border border-gray-500/20 shadow-md dark:border-white/10 rounded-lg p-5 hover:border-indigo-400 duration-200 transition-all dark:hover:border-[#A3FF12]/40 overflow-hidden">
+                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 max-h-125 lg:max-h-96 overflow-y-auto pr-2">
+                            {boards.map((board) => (
+                                <div
+                                    key={board.idTablero}
+                                    onClick={() => handleClick(board.idTablero)}
+                                    className="flex flex-col max-h-40 min-h-20 w-full
+                                    bg-white dark:bg-[#111]
+                                    border border-slate-200 dark:border-white/10
+                                    rounded-xl p-4
+                                    hover:border-indigo-400 dark:hover:border-[#A3FF12]/40
+                                    hover:shadow-md
+                                    cursor-pointer duration-200 transition-all"
+                                >
 
-                                        <h2 className="text-lg font-semibold text-slate-900 dark:text-[#A3FF12] mb-2">
-                                            {board.nombreTablero}
-                                        </h2>
-                                        <p className="text-xs text-slate-400 dark:text-[#A3FF12]/70 line-clamp-3">
-                                            {board.descripcionTablero}
-                                        </p>
-                                    </div>
-                                ))}
-                            </div>
-                        )}
+                                    <h2 className="text-lg font-semibold text-slate-900 dark:text-[#A3FF12] truncate p-2">
+                                        {board.nombreTablero}
+                                    </h2>
+
+                                    <p className="text-xs text-slate-500 dark:text-white/60 line-clamp-3 px-2">
+                                        {board.descripcionTablero}
+                                    </p>
+
+                                    <p className="text-xs text-slate-400 dark:text-white/50 p-2">
+                                        Duración: {formatFecha(board?.fechaInicio)} al {formatFecha(board?.fechaFin)}
+                                    </p>
+
+                                </div>
+                            ))}
+                        </div>
                     </div>
 
                 </div>
@@ -144,4 +157,4 @@ const BoardsPage = () => {
     )
 }
 
-export default BoardsPage
+export default BoardsPage;

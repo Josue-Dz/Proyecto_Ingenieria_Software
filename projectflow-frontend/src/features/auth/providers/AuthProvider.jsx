@@ -14,10 +14,8 @@ export function AuthProvider({ children }) {
     const checkAuth = async () => {
         try {
             const data = await verifySessionRequest();
-            console.log("Sesion activa de:", data); //por si olvido removerlos luego
             setUser(data);
-        } catch (err){
-            console.log("Sin sesión activa:", err.response?.status); //por si olvido removerlos luego
+        } catch{
             setUser(null);
         } finally {
             setLoading(false);

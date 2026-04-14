@@ -9,7 +9,6 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import edu.unah.hn.projecto_ingenieria.Entity.Tarjeta;
-import edu.unah.hn.projecto_ingenieria.Entity.Usuario;
 
 @Repository
 public interface TarjetaRepository extends JpaRepository<Tarjeta, Long> {

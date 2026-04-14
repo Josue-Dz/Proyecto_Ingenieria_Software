@@ -6,8 +6,6 @@ import java.util.List;
 import java.util.Set;
 
 import org.springframework.http.HttpStatus;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -26,7 +24,6 @@ import edu.unah.hn.projecto_ingenieria.Repository.NotificacionRepository;
 import edu.unah.hn.projecto_ingenieria.Repository.ProyectoRepository;
 import edu.unah.hn.projecto_ingenieria.Repository.ProyectoUsuarioRepository;
 import edu.unah.hn.projecto_ingenieria.Repository.TableroRepository;
-import edu.unah.hn.projecto_ingenieria.Repository.UsuarioRepository;
 import edu.unah.hn.projecto_ingenieria.patterns.factory.ColumnaFactory;
 import lombok.RequiredArgsConstructor;
 
@@ -37,8 +34,6 @@ public class TableroService {
     private final ColumnaRepository columnaRepository;
 
     private final ProyectoRepository proyectoRepository;
-
-    private final UsuarioRepository usuarioRepository;
 
     private final TableroRepository tableroRepository;
 
@@ -62,6 +57,8 @@ public class TableroService {
         tableroNuevo.setNombreTablero(tablero.getNombre());
         tableroNuevo.setProyecto(proyecto);
         tableroNuevo.setDescripcionTablero(tablero.getDescripcion());
+        tableroNuevo.setFechaInicio(tablero.getFechaInicio());
+        tableroNuevo.setFechaFin(tablero.getFechaFin());
         Tablero guardado = tableroRepository.save(tableroNuevo);
 
         List<Columna> columnas = columnaFactory.crearEstructuraInicial(guardado);
@@ -74,17 +71,6 @@ public class TableroService {
     }
 
     public TableroResponseDTO obtenerTablero(Long idTablero) {
-
-        // Obtener usuario autenticado
-        Authentication auth = SecurityContextHolder
-                .getContext()
-                .getAuthentication();
-
-        String correo = auth.getName();
-
-        Usuario usuario = usuarioRepository
-                .findByCorreo(correo)
-                .orElseThrow();
 
         Proyecto proyecto = proyectoRepository.findByTablero_IdTablero(idTablero).orElseThrow(
             () -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Proyecto no encontrado")
@@ -114,36 +100,15 @@ public class TableroService {
         tableroKanban.setDescripcionTablero(tablero.getDescripcionTablero());
         tableroKanban.setIdProyecto(idProyecto);
         tableroKanban.setColumnas(columnasDTO);
+        tableroKanban.setFechaInicio(tablero.getFechaInicio());
+        tableroKanban.setFechaFin(tablero.getFechaFin());
+
+        System.out.println("Tablero: " + tableroKanban.getFechaInicio());
 
         return tableroKanban;
     }
 
     public List<TableroResponseDTO> listarTablerosPorProyecto(Long idProyecto) {
-
-        // Obtener usuario autenticado
-        Authentication auth = SecurityContextHolder
-                .getContext()
-                .getAuthentication();
-
-        String correo = auth.getName();
-
-        Usuario usuario = usuarioRepository
-                .findByCorreo(correo)
-                .orElseThrow();
-
-        // Validar que el usuario pertenece al proyecto
-        // boolean pertenece = proyectoUsuarioRepository
-        // .existsByUsuarioIdUsuarioAndProyectoIdProyecto(
-        // usuario.getIdUsuario(),
-        // idProyecto
-        // );
-
-        // if (!pertenece) {
-        // throw new ResponseStatusException(
-        // HttpStatus.FORBIDDEN,
-        // "El usuario " + correo + " no pertenece al proyecto con id " + idProyecto
-        // );
-        // }
 
         // Obtener tableros del proyecto
         List<Tablero> tableros = tableroRepository.findByProyectoIdProyectoOrderByIdTableroAsc(idProyecto);
@@ -159,6 +124,8 @@ public class TableroService {
             dto.setIdProyecto(idProyecto);
             dto.setDescripcionTablero(tablero.getDescripcionTablero());
             dto.setNombreTablero(tablero.getNombreTablero());
+            dto.setFechaInicio(tablero.getFechaInicio());
+            dto.setFechaFin(tablero.getFechaFin());
 
             tablerosDTO.add(dto);
         }
@@ -232,7 +199,7 @@ public class TableroService {
     private TableroResponseDTO mapToDTO(Tablero tablero) {
         return new TableroResponseDTO(tablero.getIdTablero(), tablero.getProyecto().getIdProyecto(),
                 tablero.getNombreTablero(), tablero.getDescripcionTablero(),
-                columnaService.mapToListDTO(tablero.getColumnas()));
+                columnaService.mapToListDTO(tablero.getColumnas()), tablero.getFechaInicio(), tablero.getFechaFin());
     }
 
 }

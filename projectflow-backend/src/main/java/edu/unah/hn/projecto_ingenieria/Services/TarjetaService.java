@@ -18,6 +18,7 @@ import edu.unah.hn.projecto_ingenieria.DTO.TarjetaResponseDTO;
 import edu.unah.hn.projecto_ingenieria.DTO.UsuarioDTO;
 import edu.unah.hn.projecto_ingenieria.Entity.Columna;
 import edu.unah.hn.projecto_ingenieria.Entity.Proyecto;
+import edu.unah.hn.projecto_ingenieria.Entity.SubTarea;
 import edu.unah.hn.projecto_ingenieria.Entity.Tablero;
 import edu.unah.hn.projecto_ingenieria.Entity.Tarjeta;
 import edu.unah.hn.projecto_ingenieria.Entity.Tarjeta.EstadoTarjeta;
@@ -40,7 +41,7 @@ import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor
-public class TarjetaService implements ITarjetaService{
+public class TarjetaService implements ITarjetaService {
 
     private final ColumnaRepository columnaRepository;
 
@@ -146,6 +147,8 @@ public class TarjetaService implements ITarjetaService{
             tarjetaDTO.setFechaCreacion(tarjeta.getFechaCreacion());
             tarjetaDTO.setFechaLimite(tarjeta.getFechaLimite());
             tarjetaDTO.setPrioridad(tarjeta.getPrioridad());
+            tarjetaDTO.setTotalSubtareas(tarjeta.getSubtareas().size());
+            tarjetaDTO.setSubtareasCompletadas(subtareasCompletadas(tarjeta.getSubtareas()));
 
             tarjetaDTO.setEstado(tarjeta.getEstado());
 
@@ -213,7 +216,8 @@ public class TarjetaService implements ITarjetaService{
         nueva.setPosicion(tarjetaDto.getNuevaPosicion());
         tarjetaXColumnaRepository.save(nueva);
 
-        // Actualizar la columna de la tarjeta y alinear estado con columnas Kanban por defecto
+        // Actualizar la columna de la tarjeta y alinear estado con columnas Kanban por
+        // defecto
         tarjeta.setColumna(columnaNueva);
         EstadoTarjeta inferido = estadoDesdeNombreColumna(columnaNueva.getNombreColumna());
         if (inferido != null) {
@@ -224,14 +228,14 @@ public class TarjetaService implements ITarjetaService{
 
         LocalDateTime ahoraMovimiento = LocalDateTime.now();
         publicarCambioEstadoSiAplica(tarjeta, estadoAnterior, tarjeta.getEstado(), columnaNueva.getTablero(),
-            ahoraMovimiento);
+                ahoraMovimiento);
 
         registrarFinalizacionSiEntraATableroDesdeBacklog(
-            tarjeta,
-            columnaAntigua,
-            columnaNueva,
-            estadoAnterior,
-            ahoraMovimiento);
+                tarjeta,
+                columnaAntigua,
+                columnaNueva,
+                estadoAnterior,
+                ahoraMovimiento);
 
         // Publicar evento de movimiento
         eventPublisher.publishEvent(new TarjetaMovidaEvent(this, tarjeta, columnaAntigua, columnaNueva));
@@ -270,6 +274,18 @@ public class TarjetaService implements ITarjetaService{
         tarjeta.setFechaLimite(request.getFechaLimite());
         tarjeta.setPrioridad(request.getPrioridad());
         tarjeta.setEstado(request.getEstado());
+        tarjeta.setEstado(request.getEstado());
+
+        if (request.getEstado() == EstadoTarjeta.FINALIZADA
+                && estadoAnterior != EstadoTarjeta.FINALIZADA) {
+
+            tarjeta.setFechaFinalizada(LocalDate.now());
+
+        } else if (request.getEstado() != EstadoTarjeta.FINALIZADA
+                && estadoAnterior == EstadoTarjeta.FINALIZADA) {
+
+            tarjeta.setFechaFinalizada(null);
+        }
         tarjeta.setAsignados(usuariosAsignados);
 
         // Guardar
@@ -318,7 +334,8 @@ public class TarjetaService implements ITarjetaService{
         if (Objects.equals(estadoAnterior, estadoNuevo)) {
             return;
         }
-        // El historial de estado se almacena a nivel de tablero; backlog no tiene tablero.
+        // El historial de estado se almacena a nivel de tablero; backlog no tiene
+        // tablero.
         if (tablero == null || tablero.getIdTablero() == null) {
             return;
         }
@@ -366,6 +383,19 @@ public class TarjetaService implements ITarjetaService{
                 null,
                 EstadoTarjeta.FINALIZADA,
                 fechaCambio));
+    }
+
+    public List<TarjetaResponseDTO> obtenerTarjetasAsignadas() {
+        Usuario usuario = authService.getUsuarioAutenticado();
+        List<Tarjeta> tarjetas = tarjetaRepository.findByAsignados_IdUsuario(usuario.getIdUsuario());
+        return tarjetas.stream()
+                .map(mapper::toTarjetaDTO)
+                .collect(Collectors.toList());
+    }
+
+    private int subtareasCompletadas(List<SubTarea> subTareas) {
+        int subtareasCompletadas = (int) subTareas.stream().filter(s -> s.isCompletada() == true).count();
+        return subtareasCompletadas;
     }
 
 }

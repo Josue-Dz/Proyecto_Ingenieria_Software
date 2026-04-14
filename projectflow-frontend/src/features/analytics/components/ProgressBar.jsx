@@ -1,4 +1,4 @@
-const ProgressBar = ({ value, color }) => {
+const ProgressBar = ({ value, displayValue, color }) => {
 
   const colors = {
     yellow: "bg-yellow-400",
@@ -7,12 +7,12 @@ const ProgressBar = ({ value, color }) => {
   };
 
   return (
-    <div className="p-1 items-center">
+    <div className="p-2 items-center">
       <p className="text-sm">{value}</p>
       <div className="w-full bg-gray-200 h-2 rounded">
         <div
           className={`h-2 rounded ${colors[color]}`}
-          style={{ width: `${value * 10}%` }}
+          style={{ width: `${displayValue * 100}%` }}
         />
       </div>
     </div>
